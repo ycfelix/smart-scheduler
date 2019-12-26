@@ -1,14 +1,14 @@
 package com.ust.smartph;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.EditText;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+
 public class LoginActivity extends AppCompatActivity {
     private EditText emailEditText;
     private EditText passEditText;
@@ -16,8 +16,8 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
         setContentView(R.layout.login_screen);
-
         // Address the email and password field
         emailEditText = findViewById(R.id.username);
         passEditText = findViewById(R.id.password);
@@ -41,6 +41,7 @@ public class LoginActivity extends AppCompatActivity {
         if(isValidEmail(email) && isValidPassword(pass))
         {
             // Validation Completed
+            startActivity(new Intent(LoginActivity.this, CalanderActivity.class));
         }
 
     }
