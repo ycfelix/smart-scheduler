@@ -13,7 +13,6 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity android:name=".SplashActivity">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,6 +22,8 @@
         <activity android:name=".LoginActivity"/>
 
         <activity android:name=".CalanderActivity"/>
+
+        <activity android:name=".AboutUsActivity"/>
 
     </application>
 

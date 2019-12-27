@@ -8,18 +8,18 @@
     tools:context="com.ust.smartph.SplashActivity">
     <Space
         android:layout_width="1dp"
-        android:layout_height="50dp"/>
-    <ImageView
+        android:layout_height="150dp"/>
+    <!--ImageView
         android:scaleX="1"
         android:scaleY="1"
         android:id="@+id/slogan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/app_slogan"
-        android:layout_gravity="center_horizontal|center_vertical"/>
+        android:layout_gravity="center_horizontal|center_vertical"/-->
     <Space
         android:layout_width="0dp"
-        android:layout_height="160dp"/>
+        android:layout_height="60dp"/>
     <ImageView
         android:scaleX="1.5"
         android:scaleY="1.5"
@@ -39,7 +39,7 @@
         android:layout_gravity="center_horizontal|center_vertical"/>
     <Space
         android:layout_width="0dp"
-        android:layout_height="20dp"/>
+        android:layout_height="90dp"/>
     <ImageView
         android:id="@+id/theme"
         android:layout_width="wrap_content"

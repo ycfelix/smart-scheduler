@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,6 +24,13 @@ public class LoginActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.username);
         passEditText = findViewById(R.id.password);
 
+    }
+    public void enterAboutUs(View arg){
+        startActivity(new Intent(LoginActivity.this, AboutUsActivity.class));
+    }
+
+    public void forgetPassword(View arg){
+        Toast.makeText(this,"Coming Soon",Toast.LENGTH_LONG).show();
     }
 
     public void checkLogin(View arg0) {

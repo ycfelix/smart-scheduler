@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/gradient_splash"
+    android:background="@drawable/gradient_login"
     android:padding="40dp"
     tools:context=".LoginActivity">
 
@@ -34,7 +34,7 @@
         android:textColor="#FFF"
         android:paddingLeft="0dp"
         android:drawablePadding="5dp"
-        android:textColorHint="#999"/>
+        android:textColorHint="#6e6e6e"/>
 
     <EditText
         android:layout_width="match_parent"
@@ -48,7 +48,7 @@
         android:textColor="#FFF"
         android:paddingLeft="0dp"
         android:drawablePadding="5dp"
-        android:textColorHint="#999"/>
+        android:textColorHint="#6e6e6e"/>
 
     <Button
         android:id="@+id/login"
@@ -65,10 +65,25 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Forgot password?"
-        android:id="@+id/textView3"
+        android:id="@+id/forget_passsword"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="40dp"
         android:textColor="#FFF"
+        android:clickable="true"
+        android:onClick="forgetPassword"
+        />
+    <TextView
+        android:textSize="20dp"
+        android:id="@+id/About_us"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="About Us"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:textColor="#FFF"
+        android:clickable="true"
+        android:onClick="enterAboutUs"
         />
 
 </LinearLayout>
