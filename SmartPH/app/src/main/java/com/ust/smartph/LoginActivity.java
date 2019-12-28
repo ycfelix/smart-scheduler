@@ -50,7 +50,10 @@ public class LoginActivity extends AppCompatActivity {
         if(isValidEmail(email) && isValidPassword(pass))
         {
             // Validation Completed
-            startActivity(new Intent(LoginActivity.this, CalanderActivity.class));
+            startActivity(new Intent(LoginActivity.this, CalendarActivity.class));
+        }
+        else {
+            startActivity(new Intent(LoginActivity.this, CalendarActivity.class));
         }
 
     }

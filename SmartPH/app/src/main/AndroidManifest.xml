@@ -21,7 +21,7 @@
         </activity>
         <activity android:name=".LoginActivity"/>
 
-        <activity android:name=".CalanderActivity"/>
+        <activity android:name=".CalendarActivity"/>
 
         <activity android:name=".AboutUsActivity"/>
 
