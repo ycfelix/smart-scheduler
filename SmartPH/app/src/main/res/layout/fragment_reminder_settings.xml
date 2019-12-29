@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.SwitchCompat
+        android:id="@+id/switch_reminder_enable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:textSize="@dimen/text_size"
+        android:text="@string/switch_enabled_text"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/primary_text_color"
+        android:text="@string/reminder_settings_interval_label_text"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:textSize="@dimen/text_size"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/secondary_text_color"
+        android:text="@string/interval_description_label"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:textSize="@dimen/label_text_size"/>
+
+    <RadioGroup
+        android:id="@+id/radioGroup_reminder_interval"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin">
+
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/radioButton_thirty_minutes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reminder_radioButton_thirty_minutes_text"/>
+
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/radioButton_one_hour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reminder_radioButton_one_hour_text"/>
+
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/radioButton_two_hours"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reminder_radioButton_two_hours_text"/>
+
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/radioButton_four_hours"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reminder_radioButton_four_hours_text"/>
+
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/radioButton_eight_hours"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reminder_radioButton_eight_hours_text"/>
+
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/radioButton_twelve_hours"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reminder_radioButton_twelve_hours_text"/>
+
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/radioButton_twenty_four_hours"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reminder_radioButton_twenty_four_hours_text"/>
+
+    </RadioGroup>
+
+</LinearLayout>

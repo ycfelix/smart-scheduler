@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/new_item_title_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/list_element_height"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/new_item_title_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/item_title_label_text"
+                android:textSize="@dimen/label_text_size"
+                android:textColor="@color/primary_text_color"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/activity_vertical_margin"/>
+
+            <EditText
+                android:id="@+id/new_item_title_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/item_title_input_hint"
+                android:textSize="@dimen/text_size"
+                android:textColorHint="@color/secondary_text_color"
+                android:textColor="@color/primary_text_color"
+                android:inputType="textCapSentences"
+                android:layout_marginStart="@dimen/editText_horizontal_margin"
+                android:layout_marginLeft="@dimen/editText_horizontal_margin"
+                android:layout_marginEnd="@dimen/editText_horizontal_margin"
+                android:layout_marginRight="@dimen/editText_horizontal_margin"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/new_item_details_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/new_item_title_layout"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/new_item_details_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/item_details_label_text"
+                android:textSize="@dimen/label_text_size"
+                android:textColor="@color/primary_text_color"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"/>
+
+            <EditText
+                android:id="@+id/new_item_details_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/item_details_input_hint"
+                android:textSize="@dimen/text_size"
+                android:textColorHint="@color/secondary_text_color"
+                android:textColor="@color/primary_text_color"
+                android:inputType="textCapSentences|textMultiLine"
+                android:layout_marginStart="@dimen/editText_horizontal_margin"
+                android:layout_marginLeft="@dimen/editText_horizontal_margin"
+                android:layout_marginEnd="@dimen/editText_horizontal_margin"
+                android:layout_marginRight="@dimen/editText_horizontal_margin"
+                android:minLines="1"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/new_item_icon_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/label_text_size"
+            android:text="@string/item_icon_select_label_text"
+            android:textColor="@color/primary_text_color"
+            android:layout_below="@id/new_item_details_layout"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"/>
+
+        <GridLayout
+            android:id="@+id/new_item_color_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/new_item_icon_label"
+            android:columnCount="4"
+            android:rowCount="1"
+            android:layout_centerHorizontal="true">
+
+            <ImageView
+                android:id="@+id/icon_picker_0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/color_splotch_selector"
+                android:scaleType="center"
+                android:layout_margin="@dimen/imageView_icon_margin"
+                android:contentDescription="@string/empty_icon_content_description"/>
+
+            <ImageView
+                android:id="@+id/icon_picker_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_fitness_center_white_24dp"
+                android:background="@drawable/color_splotch_selector"
+                android:scaleType="center"
+                android:layout_margin="@dimen/imageView_icon_margin"
+                android:contentDescription="@string/fitness_icon_content_description"/>
+
+            <ImageView
+                android:id="@+id/icon_picker_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_school_white_24dp"
+                android:background="@drawable/color_splotch_selector"
+                android:scaleType="center"
+                android:layout_margin="@dimen/imageView_icon_margin"
+                android:contentDescription="@string/school_icon_content_description"/>
+
+            <ImageView
+                android:id="@+id/icon_picker_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_local_grocery_store_white_24dp"
+                android:background="@drawable/color_splotch_selector"
+                android:scaleType="center"
+                android:layout_margin="@dimen/imageView_icon_margin"
+                android:contentDescription="@string/groceries_icon_content_description"/>
+
+            <ImageView
+                android:id="@+id/icon_picker_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_cake_white_24dp"
+                android:background="@drawable/color_splotch_selector"
+                android:scaleType="center"
+                android:layout_margin="@dimen/imageView_icon_margin"
+                android:contentDescription="@string/party_icon_content_description"/>
+
+            <ImageView
+                android:id="@+id/icon_picker_5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_child_friendly_white_24dp"
+                android:background="@drawable/color_splotch_selector"
+                android:scaleType="center"
+                android:layout_margin="@dimen/imageView_icon_margin"
+                android:contentDescription="@string/child_icon_content_description"/>
+
+            <ImageView
+                android:id="@+id/icon_picker_6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_credit_card_white_24dp"
+                android:background="@drawable/color_splotch_selector"
+                android:scaleType="center"
+                android:layout_margin="@dimen/imageView_icon_margin"
+                android:contentDescription="@string/credit_icon_content_description"/>
+
+            <ImageView
+                android:id="@+id/icon_picker_7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_flight_white_24dp"
+                android:background="@drawable/color_splotch_selector"
+                android:scaleType="center"
+                android:layout_margin="@dimen/imageView_icon_margin"
+                android:contentDescription="@string/plane_icon_content_description"/>
+
+            <ImageView
+                android:id="@+id/icon_picker_8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_local_gas_station_white_24dp"
+                android:background="@drawable/color_splotch_selector"
+                android:scaleType="center"
+                android:layout_margin="@dimen/imageView_icon_margin"
+                android:contentDescription="@string/gas_icon_content_description"/>
+
+            <ImageView
+                android:id="@+id/icon_picker_9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_mail_white_24dp"
+                android:background="@drawable/color_splotch_selector"
+                android:scaleType="center"
+                android:layout_margin="@dimen/imageView_icon_margin"
+                android:contentDescription="@string/mail_icon_content_description"/>
+
+            <ImageView
+                android:id="@+id/icon_picker_10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_people_white_24dp"
+                android:background="@drawable/color_splotch_selector"
+                android:scaleType="center"
+                android:layout_margin="@dimen/imageView_icon_margin"
+                android:contentDescription="@string/people_icon_content_description"/>
+
+            <ImageView
+                android:id="@+id/icon_picker_11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_restaurant_menu_white_24dp"
+                android:background="@drawable/color_splotch_selector"
+                android:scaleType="center"
+                android:layout_margin="@dimen/imageView_icon_margin"
+                android:contentDescription="@string/food_icon_content_description"/>
+
+        </GridLayout>
+
+    </RelativeLayout>
+
+</ScrollView>

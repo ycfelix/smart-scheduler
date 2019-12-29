@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
     <color name="splash_background_color">#5456e1</color>
+    <color name="colorPrimary">#6b7b8d</color>
+    <color name="colorPrimaryDark">#556270</color>
+    <color name="colorAccent">#1cd09c</color>
+
+    <!-- List -->
+    <color name="divider_color">#1F000000</color>
+    <color name="list_item_background">#FFFFFF</color>
+    <color name="list_item_selected_background">#AAAAAA</color>
+
+    <!-- Text -->
+    <color name="primary_text_color">#000000</color>
+    <color name="secondary_text_color">#AAAAAA</color>
 </resources>

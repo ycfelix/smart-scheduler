@@ -17,7 +17,6 @@ public class AboutUsActivity  extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().hide();
         simulateDayNight(/* DAY */ 0);
         Element adsElement = new Element();
         adsElement.setTitle("Advertise with us");

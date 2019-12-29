@@ -18,7 +18,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().hide();
         setContentView(R.layout.login_screen);
         // Address the email and password field
         emailEditText = findViewById(R.id.username);
@@ -47,14 +46,20 @@ public class LoginActivity extends AppCompatActivity {
             passEditText.setError("Password cannot be empty");
         }
 
-        if(isValidEmail(email) && isValidPassword(pass))
-        {
-            // Validation Completed
+        if(email.isEmpty() && pass.isEmpty()){
+            startActivity(new Intent(LoginActivity.this, ChecklistActivity.class));
+        }
+        else{
             startActivity(new Intent(LoginActivity.this, CalendarActivity.class));
         }
-        else {
-            startActivity(new Intent(LoginActivity.this, CalendarActivity.class));
-        }
+//        if(isValidEmail(email) && isValidPassword(pass))
+//        {
+//            // Validation Completed
+//            startActivity(new Intent(LoginActivity.this, CalendarActivity.class));
+//        }
+//        else {
+//            startActivity(new Intent(LoginActivity.this, CalendarActivity.class));
+//        }
 
     }
 
