@@ -35,4 +35,21 @@
     <string name="reminder_radioButton_twelve_hours_text">12 Hours</string>
     <string name="reminder_radioButton_twenty_four_hours_text">24 Hours</string>
 
+    <string-array name="header_title">
+        <item></item>
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+    </string-array>
+
+    <string-array name="days">
+        <item >Mon</item>
+        <item >Tue</item>
+        <item >Wed</item>
+        <item >Thu</item>
+        <item >Fri</item>
+    </string-array>
+
 </resources>

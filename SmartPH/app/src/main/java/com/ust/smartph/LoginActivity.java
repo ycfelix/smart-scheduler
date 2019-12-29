@@ -49,6 +49,9 @@ public class LoginActivity extends AppCompatActivity {
         if(email.isEmpty() && pass.isEmpty()){
             startActivity(new Intent(LoginActivity.this, ChecklistActivity.class));
         }
+        if(email.equals("timetable")){
+            startActivity(new Intent(LoginActivity.this,TimetableActivity.class));
+        }
         else{
             startActivity(new Intent(LoginActivity.this, CalendarActivity.class));
         }

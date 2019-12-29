@@ -30,7 +30,7 @@
         android:id="@+id/username"
         android:drawableStart="@drawable/account"
         android:hint="Username"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="60dp"
         android:textColor="#FFF"
         android:paddingLeft="0dp"
         android:drawablePadding="5dp"
@@ -55,7 +55,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/button_background"
         android:onClick="checkLogin"
         android:text="Sign In" />
