@@ -30,6 +30,9 @@
         <activity android:name=".ChecklistActivity"/>
         <service android:name="com.ust.checklist.ReminderService"/>
         <activity android:name=".TimetableActivity"/>
+        <activity
+            android:name=".OpenMapActivity"
+            android:label="@string/title_activity_open_map"></activity>
     </application>
 
 
