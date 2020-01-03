@@ -61,7 +61,7 @@ public class HomeFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState)
     {
-        View v = inflater.inflate(R.layout.fragment_home,parent,false);
+        View v = inflater.inflate(R.layout.fragment_checklist,parent,false);
 
         //Configure listview.
         ItemListAdapter adapter = new ItemListAdapter(getContext(),items);

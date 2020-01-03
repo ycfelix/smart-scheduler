@@ -46,15 +46,9 @@ public class LoginActivity extends AppCompatActivity {
             passEditText.setError("Password cannot be empty");
         }
 
-        if(email.isEmpty() && pass.isEmpty()){
-            startActivity(new Intent(LoginActivity.this, ChecklistActivity.class));
-        }
-        if(email.equals("timetable")){
-            startActivity(new Intent(LoginActivity.this,TimetableActivity.class));
-        }
-        else{
-            startActivity(new Intent(LoginActivity.this, CalendarActivity.class));
-        }
+        startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
+
+
 //        if(isValidEmail(email) && isValidPassword(pass))
 //        {
 //            // Validation Completed

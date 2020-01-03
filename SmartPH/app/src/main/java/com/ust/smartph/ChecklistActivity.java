@@ -19,7 +19,7 @@ public class ChecklistActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_checklist);
 
         //Toolbar
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);

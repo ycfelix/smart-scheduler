@@ -1,6 +1,4 @@
 package com.ust.smartph;
-import android.arch.core.util.Function;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -28,7 +26,7 @@ public class CalendarActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_xiaomi);
+        setContentView(R.layout.activity_calendar);
         ButterKnife.bind(this);
         initView();
         initList();
@@ -72,7 +70,7 @@ public class CalendarActivity extends AppCompatActivity {
             public View getView(View convertView, ViewGroup parentView, CalendarBean bean) {
 
                 if (convertView == null) {
-                    convertView = LayoutInflater.from(parentView.getContext()).inflate(R.layout.item_xiaomi, null);
+                    convertView = LayoutInflater.from(parentView.getContext()).inflate(R.layout.item_calendar, null);
                 }
 
                 TextView chinaText = (TextView) convertView.findViewById(R.id.chinaText);

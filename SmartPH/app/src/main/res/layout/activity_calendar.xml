@@ -14,7 +14,7 @@
         android:layout_height="48dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:background="#cd3636"
+        android:background="@color/colorPrimary"
         >
 
         <ImageView

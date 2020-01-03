@@ -8,8 +8,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
 
-import java.util.Calendar;
-
 import mehdi.sakout.aboutpage.AboutPage;
 import mehdi.sakout.aboutpage.Element;
 public class AboutUsActivity  extends AppCompatActivity {
@@ -25,17 +23,17 @@ public class AboutUsActivity  extends AppCompatActivity {
                 .isRTL(false)
                 .setDescription(getDescription())
                 .setImage(R.drawable.app_name)
-                .addItem(new Element().setTitle("Version 6.2"))
+                .addItem(new Element().setTitle("Version 1.0"))
                 .addItem(adsElement)
                 .addGroup("Connect with us")
-                .addEmail("testemail@gmail.com")
-                .addWebsite("http://medyo.github.io/")
+                .addEmail("cfyauab@connect.ust.hk")
+                .addWebsite("https://github.com/ycfelix")
                 .addFacebook("")
                 .addTwitter("")
-                .addYoutube("UCdPQtdWIsg7_pi4mrRu46vA")
-                .addPlayStore("com.ideashower.readitlater.pro")
-                .addInstagram("medyo80")
-                .addGitHub("medyo")
+                .addYoutube("")
+                .addPlayStore("")
+                .addInstagram("")
+                .addGitHub("")
                 .addItem(getCopyRightsElement())
                 .create();
 
