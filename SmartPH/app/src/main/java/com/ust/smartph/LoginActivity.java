@@ -1,9 +1,11 @@
 package com.ust.smartph;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -29,7 +31,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void forgetPassword(View arg){
-        Toast.makeText(this,"Coming Soon",Toast.LENGTH_LONG).show();
+        final Dialog dialog = new Dialog(LoginActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.forget_password);
+        dialog.show();
     }
 
     public void checkLogin(View arg0) {
