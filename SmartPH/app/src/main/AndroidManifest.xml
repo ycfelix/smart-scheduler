@@ -4,7 +4,11 @@
     android:versionCode="1"
     android:versionName="1.0">
 
-
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -29,6 +33,7 @@
         <service android:name="com.ust.checklist.ReminderService"/>
         <activity android:name=".TimetableActivity"/>
         <activity android:name=".DashboardActivity"/>
+        <activity android:name=".AppUsageStatisticsActivity"/>
     </application>
 
 

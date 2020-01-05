@@ -23,4 +23,6 @@
 
     <!-- Elevation -->
     <dimen name="elevation">4dp</dimen>
+
+    <dimen name="usage_row_height">72dp</dimen>
 </resources>

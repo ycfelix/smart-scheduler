@@ -27,6 +27,10 @@ public class DashboardActivity extends AppCompatActivity {
     public void startChecklist(View arg){
         startActivity(new Intent(this, ChecklistActivity.class));
     }
+    public void startAppUsage(View arg){
+        startActivity(new Intent(this, AppUsageStatisticsActivity.class));
+    }
+
     public void toBeContinue(View arg){
         Toast.makeText(this.getApplicationContext(),"coming soon",Toast.LENGTH_SHORT).show();
     }
