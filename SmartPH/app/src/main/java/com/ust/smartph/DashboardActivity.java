@@ -34,4 +34,7 @@ public class DashboardActivity extends AppCompatActivity {
     public void toBeContinue(View arg){
         Toast.makeText(this.getApplicationContext(),"coming soon",Toast.LENGTH_SHORT).show();
     }
+    public void startFocusMode(View arg){
+        startActivity(new Intent(this, FocusModeActivity.class));
+    }
 }
