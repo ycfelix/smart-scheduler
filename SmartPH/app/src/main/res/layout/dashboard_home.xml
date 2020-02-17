@@ -223,7 +223,7 @@
             android:layout_margin="10dp"
             android:clickable="true"
             android:foreground="?android:attr/selectableItemBackground"
-            android:onClick="startAboutUs">
+            android:onClick="startActionDetection">
 
             <LinearLayout
 
@@ -237,13 +237,13 @@
                     android:layout_height="64dp"
                     android:background="@drawable/color_splotch_selector"
                     android:padding="10dp"
-                    android:src="@drawable/about_us_36" />
+                    android:src="@drawable/action_36" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="About us"
+                    android:text="Action Detection"
                     android:textStyle="bold" />
 
                 <View
@@ -257,7 +257,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:padding="5dp"
-                    android:text="Check about us"
+                    android:text="detect your action"
                     android:textColor="@android:color/darker_gray" />
 
             </LinearLayout>

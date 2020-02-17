@@ -4,7 +4,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.ust.smartph"
-        minSdkVersion 24
+        minSdkVersion 26
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -26,12 +26,13 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:support-media-compat:28.0.0'
+    implementation 'com.android.support:support-v4:28.0.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.jakewharton:butterknife:8.4.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
-    api 'com.android.support:appcompat-v7:28.0.0'
     api 'com.android.support:design:28.0.0'
     api 'com.github.medyo:android-about-page:1.2.5'
     implementation 'com.github.tlaabs:TimetableView:1.0.3-fx1'
@@ -39,4 +40,8 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
     implementation 'com.alibaba:fastjson:1.1.68.android'
     implementation 'com.android.support:recyclerview-v7:28.0.0'
+    implementation 'pl.charmas.android:android-reactive-location:1.0@aar'
+    implementation 'com.google.android.gms:play-services-location:11.0.4' //you can use newer GMS version if you need
+    implementation 'com.google.android.gms:play-services-places:11.0.4'
+    implementation 'io.reactivex:rxandroid:1.1.0'
 }

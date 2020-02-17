@@ -37,4 +37,8 @@ public class DashboardActivity extends AppCompatActivity {
     public void startFocusMode(View arg){
         startActivity(new Intent(this, FocusModeActivity.class));
     }
+
+    public void startActionDetection(View arg){
+        startActivity(new Intent(this, ActionDetectionActivity.class));
+    }
 }
