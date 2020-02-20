@@ -18,6 +18,13 @@ import rx.functions.Action1;
 
 import com.ust.actiondetection.*;
 
+import org.sensingkit.sensingkitlib.SKException;
+import org.sensingkit.sensingkitlib.SKSensorDataListener;
+import org.sensingkit.sensingkitlib.SKSensorModuleType;
+import org.sensingkit.sensingkitlib.SensingKitLib;
+import org.sensingkit.sensingkitlib.SensingKitLibInterface;
+import org.sensingkit.sensingkitlib.data.SKSensorData;
+
 public class ActionDetectionActivity extends AppCompatActivity {
 
     @BindView(R.id.activitiesRecyclerView)
@@ -31,12 +38,19 @@ public class ActionDetectionActivity extends AppCompatActivity {
 
     Unbinder unbinder;
 
+    SensingKitLibInterface mSensingKitLib;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.action_detect_main);
         this.unbinder=ButterKnife.bind(this);
         initRecyclerView();
+        try{
+            initializeSensors();
+            mSensingKitLib.startContinuousSensingWithSensor(SKSensorModuleType.ACCELEROMETER);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
         serviceIntent = ActivityDetectionService.getStartIntent(this);
         startService(serviceIntent);
@@ -66,6 +80,21 @@ public class ActionDetectionActivity extends AppCompatActivity {
         super.onDestroy();
         unbinder.unbind();
     }
+
+    public void initializeSensors() throws SKException {
+        mSensingKitLib = SensingKitLib.getSensingKitLib(this);
+        mSensingKitLib.registerSensorModule(SKSensorModuleType.ACCELEROMETER);
+        mSensingKitLib.registerSensorModule(SKSensorModuleType.GRAVITY);
+        mSensingKitLib.registerSensorModule(SKSensorModuleType.ROTATION);
+        mSensingKitLib.subscribeSensorDataListener(SKSensorModuleType.ACCELEROMETER, new SKSensorDataListener() {
+            @Override
+            public void onDataReceived(final SKSensorModuleType moduleType, final SKSensorData sensorData) {
+                System.out.println(sensorData.getDataInCSV());  // Print data in CSV format
+            }
+        });
+    }
+
+
 
     private ServiceConnection mConnection = new ServiceConnection() {
 
