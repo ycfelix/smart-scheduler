@@ -41,7 +41,7 @@ public class CustomActionDetectionActivity extends AppCompatActivity {
     @BindView(R.id.action_detection_list)
     ListView listView;
 
-    private static ActionDetectionAdaptor adapter;
+    private ActionDetectionAdaptor adapter;
 
     SensingKitLibInterface mSensingKitLib;
 
