@@ -45,7 +45,7 @@
         android:id="@+id/timetable"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:header_highlight_image="@drawable/ic_kitty"
+        app:header_highlight_image="@drawable/button_background"
         app:header_highlight_image_size="36dp"
         app:header_highlight_type="image"
         app:header_title="@array/header_title" />
