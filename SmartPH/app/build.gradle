@@ -42,8 +42,6 @@ dependencies {
     implementation 'com.alibaba:fastjson:1.1.68.android'
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     implementation 'pl.charmas.android:android-reactive-location:1.0@aar'
-
-    //you can use newer GMS version if you need
     implementation 'io.reactivex:rxandroid:1.1.0'
     implementation 'org.sensingkit:SensingKitLib-release@aar'
     implementation 'com.google.android.gms:play-services:11.0.4'

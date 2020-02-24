@@ -17,43 +17,29 @@ import com.ust.timetable.EditActivity;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class TimetableActivity extends AppCompatActivity implements View.OnClickListener  {
     private Context context;
     public static final int REQUEST_ADD = 1;
     public static final int REQUEST_EDIT = 2;
 
-    private Button addBtn;
-    private Button clearBtn;
-    private Button saveBtn;
-    private Button loadBtn;
-
+    @BindView(R.id.timetable)
     private TimetableView timetable;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timetable);
-
-        init();
-    }
-
-    private void init(){
+        ButterKnife.bind(TimetableActivity.this);
         this.context = this;
-        addBtn = findViewById(R.id.add_btn);
-        clearBtn = findViewById(R.id.clear_btn);
-        saveBtn = findViewById(R.id.save_btn);
-        loadBtn = findViewById(R.id.load_btn);
-
-        timetable = findViewById(R.id.timetable);
         timetable.setHeaderHighlight(2);
         initView();
     }
 
     private void initView(){
-        addBtn.setOnClickListener(this);
-        clearBtn.setOnClickListener(this);
-        saveBtn.setOnClickListener(this);
-        loadBtn.setOnClickListener(this);
-
         timetable.setOnStickerSelectEventListener(new TimetableView.OnStickerSelectedListener() {
             @Override
             public void OnStickerSelected(int idx, ArrayList<Schedule> schedules) {
@@ -67,6 +53,7 @@ public class TimetableActivity extends AppCompatActivity implements View.OnClick
     }
 
     @Override
+    @OnClick({R.id.add_btn,R.id.clear_btn,R.id.save_btn,R.id.load_btn})
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.add_btn:
