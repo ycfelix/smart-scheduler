@@ -1,12 +1,15 @@
 package com.ust.smartph;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -27,7 +30,9 @@ public class TimetableActivity extends AppCompatActivity implements View.OnClick
     public static final int REQUEST_EDIT = 2;
 
     @BindView(R.id.timetable)
-    private TimetableView timetable;
+    TimetableView timetable;
+
+    String fileName=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +60,8 @@ public class TimetableActivity extends AppCompatActivity implements View.OnClick
     @Override
     @OnClick({R.id.add_btn,R.id.clear_btn,R.id.save_btn,R.id.load_btn})
     public void onClick(View v) {
+        //very disgusting method to solve getting data from async view
+        showSaveOption(v.getId());
         switch (v.getId()){
             case R.id.add_btn:
                 Intent i = new Intent(this,EditActivity.class);
@@ -64,11 +71,7 @@ public class TimetableActivity extends AppCompatActivity implements View.OnClick
             case R.id.clear_btn:
                 timetable.removeAll();
                 break;
-            case R.id.save_btn:
-                saveByPreference(timetable.createSaveData());
-                break;
-            case R.id.load_btn:
-                loadSavedData();
+           default:
                 break;
         }
     }
@@ -98,22 +101,57 @@ public class TimetableActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
+    private void showSaveOption(int buttonID){
+        String[] saveOptions = {"test_1","test_2","test_3","timetable_demo"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("SharedPref names");
+        builder.setItems(saveOptions, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if(which!=-1){
+                    TimetableActivity.this.fileName=saveOptions[which];
+                    switch (buttonID){
+                        case R.id.save_btn:
+                            saveByPreference(timetable.createSaveData());
+                            break;
+                        case R.id.load_btn:
+                            loadSavedData();
+                            break;
+                        default:break;
+                    }
+                }
+                else{
+                    Log.e("","which is -1!");
+                }
+            }
+        });
+        builder.show();
+    }
+
     /** save timetableView's data to SharedPreferences in json format */
     private void saveByPreference(String data){
         SharedPreferences mPref = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = mPref.edit();
-        editor.putString("timetable_demo",data);
+        editor.putString(this.fileName,data);
+        Log.d("json data",data);
         editor.commit();
         Toast.makeText(this,"saved!",Toast.LENGTH_SHORT).show();
     }
 
     /** get json data from SharedPreferences and then restore the timetable */
     private void loadSavedData(){
-        timetable.removeAll();
         SharedPreferences mPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String savedData = mPref.getString("timetable_demo","");
-        if(savedData == null && savedData.equals("")) return;
+        String savedData = mPref.getString(this.fileName,"");
+        if(savedData == null || savedData.equals("")) {
+            Toast.makeText(this,"wrong",Toast.LENGTH_LONG).show();
+            return;
+        }
         timetable.load(savedData);
         Toast.makeText(this,"loaded!",Toast.LENGTH_SHORT).show();
     }
+
+    private ArrayList<Schedule> getMatchTimetable(ArrayList<Schedule> t1,ArrayList<Schedule> t2){
+        return null;
+    }
+
 }
