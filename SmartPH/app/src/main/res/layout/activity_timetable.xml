@@ -39,6 +39,12 @@
             android:layout_height="wrap_content"
             android:text="Clear" />
 
+        <Button
+            android:id="@+id/match_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Match" />
+
     </LinearLayout>
 
     <com.github.tlaabs.timetableview.TimetableView
