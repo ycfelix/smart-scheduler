@@ -47,6 +47,7 @@ public class TimetableActivity extends AppCompatActivity implements View.OnClick
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(now);
         timetable.setHeaderHighlight(calendar.get(Calendar.DAY_OF_WEEK));
+        //TODO 1: Load default timetable
         initView();
     }
 
@@ -125,6 +126,7 @@ public class TimetableActivity extends AppCompatActivity implements View.OnClick
                             loadSavedData();
                             break;
                         case R.id.match_btn:
+                            //TODO 2: use a new activity to display timetable
                             matchTimeTable();
                         default:
                             break;
@@ -137,6 +139,7 @@ public class TimetableActivity extends AppCompatActivity implements View.OnClick
         builder.show();
     }
 
+    // vanilla timetable matching function
     private void matchTimeTable() {
         ArrayList<Schedule> now = new ArrayList<>(timetable.getAllSchedulesInStickers());
         now.forEach(e-> Log.d("",String.format("day is %d start hr %d",e.getDay(),e.getStartTime().getHour())));
