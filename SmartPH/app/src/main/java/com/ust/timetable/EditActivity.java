@@ -4,9 +4,11 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -19,51 +21,58 @@ import com.ust.smartph.TimetableActivity;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+
 public class EditActivity extends AppCompatActivity implements View.OnClickListener {
     public static final int RESULT_OK_ADD = 1;
     public static final int RESULT_OK_EDIT = 2;
     public static final int RESULT_OK_DELETE = 3;
 
-    private Context context;
 
-    private Button deleteBtn;
-    private Button submitBtn;
-    private EditText subjectEdit;
-    private EditText classroomEdit;
-    private EditText professorEdit;
-    private Spinner daySpinner;
-    private TextView startTv;
-    private TextView endTv;
+    @BindView(R.id.delete_btn)
+    Button deleteBtn;
+
+    @BindView(R.id.submit_btn)
+    Button submitBtn;
+
+    @BindView(R.id.subject_edit)
+    EditText subjectEdit;
+
+    @BindView(R.id.classroom_edit)
+    EditText classroomEdit;
+
+    @BindView(R.id.professor_edit)
+    EditText professorEdit;
+
+    @BindView(R.id.day_spinner)
+    Spinner daySpinner;
+
+    @BindView(R.id.start_time)
+    TextView startTv;
+
+    @BindView(R.id.end_time)
+    TextView endTv;
 
     //request mode
     private int mode;
 
     private Schedule schedule;
+
     private int editIdx;
+
+    {
+        schedule = new Schedule();
+        schedule.setStartTime(new Time(10,0));
+        schedule.setEndTime(new Time(13,30));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
-        init();
-    }
-
-    private void init(){
-        this.context = this;
-        deleteBtn = findViewById(R.id.delete_btn);
-        submitBtn = findViewById(R.id.submit_btn);
-        subjectEdit = findViewById(R.id.subject_edit);
-        classroomEdit = findViewById(R.id.classroom_edit);
-        professorEdit = findViewById(R.id.professor_edit);
-        daySpinner = findViewById(R.id.day_spinner);
-        startTv = findViewById(R.id.start_time);
-        endTv = findViewById(R.id.end_time);
-
-        //set the default time
-        schedule = new Schedule();
-        schedule.setStartTime(new Time(10,0));
-        schedule.setEndTime(new Time(13,30));
-
+        ButterKnife.bind(this);
         checkMode();
         initView();
     }
@@ -72,12 +81,13 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
     private void checkMode(){
         Intent i = getIntent();
         mode = i.getIntExtra("mode", TimetableActivity.REQUEST_ADD);
-
+        editIdx=i.getIntExtra("idx",-1);
         if(mode == TimetableActivity.REQUEST_EDIT){
             loadScheduleData();
             deleteBtn.setVisibility(View.VISIBLE);
         }
     }
+
     private void initView(){
         submitBtn.setOnClickListener(this);
         deleteBtn.setOnClickListener(this);
@@ -86,17 +96,21 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 schedule.setDay(position);
+                ((TextView)daySpinner.getSelectedView()).setTextColor(
+                        ContextCompat.getColor(EditActivity.this,R.color.primary_text_color));
+                ((TextView)daySpinner.getSelectedView()).
+                        setText(parent.getItemAtPosition(position).toString());
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
+
         startTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TimePickerDialog dialog = new TimePickerDialog(context,listener,schedule.getStartTime().getHour(), schedule.getStartTime().getMinute(), false);
+                TimePickerDialog dialog = new TimePickerDialog(EditActivity.this,listener,schedule.getStartTime().getHour(), schedule.getStartTime().getMinute(), false);
                 dialog.show();
             }
 
@@ -112,7 +126,7 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
         endTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TimePickerDialog dialog = new TimePickerDialog(context,listener,schedule.getEndTime().getHour(), schedule.getEndTime().getMinute(), false);
+                TimePickerDialog dialog = new TimePickerDialog(EditActivity.this,listener,schedule.getEndTime().getHour(), schedule.getEndTime().getMinute(), false);
                 dialog.show();
             }
 

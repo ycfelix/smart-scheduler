@@ -12,7 +12,8 @@
         android:background="@color/colorPrimary"
         android:elevation="@dimen/imageView_icon_margin"
         android:minHeight="?attr/actionBarSize"
-        android:theme="@style/ToolbarTheme"></android.support.v7.widget.Toolbar>
+        android:theme="@style/ToolbarTheme">
+    </android.support.v7.widget.Toolbar>
 
     <FrameLayout
         android:id="@+id/fragment_container"

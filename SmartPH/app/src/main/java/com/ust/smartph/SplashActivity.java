@@ -13,7 +13,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void run() {
                 long begin=System.currentTimeMillis();
-                while (!canSwitch(begin,5000));
+                while (!canSwitch(begin,2000));
                 startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                 finish();
             }
