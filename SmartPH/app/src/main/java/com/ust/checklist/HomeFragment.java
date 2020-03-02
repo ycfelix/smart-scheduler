@@ -1,10 +1,14 @@
 package com.ust.checklist;
 
 import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.ActionMode;
@@ -19,8 +23,13 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.ust.smartph.R;
+
 /**
  * Created by Jordan on 12/29/2015.
  *
@@ -32,7 +41,7 @@ public class HomeFragment extends Fragment
 {
     private List<Item> items;
     private ListView mListView;
-
+    private ItemListAdapter adapter;
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -64,7 +73,7 @@ public class HomeFragment extends Fragment
         View v = inflater.inflate(R.layout.fragment_checklist,parent,false);
 
         //Configure listview.
-        ItemListAdapter adapter = new ItemListAdapter(getContext(),items);
+        adapter = new ItemListAdapter(getContext(),items);
         mListView = (ListView)v.findViewById(R.id.item_listView);
 
         //Set the view to show if list is empty.
@@ -208,10 +217,62 @@ public class HomeFragment extends Fragment
                 ft.replace(R.id.fragment_container,newFragment);
                 ft.commit();
                 return true;
+            case R.id.import_menu_item:
+                checklistIO(true);
+                return true;
+            case R.id.export_menu_item:
+                checklistIO(false);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    //IO=false if export, true if import
+    private void checklistIO(boolean IO){
+        String[] saveOptions = {"item1", "item2", "item3"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("checklist name");
+        builder.setItems(saveOptions, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which != -1) {
+                    Gson gson = new Gson();
+                    SharedPreferences mPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                    if(IO){
+                        String savedItem = mPref.getString(saveOptions[which], "");
+                        if(savedItem==null||savedItem.isEmpty()) System.out.println("file not found");
+                        List<Item> items=gson.fromJson(savedItem,new TypeToken<List<Item>>(){}.getType());
+                        DatabaseHandler db = new DatabaseHandler(getActivity());
+                        items.forEach(e->{
+                            int tempid = (int)db.addItem(e);
+                            //Set the db id for the item.
+                            e.setId(tempid);
+                            //Add to CheckList.
+                            CheckList.get(getActivity()).addItem(e);
+                        });
+                        adapter.notifyDataSetChanged();
+                        /*
+                          TODO :
+                         * load group checklist to separate checklist fragment and save it to another DB.table
+                         * current implementation is for personal checklist only which will addAll to
+                         * the your own checklist. Require checklist selection UI from file sys.
+                         *
+                         *
+                        */
+                    }else{
+                        String data=gson.toJson(CheckList.get(getActivity()).getCheckList());
+                        SharedPreferences.Editor editor = mPref.edit();
+                        editor.putString(saveOptions[which], data);
+                        editor.commit();
+                    }
+                }
+            }
+        });
+        builder.show();
+    }
+
+
 
     //Close the keyboard if open.
     public static void hideKeyboard(Activity activity)

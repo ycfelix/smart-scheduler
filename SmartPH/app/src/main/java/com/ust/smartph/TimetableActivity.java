@@ -1,6 +1,5 @@
 package com.ust.smartph;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,8 +10,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.github.tlaabs.timetableview.Schedule;
@@ -20,10 +17,10 @@ import com.github.tlaabs.timetableview.Time;
 import com.github.tlaabs.timetableview.TimetableView;
 import com.ust.timetable.EditActivity;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.stream.Collectors;
+import java.time.DayOfWeek;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,12 +40,10 @@ public class TimetableActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timetable);
         ButterKnife.bind(TimetableActivity.this);
-        Date now = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(now);
-        timetable.setHeaderHighlight(calendar.get(Calendar.DAY_OF_WEEK));
+        int now=DayOfWeek.from(LocalDate.now()).getValue()%5+1;
         //TODO 1: Load default timetable
         initView();
+        timetable.setHeaderHighlight(now);
     }
 
     private void initView() {

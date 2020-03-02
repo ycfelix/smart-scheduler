@@ -13,7 +13,7 @@ import com.ust.smartph.R;
  */
 public class CheckList
 {
-    private static CheckList sCheckList;
+    private static CheckList instance;
     private Context mAppContext;
     private List<Item> mList;
     private Map<String, Drawable> mIcons;
@@ -45,18 +45,20 @@ public class CheckList
 
     public static CheckList get(Context c)
     {
-        if(sCheckList == null)
+        if(instance == null)
         {
-            sCheckList = new CheckList(c.getApplicationContext());
+            instance = new CheckList(c.getApplicationContext());
         }
-        return sCheckList;
+        return instance;
     }
 
     public List<Item> getCheckList()
     {
         return mList;
     }
-
+    public void setCheckList(List<Item> list) {
+        mList=list;
+    }
     public Item getListItem(int itemId)
     {
         for(Item i : mList)
@@ -68,6 +70,7 @@ public class CheckList
         }
         return null;
     }
+
 
     public void addItem(Item newItem)
     {
