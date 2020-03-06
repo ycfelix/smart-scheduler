@@ -45,6 +45,7 @@
         <activity android:name=".AppUsageStatisticsActivity"/>
         <activity android:name=".FocusModeActivity"/>
         <activity android:name=".ActionDetectionActivity"/>
+        <activity android:name=".AppUsageHomeActivity"/>
         <activity android:name=".CustomActionDetectionActivity"/>
         <activity android:name="com.ust.timetable.EditActivity"/>
         <service android:name="com.ust.focusmode.StudyModeService"

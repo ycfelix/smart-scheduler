@@ -2,8 +2,6 @@ package com.ust.smartph;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
@@ -28,7 +26,7 @@ public class DashboardActivity extends AppCompatActivity {
         startActivity(new Intent(this, ChecklistActivity.class));
     }
     public void startAppUsage(View arg){
-        startActivity(new Intent(this, AppUsageStatisticsActivity.class));
+        startActivity(new Intent(this, AppUsageHomeActivity.class));
     }
 
     public void toBeContinue(View arg){
