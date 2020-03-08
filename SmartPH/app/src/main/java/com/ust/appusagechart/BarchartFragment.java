@@ -1,34 +1,44 @@
 package com.ust.appusagechart;
 
+import android.app.AlertDialog;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.listener.ChartTouchListener;
+import com.github.mikephil.charting.listener.OnChartGestureListener;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.model.GradientColor;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.ust.smartph.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class BarchartFragment extends Fragment {
+public class BarchartFragment extends Fragment{
 
     @BindView(R.id.usage_barchart)
     BarChart chart;
@@ -36,6 +46,13 @@ public class BarchartFragment extends Fragment {
     ArrayList<AppInfo> showList;
 
     private Unbinder unbinder;
+
+    private XAxis xAxis;
+
+    private YAxis leftAxis;
+
+    private YAxis rightAxis;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -59,7 +76,7 @@ public class BarchartFragment extends Fragment {
         chart.setDoubleTapToZoomEnabled(false);
 
 
-        XAxis xAxis = chart.getXAxis();
+        xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
         xAxis.setLabelCount(7);
@@ -73,9 +90,11 @@ public class BarchartFragment extends Fragment {
                 if(showList.size()<=(int)(value)) return "";
                 if((int)(value)>=6) return "others";
                 String name=showList.get((int)(value)).getLabel();
+                if(name==null) return "null";
                 return name.length()<=4?name:name.substring(0,3)+"...";
             }
         });
+
 
         ValueFormatter custom=new ValueFormatter() {
             @Override
@@ -83,14 +102,14 @@ public class BarchartFragment extends Fragment {
                 return (int) value + " min";
             }
         };
-        YAxis leftAxis = chart.getAxisLeft();
+        leftAxis = chart.getAxisLeft();
         leftAxis.setLabelCount(8, false);
         leftAxis.setValueFormatter(custom);
         leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
         leftAxis.setSpaceTop(15f);
         leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
 
-        YAxis rightAxis = chart.getAxisRight();
+        rightAxis = chart.getAxisRight();
         rightAxis.setDrawGridLines(false);
         rightAxis.setLabelCount(8, false);
         rightAxis.setValueFormatter(custom);
@@ -110,11 +129,36 @@ public class BarchartFragment extends Fragment {
         l.setTextSize(11f);
         l.setXEntrySpace(4f);
 
-        MarkerView mv = new CustomMarkerView(getActivity());
-        mv.setChartView(chart); // For bounds control
-        chart.setMarker(mv); // Set the marker to the chart
-
         setDataBarChart();
+        chart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                AppInfo info=showList.get((int)e.getX());
+                AlertDialog.Builder dialog=new AlertDialog.Builder(getActivity());
+                dialog.setIcon(info.getDrawableIcon());
+                dialog.setTitle("App usage details");
+                String msg=String.format("App %s \nOpened %d times Used %d mins today",
+                        info.getLabel(),info.getTimes(),(int)e.getY());
+                dialog.setMessage(msg);
+                final AlertDialog alert = dialog.create();
+                alert.show();
+                new CountDownTimer(3000, 1000) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                    }
+                    @Override
+                    public void onFinish() {
+                        alert.dismiss();
+                    }
+                }.start();
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
+
         return  root;
     }
     private void setDataBarChart() {
@@ -147,8 +191,8 @@ public class BarchartFragment extends Fragment {
             chart.notifyDataSetChanged();
         } else {
             set1 = new BarDataSet(yVals1, "Different APPs");
-            set1.setColors(ColorTemplate.MATERIAL_COLORS);
-
+            //set1.setColors(ColorTemplate.MATERIAL_COLORS);
+            set1.setGradientColors(generateColor(ColorTemplate.JOYFUL_COLORS));
             ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
             dataSets.add(set1);
 
@@ -160,9 +204,18 @@ public class BarchartFragment extends Fragment {
         }
         chart.invalidate();
     }
+
+    private ArrayList<GradientColor> generateColor(int[] colors){
+        ArrayList<GradientColor> result=new ArrayList<>();
+        Arrays.stream(colors).forEach(e->result.add(new GradientColor(Color.WHITE,e)));
+        return result;
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
     }
+
+
 }

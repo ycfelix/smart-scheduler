@@ -2,12 +2,18 @@ package com.ust.smartph;
 
 
 import android.Manifest;
+import android.app.AppOpsManager;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -57,31 +63,21 @@ public class AppUsageHomeActivity extends AppCompatActivity {
         for(int i=0;i<titles.length;i++){
             Objects.requireNonNull(chartTab.getTabAt(i)).setText(titles[i]);
         }
-        checkPermission();
-    }
-
-    private void checkPermission(){
-        if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.PACKAGE_USAGE_STATS)){
-                }
-        else {
-            Toast.makeText(this, "Permission Required!", Toast.LENGTH_SHORT)
-                    .show();
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.PACKAGE_USAGE_STATS}, PERMISSION_USAGE);
-
-        }
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == PERMISSION_USAGE) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(getApplicationContext(), "usage success!", Toast.LENGTH_SHORT)
-                        .show();
-            } else {
-                Toast.makeText(getApplicationContext(), "usage FAILED!", Toast.LENGTH_SHORT)
-                        .show();
+        try {
+            if(!isStatAccessPermissionSet(this)){
+                startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
             }
+        } catch (PackageManager.NameNotFoundException e) {
+            System.out.println("cannot get permission");
         }
+    }
+
+    private boolean isStatAccessPermissionSet(Context c) throws PackageManager.NameNotFoundException {
+        PackageManager pm = c.getPackageManager();
+        ApplicationInfo info = pm.getApplicationInfo(c.getPackageName(),0);
+        AppOpsManager aom = (AppOpsManager) c.getSystemService(Context.APP_OPS_SERVICE);
+        aom.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,info.uid,info.packageName);
+        return aom.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,info.uid,info.packageName)
+                == AppOpsManager.MODE_ALLOWED;
     }
 }

@@ -1,6 +1,5 @@
 package com.ust.appusagechart;
 
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,14 +11,19 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.ust.smartph.R;
 
 import org.qap.ctimelineview.TimelineRow;
 import org.qap.ctimelineview.TimelineViewAdapter;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,48 +37,63 @@ public class TimelineFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.app_usage_timeline, container, false);
-        // Create Timeline rows List
-        ArrayList<TimelineRow> timelineRowsList = new ArrayList<>();
+
         ButterKnife.bind(this,root);
-        // Create new timeline row (Row Id)
-        TimelineRow myRow = new TimelineRow(0);
 
-        // To set the row Date (optional)
-        myRow.setDate(new Date());
-        // To set the row Title (optional)
-        myRow.setTitle("Title");
-        // To set the row Description (optional)
-        myRow.setDescription("Description");
-        // To set the row bitmap image (optional)
-        myRow.setImage(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
-        // To set row Below Line Color (optional)
-        myRow.setBellowLineColor(Color.argb(255, 0, 0, 0));
-        // To set row Below Line Size in dp (optional)
-        myRow.setBellowLineSize(6);
-        // To set row Image Size in dp (optional)
-        myRow.setImageSize(40);
-        // To set background color of the row image (optional)
-        myRow.setBackgroundColor(Color.argb(255, 0, 0, 0));
-        // To set the Background Size of the row image in dp (optional)
-        myRow.setBackgroundSize(60);
-        // To set row Date text color (optional)
-        myRow.setDateColor(Color.argb(255, 0, 0, 0));
-        // To set row Title text color (optional)
-        myRow.setTitleColor(Color.argb(255, 0, 0, 0));
-        // To set row Description text color (optional)
-        myRow.setDescriptionColor(Color.argb(255, 0, 0, 0));
-
-// Add the new row to the list
-        timelineRowsList.add(myRow);
-
-// Create the Timeline Adapter
-        ArrayAdapter<TimelineRow> myAdapter = new TimelineViewAdapter(getContext(), 0, timelineRowsList,
-                //if true, list will be sorted by date
+        ArrayAdapter<TimelineRow> myAdapter = new TimelineViewAdapter(getContext(), 0, generateRows(),
                 false);
-
-// Get the ListView and Bind it with the Timeline Adapter
         timeline.setAdapter(myAdapter);
-
         return root;
+    }
+
+    private  ArrayList<TimelineRow> generateRows(){
+        ArrayList<TimelineRow> result=new ArrayList<>();
+        AppUsageInfo statisticsInfo = new AppUsageInfo(getActivity(),AppUsageInfo.DAY);
+        ArrayList<AppInfo> showList = (ArrayList<AppInfo>) statisticsInfo.getShowList();
+
+        Collections.sort(showList, new Comparator<AppInfo>() {
+            @Override
+            public int compare(AppInfo o1, AppInfo o2) {
+                return new Date(o1.getLastUsedTime()).compareTo(new Date(o2.getLastUsedTime()));
+            }
+        });
+        for(int i=1;i<showList.size();i++){//hardcoded to remove the first item(useless)
+            result.add(generateRow(i,showList.get(i)));
+        }
+        return result;
+    }
+
+
+
+
+
+    private TimelineRow generateRow(int id,AppInfo appinfo){
+
+        Date date=new Date(appinfo.getLastUsedTime());
+        TimelineRow myRow = new TimelineRow(id);
+        myRow.setDate(date);
+        myRow.setTitle(appinfo.getLabel());
+
+        DateFormat dateFormat = new SimpleDateFormat("MMM-dd hh:mm:ss");
+        String strDate = dateFormat.format(date);
+        String description=String.format("Open at: %s \nUsed %d times today",strDate,appinfo.getTimes());
+        myRow.setDescription(description);
+        myRow.setImage(appinfo.getAppIcon());
+
+        Random rand=new Random();
+        myRow.setBellowLineColor(ColorTemplate.PASTEL_COLORS[rand.nextInt(ColorTemplate.PASTEL_COLORS.length)]);
+
+        myRow.setBellowLineSize(3);
+        myRow.setImageSize(40);
+        myRow.setDateColor(Color.argb(255, 0, 0, 0));
+        myRow.setTitleColor(Color.argb(255, 14, 77, 87));
+        myRow.setDescriptionColor(Color.argb(255, 0, 0, 0));
+        return myRow;
+    }
+
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 }

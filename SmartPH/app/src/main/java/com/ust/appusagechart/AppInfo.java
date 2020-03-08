@@ -4,6 +4,9 @@ import android.app.usage.UsageStats;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.os.SystemClock;
 
@@ -11,10 +14,15 @@ public class AppInfo {
     private UsageStats usageStats;
     private String packageName;
     private String label;
-    private Drawable Icon;
     private long UsedTimebyDay;  //milliseconds
     private Context context;
     private int times;
+    private long appBeginTime;
+    private long appEndTime;
+    private Bitmap appIcon;
+    private Drawable drawableIcon;
+    private long lastUsedTime;
+
 
 
     public AppInfo(UsageStats usageStats, Context context) {
@@ -24,9 +32,25 @@ public class AppInfo {
         try {
             GenerateInfo();
         } catch (PackageManager.NameNotFoundException | IllegalAccessException | NoSuchFieldException e) {
-            e.printStackTrace();
+            System.out.println("package not found");
         }
     }
+
+    public static Bitmap drawableToBitmap(Drawable drawable) {
+
+        int w = drawable.getIntrinsicWidth();
+        int h = drawable.getIntrinsicHeight();
+        Bitmap.Config config =
+                drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
+                        : Bitmap.Config.RGB_565;
+        Bitmap bitmap = Bitmap.createBitmap(w, h, config);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, w, h);
+        drawable.draw(canvas);
+        return bitmap;
+    }
+
+
 
     private void GenerateInfo() throws PackageManager.NameNotFoundException, NoSuchFieldException, IllegalAccessException {
         PackageManager packageManager = context.getPackageManager();
@@ -36,11 +60,30 @@ public class AppInfo {
             this.label = (String) packageManager.getApplicationLabel(applicationInfo);
             this.UsedTimebyDay = usageStats.getTotalTimeInForeground();
             this.times = (Integer) usageStats.getClass().getDeclaredField("mLaunchCount").get(usageStats);
-
+            this.appBeginTime=usageStats.getFirstTimeStamp();
+            this.appEndTime=usageStats.getLastTimeStamp();
             if (this.UsedTimebyDay > 0) {
-                this.Icon = applicationInfo.loadIcon(packageManager);
+                this.drawableIcon=applicationInfo.loadIcon(packageManager);
+                this.appIcon=drawableToBitmap(this.drawableIcon);
             }
+            this.lastUsedTime=usageStats.getLastTimeUsed();
         }
+    }
+
+    public long getLastUsedTime() {
+        return lastUsedTime;
+    }
+
+    public Drawable getDrawableIcon() {
+        return drawableIcon;
+    }
+
+    public long getAppEndTime() {
+        return appEndTime;
+    }
+
+    public long getAppBeginTime() {
+        return appBeginTime;
     }
 
     public UsageStats getUsageStats() {
@@ -59,8 +102,8 @@ public class AppInfo {
         this.UsedTimebyDay = usedTimebyDay;
     }
 
-    public Drawable getIcon() {
-        return Icon;
+    public Bitmap getAppIcon() {
+        return appIcon;
     }
 
     public long getUsedTimebyDay() {

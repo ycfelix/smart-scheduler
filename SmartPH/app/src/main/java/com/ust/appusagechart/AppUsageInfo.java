@@ -34,7 +34,7 @@ public class AppUsageInfo {
             setShowList();
 
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            System.out.println("name not found");
         }
     }
 
@@ -46,6 +46,8 @@ public class AppUsageInfo {
 
         for (int i = 0; i < AppInfoList.size(); i++) {
             if (AppInfoList.get(i).getUsedTimebyDay() > 0) { //&& AppInfoList.get(i).getTimes() > 0) {
+                //dont add those without name
+                if(AppInfoList.get(i).getLabel()==null||AppInfoList.get(i).getLabel().isEmpty()) continue;
 
                 this.ShowList.add(AppInfoList.get(i));
                 totalTime += AppInfoList.get(i).getUsedTimebyDay();
@@ -76,7 +78,7 @@ public class AppUsageInfo {
             long now = calendar.getTimeInMillis();
             long begintime = getBeginTime();
             if (style == DAY) {
-                this.result = m.queryUsageStats(UsageStatsManager.INTERVAL_BEST, begintime, now);
+                this.result = m.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, begintime, now);
                 AppInfoList = getAccurateDailyStatsList(context, result, m, begintime, now);
             }
             else {

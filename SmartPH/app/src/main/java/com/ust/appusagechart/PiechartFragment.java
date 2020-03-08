@@ -74,11 +74,14 @@ public class PiechartFragment extends Fragment {
         l.setOrientation(Legend.LegendOrientation.VERTICAL);
         l.setDrawInside(false);
         l.setEnabled(false);
+        l.setTextColor(Color.BLACK);
 
         return root;
     }
 
     private void setData(int style) {
+
+        //TODO: wrong pkg info if deleted
         AppUsageInfo statisticsInfo = new AppUsageInfo(getActivity(),style);
 
         ArrayList<AppInfo> ShowList = statisticsInfo.getShowList();
@@ -116,7 +119,8 @@ public class PiechartFragment extends Fragment {
                 entries.add(new PieEntry((float)otherTime, "other app"));
         }
 
-        PieDataSet dataSet = new PieDataSet(entries, "Election Results");
+        entries.forEach(e-> System.out.println(e.getLabel()));
+        PieDataSet dataSet = new PieDataSet(entries, "Results");
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
 
@@ -158,6 +162,8 @@ public class PiechartFragment extends Fragment {
         chart.setData(data);
         // undo all highlights
         chart.highlightValues(null);
+        chart.setEntryLabelColor(Color.BLACK);
         chart.invalidate();
+
     }
 }
