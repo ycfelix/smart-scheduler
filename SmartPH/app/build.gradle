@@ -46,4 +46,6 @@ dependencies {
     implementation 'org.sensingkit:SensingKitLib-release@aar'
     implementation 'com.google.android.gms:play-services:11.0.4'
     implementation 'org.jetbrains:annotations:16.0.2'
+    implementation 'com.github.qapqap:TimelineView:v1.6'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }
