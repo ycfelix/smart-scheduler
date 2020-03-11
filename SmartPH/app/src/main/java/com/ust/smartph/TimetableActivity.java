@@ -36,8 +36,6 @@ public class TimetableActivity extends AppCompatActivity implements View.OnClick
     @BindView(R.id.timetable)
     TimetableView timetable;
 
-    @BindView(R.id.timetable_toolbar)
-    Toolbar toolbar;
 
     String fileName;
 
@@ -52,8 +50,7 @@ public class TimetableActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timetable);
         ButterKnife.bind(TimetableActivity.this);
-        setSupportActionBar(toolbar);
-        int now=DayOfWeek.from(LocalDate.now()).getValue()%5+1;
+        int now=DayOfWeek.from(LocalDate.now()).getValue();
         //TODO 1: Load default timetable
         initView();
     }
