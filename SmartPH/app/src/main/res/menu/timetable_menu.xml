@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/timetable_delete"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="delete"
+        app:showAsAction="ifRoom"
+        />
+
+    <item
+        android:id="@+id/timetable_import"
+        android:title="import" />
+
+    <item
+        android:id="@+id/timetable_export"
+        android:title="export" />
+
+</menu>

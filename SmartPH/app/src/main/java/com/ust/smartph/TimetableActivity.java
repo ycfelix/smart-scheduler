@@ -8,7 +8,10 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -33,17 +36,26 @@ public class TimetableActivity extends AppCompatActivity implements View.OnClick
     @BindView(R.id.timetable)
     TimetableView timetable;
 
+    @BindView(R.id.timetable_toolbar)
+    Toolbar toolbar;
+
     String fileName;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.timetable_menu,menu);
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timetable);
         ButterKnife.bind(TimetableActivity.this);
+        setSupportActionBar(toolbar);
         int now=DayOfWeek.from(LocalDate.now()).getValue()%5+1;
         //TODO 1: Load default timetable
         initView();
-        timetable.setHeaderHighlight(now);
     }
 
     private void initView() {
@@ -58,6 +70,13 @@ public class TimetableActivity extends AppCompatActivity implements View.OnClick
                 startActivityForResult(i, REQUEST_EDIT);
             }
         });
+    }
+
+    private void setToolbarItems(){
+        Menu menu=toolbar.getMenu();
+        for(int i=0;i<menu.size();i++){
+            System.out.println(menu.getItem(i).getTitle());
+        }
     }
 
     @Override
@@ -153,7 +172,7 @@ public class TimetableActivity extends AppCompatActivity implements View.OnClick
         SharedPreferences.Editor editor = mPref.edit();
         editor.putString(this.fileName, data);
         Log.d("json data", data);
-        editor.commit();
+        editor.apply();
         Toast.makeText(this, "saved!", Toast.LENGTH_SHORT).show();
     }
 
