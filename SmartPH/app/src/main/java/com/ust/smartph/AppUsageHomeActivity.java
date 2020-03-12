@@ -41,8 +41,6 @@ public class AppUsageHomeActivity extends AppCompatActivity {
     @BindView(R.id.chart_tab)
     TabLayout chartTab;
 
-    private static final int PERMISSION_USAGE = 0;
-
     private String[] titles={"Piechart","Timeline","barchart"};
 
     @Override

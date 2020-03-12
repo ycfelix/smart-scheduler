@@ -4,26 +4,15 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <com.github.tlaabs.timetableview.TimetableView
-        android:id="@+id/timetable_thursun"
+        android:id="@+id/timetable_thrsun"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:forceHasOverlappingRendering="true"
-        app:column_count="4"
+        app:column_count="5"
         app:header_highlight_image="@drawable/button_background"
         app:header_highlight_image_size="36dp"
         app:header_highlight_type="image"
-        app:header_title="@array/header_title"
+        app:header_title="@array/thr_sun"
         app:row_count="25"
         app:start_time="0"/>
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/timetable_thursun_add_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="20dp"
-        android:clickable="true"
-        android:src="@drawable/add_50"
-        app:layout_anchorGravity="bottom|right|end"
-        app:useCompatPadding="true" />
 </RelativeLayout>
