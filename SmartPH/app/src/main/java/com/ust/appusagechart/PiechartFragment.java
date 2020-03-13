@@ -81,7 +81,6 @@ public class PiechartFragment extends Fragment {
 
     private void setData(int style) {
 
-        //TODO: wrong pkg info if deleted
         AppUsageInfo statisticsInfo = new AppUsageInfo(getActivity(),style);
 
         ArrayList<AppInfo> ShowList = statisticsInfo.getShowList();

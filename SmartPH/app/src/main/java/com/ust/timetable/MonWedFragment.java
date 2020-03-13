@@ -43,6 +43,8 @@ public class MonWedFragment extends BaseTimetable {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.timetable_monwed, container, false);
+        PREF_MON_WED=getActivity().getClass().getSimpleName().contains("GroupTimetableActivity")?
+                "group_monwed":"personal_monwed";
         unbinder = ButterKnife.bind(this, root);
         loadTimetable();
         timetable.setOnStickerSelectEventListener(new TimetableView.OnStickerSelectedListener() {

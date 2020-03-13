@@ -35,6 +35,8 @@ public class ThrSunFragment extends BaseTimetable {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.timetable_thursun, container, false);
         unbinder = ButterKnife.bind(this, root);
+        PREF_THR_SUN=getActivity().getClass().getSimpleName().contains("GroupTimetableActivity")?
+                "group_thrsun":"personal_thrsun";
         loadTimetable();
         timetable.setOnStickerSelectEventListener(new TimetableView.OnStickerSelectedListener() {
             @Override
@@ -85,7 +87,6 @@ public class ThrSunFragment extends BaseTimetable {
         SharedPreferences mPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         String thrsunData = mPref.getString(PREF_THR_SUN, "");
         Gson gson = new Gson();
-        System.out.println(thrsunData);
         if (!TextUtils.isEmpty(thrsunData)) {
             ArrayList<Schedule> thrSun = gson.fromJson(thrsunData, new TypeToken<ArrayList<Schedule>>() {
             }.getType());

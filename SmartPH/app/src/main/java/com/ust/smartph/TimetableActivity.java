@@ -1,34 +1,8 @@
 package com.ust.smartph;
 
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
-import com.github.tlaabs.timetableview.Schedule;
-import com.github.tlaabs.timetableview.Time;
-import com.github.tlaabs.timetableview.TimetableView;
-import com.ust.timetable.EditActivity;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
-import java.time.DayOfWeek;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
+@Deprecated
 public class TimetableActivity extends AppCompatActivity {
 //    public static final int REQUEST_ADD = 1;
 //    public static final int REQUEST_EDIT = 2;

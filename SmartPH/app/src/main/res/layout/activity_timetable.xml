@@ -9,27 +9,27 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     xmlns:fab="http://schemas.android.com/tools"
-    tools:context=".CustomTimetableActivity">
+    tools:context=".PersonalTimetableActivity">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:background="@color/colorPrimaryDark">
+        android:background="@color/colorPrimaryDark"
+        android:gravity="center">
 
-        <TextView
+        <Button
+            android:id="@+id/switch_timetable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="Timetable"
-            android:textColor="#fff"
-            android:textSize="16sp"/>
+            android:text="PERSONAL TIMETABLE \n SWITCH TO GROUP TIMETABLE ?"
+            android:shadowColor="@color/backgroundcolor"
+            android:textColor="@color/list_item_background"
+            android:background="@android:color/transparent" />
     </RelativeLayout>
 
     <android.support.design.widget.TabLayout
         android:id="@+id/timetable_tab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-
-
 
     <RelativeLayout
         android:layout_height="wrap_content"
@@ -39,12 +39,6 @@
         android:id="@+id/swipe_timetable"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
-
-<!--        <android.support.v4.view.ViewPager-->
-<!--            android:id="@+id/swipe_week"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content" >-->
-<!--        </android.support.v4.view.ViewPager>-->
 
     </android.support.v4.view.ViewPager>
         <com.github.clans.fab.FloatingActionMenu
@@ -59,8 +53,8 @@
             fab:menu_animationDelayPerItem="50"
             fab:menu_backgroundColor="#55FFFFFF"
             fab:menu_buttonSpacing="0dp"
-            fab:menu_colorNormal="#6b7b8d"
-            fab:menu_colorPressed="#556270"
+            app:menu_colorNormal="#556270"
+            app:menu_colorPressed="#6b7b8d"
             fab:menu_colorRipple="#99FFFFFF"
             fab:menu_fab_hide_animation="@anim/my_hide_animation"
             fab:menu_fab_show_animation="@anim/my_show_animation"
@@ -97,22 +91,28 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/baseline_assignment_white_36dp"
                 app:fab_label="match with friend"
+                app:fab_colorNormal="#556270"
+                app:fab_colorPressed="#6b7b8d"
                 fab:fab_size="mini" />
 
             <com.github.clans.fab.FloatingActionButton
                 android:id="@+id/export_fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/baseline_get_app_white_36dp"
+                android:src=" @drawable/baseline_input_white_36dp"
                 app:fab_label="export your timetable"
+                app:fab_colorNormal="#556270"
+                app:fab_colorPressed="#6b7b8d"
                 fab:fab_size="mini" />
 
             <com.github.clans.fab.FloatingActionButton
                 android:id="@+id/import_fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/baseline_input_white_36dp"
-                app:fab_label="import your timetable"
+                android:src="@drawable/baseline_get_app_white_36dp"
+                app:fab_label="import timetable"
+                app:fab_colorNormal="#556270"
+                app:fab_colorPressed="#6b7b8d"
                 fab:fab_size="mini" />
             <com.github.clans.fab.FloatingActionButton
                 android:id="@+id/add_fab"
@@ -120,6 +120,8 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/fab_add"
                 app:fab_label="add a schedule"
+                app:fab_colorNormal="#556270"
+                app:fab_colorPressed="#6b7b8d"
                 fab:fab_size="mini" />
         </com.github.clans.fab.FloatingActionMenu>
     </RelativeLayout>
