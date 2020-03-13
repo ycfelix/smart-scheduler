@@ -45,22 +45,11 @@
         <activity android:name=".FocusModeActivity"/>
         <activity android:name=".AppUsageHomeActivity"/>
         <activity android:name=".CustomActionDetectionActivity"/>
-        <activity android:name="com.ust.timetable.EditActivity"/>
+        <activity android:name=".PersonalTimetableActivity"/>
+        <activity android:name=".GroupTimetableActivity"/>
         <service android:name="com.ust.focusmode.StudyModeService"
             android:enabled="true"
             android:exported="true"/>
-
-        <receiver
-            android:name="com.ust.actiondetection.BootCompletedReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-
-        <service android:name="com.ust.actiondetection.ActivityDetectionService" />
-
 
     </application>
 
