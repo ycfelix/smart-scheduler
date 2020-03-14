@@ -1,24 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ust.smartph"
     android:versionCode="1"
     android:versionName="1.0">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
+        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -27,7 +29,13 @@
         android:theme="@style/AppTheme"
         android:windowSoftInputMode="adjustResize"
         tools:ignore="GoogleAppIndexingWarning">
-
+        <activity android:name=".FeedbackActivity"
+            android:parentActivityName=".AboutUsActivity">
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".AboutUsActivity" />
+        </activity>
         <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,21 +43,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity"/>
-        <activity android:name=".CalendarActivity"/>
-        <activity android:name=".AboutUsActivity"/>
-        <activity android:name=".ChecklistActivity"/>
-        <service android:name="com.ust.checklist.ReminderService"/>
-        <activity android:name=".TimetableActivity"/>
-        <activity android:name=".DashboardActivity"/>
-        <activity android:name=".AppUsageStatisticsActivity"/>
-        <activity android:name=".FocusModeActivity"/>
-        <activity android:name=".ActionDetectionActivity"/>
-        <activity android:name=".CustomActionDetectionActivity"/>
-        <activity android:name="com.ust.timetable.EditActivity"/>
-        <service android:name="com.ust.focusmode.StudyModeService"
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".CalendarActivity" />
+        <activity android:name=".AboutUsActivity" />
+        <activity android:name=".ChecklistActivity" />
+
+        <service android:name="com.ust.checklist.ReminderService" />
+
+        <activity android:name=".TimetableActivity" />
+        <activity android:name=".DashboardActivity" />
+        <activity android:name=".FocusModeActivity" />
+        <activity android:name=".AppUsageStatisticsActivity" />
+        <activity android:name=".CustomActionDetectionActivity" />
+        <activity android:name="com.ust.timetable.EditActivity" />
+
+        <service
+            android:name="com.ust.focusmode.StudyModeService"
             android:enabled="true"
-            android:exported="true"/>
+            android:exported="true" />
 
         <receiver
             android:name="com.ust.actiondetection.BootCompletedReceiver"
@@ -61,13 +72,6 @@
         </receiver>
 
         <service android:name="com.ust.actiondetection.ActivityDetectionService" />
-
-
     </application>
 
-
-
-
 </manifest>
-
-
