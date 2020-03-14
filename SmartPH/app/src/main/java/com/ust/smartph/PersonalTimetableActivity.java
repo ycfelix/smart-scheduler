@@ -31,6 +31,7 @@ import com.google.gson.reflect.TypeToken;
 import com.ust.timetable.EditDialog;
 import com.ust.timetable.EditDialogListener;
 import com.ust.timetable.MonWedFragment;
+import com.ust.timetable.PreviewTimetableDialog;
 import com.ust.timetable.RequestType;
 import com.ust.timetable.ThrSunFragment;
 import com.ust.timetable.TimetableAdapter;
@@ -152,7 +153,10 @@ public class PersonalTimetableActivity extends AppCompatActivity {
                         sendIntent.putExtra(Intent.EXTRA_TEXT, token);
                         sendIntent.setType("text/plain");
                         Intent shareIntent = Intent.createChooser(sendIntent, null);
-                        startActivity(shareIntent);
+                        //startActivity(shareIntent);
+                        PreviewTimetableDialog preview = new PreviewTimetableDialog(PersonalTimetableActivity.this);
+                        preview.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+                        preview.show();
                     }
                 });
         builder.show();
