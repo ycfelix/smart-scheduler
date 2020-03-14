@@ -1,11 +1,13 @@
 package com.ust.smartph;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import mehdi.sakout.aboutpage.AboutPage;
@@ -25,6 +27,7 @@ public class AboutUsActivity  extends AppCompatActivity {
                 .setImage(R.drawable.app_name)
                 .addItem(new Element().setTitle("Version 1.0"))
                 .addItem(adsElement)
+                .addItem(getFeedbackElement())
                 .addGroup("Connect with us")
                 .addEmail("cfyauab@connect.ust.hk")
                 .addWebsite("https://github.com/ycfelix")
@@ -59,6 +62,26 @@ public class AboutUsActivity  extends AppCompatActivity {
             }
         });
         return copyRightsElement;
+    }
+
+    Element getFeedbackElement() {
+        Element feedbackElement = new Element();
+        final String feedback = getResources().getString(R.string.feedback);
+        feedbackElement.setTitle(feedback);
+        feedbackElement.setOnClickListener(new View.OnClickListener() {
+
+//            public static final String EXTRA_MESSAGE = "com.ust.smartph.FEEDBACK";
+
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AboutUsActivity.this, FeedbackActivity.class);
+//                EditText editText = (EditText) findViewById(R.id.editText);
+//                String message = editText.getText().toString();
+//                intent.putExtra(EXTRA_MESSAGE);
+                startActivity(intent);
+            }
+        });
+        return feedbackElement;
     }
 
     void simulateDayNight(int currentSetting) {
