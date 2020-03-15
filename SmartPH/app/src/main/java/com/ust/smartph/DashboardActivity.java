@@ -17,10 +17,10 @@ public class DashboardActivity extends AppCompatActivity {
         startActivity(new Intent(this, AboutUsActivity.class));
     }
     public void startCalendar(View arg){
-        startActivity(new Intent(this, CalendarActivity.class));
+        startActivity(new Intent(this, TimetableHomeActivity.class));
     }
     public void startTimetable(View arg){
-        startActivity(new Intent(this, PersonalTimetableActivity.class));
+        startActivity(new Intent(this, TimetableItemActivity.class));
     }
     public void startChecklist(View arg){
         startActivity(new Intent(this, ChecklistActivity.class));

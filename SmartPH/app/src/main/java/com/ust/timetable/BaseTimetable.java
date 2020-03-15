@@ -21,8 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class BaseTimetable extends Fragment {
-    String PREF_THR_SUN;
-    String PREF_MON_WED;
 
     protected void saveByPreference(String filename, String data) {
         data = TextUtils.isEmpty(data) ? "" : data;

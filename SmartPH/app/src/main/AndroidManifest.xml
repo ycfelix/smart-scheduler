@@ -45,8 +45,8 @@
         <activity android:name=".FocusModeActivity"/>
         <activity android:name=".AppUsageHomeActivity"/>
         <activity android:name=".CustomActionDetectionActivity"/>
-        <activity android:name=".PersonalTimetableActivity"/>
-        <activity android:name=".GroupTimetableActivity"/>
+        <activity android:name=".TimetableItemActivity"/>
+        <activity android:name=".TimetableHomeActivity"/>
         <service android:name="com.ust.focusmode.StudyModeService"
             android:enabled="true"
             android:exported="true"/>
