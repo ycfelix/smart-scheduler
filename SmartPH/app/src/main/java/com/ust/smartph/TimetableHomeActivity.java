@@ -2,7 +2,6 @@ package com.ust.smartph;
 
 import android.app.Activity;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -16,16 +15,16 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
-import com.ust.timetable.PreviewTimetableDialog;
 import com.ust.timetable.TimetableHomeAdapter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -45,9 +44,6 @@ public class TimetableHomeActivity extends Activity {
     @BindView(R.id.debug_fab)
     FloatingActionButton debugBtn;
 
-    @BindView(R.id.home_export_fab)
-    FloatingActionButton exportBtn;
-
     @BindView(R.id.home_add_fab)
     FloatingActionButton addBtn;
 
@@ -58,6 +54,7 @@ public class TimetableHomeActivity extends Activity {
 
     private ArrayList<String> timetables;
 
+    private ArrayList<String> notes;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,8 +63,10 @@ public class TimetableHomeActivity extends Activity {
         recycler.setHasFixedSize(true);
         recycler.setLayoutManager(new LinearLayoutManager(this));
         timetables=new ArrayList<>();
-        adapter=new TimetableHomeAdapter(this,timetables);
+        notes=new ArrayList<>();
+        adapter=new TimetableHomeAdapter(this,timetables,notes);
         recycler.setAdapter(adapter);
+
         getTimetables();
     }
 
@@ -78,7 +77,10 @@ public class TimetableHomeActivity extends Activity {
         Set<String> keys =new TreeSet<>(prefs.keySet());
         keys.forEach(e-> {
             String s= (String) prefs.get(e);
-            if(s.equals("timetable")) timetables.add(e);
+            if(s.contains("timetable")) {
+                timetables.add(e);
+                notes.add(s.substring(s.indexOf("timetable")+"timetable".length()));
+            }
         });
         adapter.notifyDataSetChanged();
     }
@@ -93,35 +95,27 @@ public class TimetableHomeActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    @OnClick(R.id.home_export_fab)
-    void exportSchedule(View v){
-        AlertDialog.Builder builder=new AlertDialog.Builder(this);
-        final View dialogView = LayoutInflater.from(this)
-                .inflate(R.layout.timetable_export,null);
-        builder.setTitle("Your generated share code");
-        TextView edit_text = dialogView.findViewById(R.id.timetable_token);
-        //TODO: send schedules to server
-        //TODO: recevice token from server
-        String token="1234";//getTokenFromServer(uid)...
-        edit_text.setText(token);
-        builder.setView(dialogView);
-        builder.setPositiveButton("Share",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent sendIntent = new Intent();
-                        sendIntent.setAction(Intent.ACTION_SEND);
-                        sendIntent.putExtra(Intent.EXTRA_TEXT, token);
-                        sendIntent.setType("text/plain");
-                        Intent shareIntent = Intent.createChooser(sendIntent, null);
-                        //startActivity(shareIntent);
-                        PreviewTimetableDialog preview = new PreviewTimetableDialog(TimetableHomeActivity.this);
-                        preview.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
-                        preview.show();
-                    }
-                });
-        builder.show();
-    }
+//    @OnClick(R.id.home_export_fab)
+//    void exportSchedule(View v){
+//        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+//        final View dialogView = LayoutInflater.from(this)
+//                .inflate(R.layout.timetable_export,null);
+//        builder.setTitle("Your generated share code");
+//        TextView edit_text = dialogView.findViewById(R.id.timetable_token);
+//        //TODO: send schedules to server
+//        //TODO: recevice token from server
+//        String token="1234";//getTokenFromServer(uid)...
+//        edit_text.setText(token);
+//        builder.setView(dialogView);
+//        builder.setPositiveButton("Share",
+//                new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                    }
+//                });
+//        builder.show();
+//    }
+
 
     @OnClick(R.id.home_add_fab)
     void addTimetable(View v){
@@ -129,16 +123,20 @@ public class TimetableHomeActivity extends Activity {
         final View dialogView = LayoutInflater.from(this)
                 .inflate(R.layout.timetable_create,null);
         builder.setTitle("Your generated share code");
-        EditText editText = dialogView.findViewById(R.id.timetable_name);
+        EditText name = dialogView.findViewById(R.id.timetable_name);
+        EditText description = dialogView.findViewById(R.id.timetable_description);
         builder.setView(dialogView);
         builder.setPositiveButton("Create",
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String result=editText.getText().toString();
+                        String result=name.getText().toString();
+                        String note=description.getText().toString();
+                        note=TextUtils.isEmpty(note)?"custom timetable":note;
                         if(!TextUtils.isEmpty(result)){
-                            saveToSharePreference(result);
+                            saveToSharePreference(result,note);
                             timetables.add(result);
+                            notes.add(note);
                             adapter.notifyDataSetChanged();
                             menu.close(true);
                             dialog.dismiss();
@@ -202,8 +200,14 @@ public class TimetableHomeActivity extends Activity {
         builder.show();
     }
 
-    void saveToSharePreference(String prefix){
+    void saveToSharePreference(String prefix,String desciption){
         SharedPreferences pref=PreferenceManager.getDefaultSharedPreferences(this);
-        pref.edit().putString(prefix,"timetable").commit();
+        pref.edit().putString(prefix,"timetable"+desciption).commit();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
     }
 }
