@@ -1,17 +1,18 @@
 package com.ust.timetable;
-
+import android.provider.Settings.Secure;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,11 +23,16 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.ust.smartph.TimetableHomeActivity;
-import com.ust.smartph.TimetableItemActivity;
+import com.github.tlaabs.timetableview.Schedule;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.ust.smartph.R;
+import com.ust.smartph.TimetableItemActivity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 public class TimetableHomeAdapter extends RecyclerView.Adapter<TimetableHomeAdapter.TimetableViewHolder> {
 
@@ -101,10 +107,10 @@ public class TimetableHomeAdapter extends RecyclerView.Adapter<TimetableHomeAdap
                         .inflate(R.layout.timetable_export, null);
                 builder.setTitle("Your generated share code");
                 TextView tokenTv = dialogView.findViewById(R.id.timetable_token);
+                String tableName=timetableViewHolder.timetableName.getText().toString();
                 //TODO: send schedules to server
-
-                //TODO: recevice token from server
-                String token = "1234";//getTokenFromServer(uid)...
+                //sendScheduleToServer(tableName);
+                String token = getToken(tableName);
                 tokenTv.setText(token);
                 builder.setView(dialogView);
                 builder.setPositiveButton("Share",
@@ -126,12 +132,9 @@ public class TimetableHomeAdapter extends RecyclerView.Adapter<TimetableHomeAdap
     }
 
     private void sendScheduleToServer(String timetableName){
-        SharedPreferences pref=PreferenceManager.getDefaultSharedPreferences(context);
-        String data=pref.getString("monwed_"+timetableName,"");
-        data+=pref.getString("thrsun_"+timetableName,"");
-        String ip = context.getString(R.string.server_ip);
+        String url = context.getString(R.string.server_ip);
+        List<String> commands=getSQLCommands(timetableName);
         RequestQueue queue = Volley.newRequestQueue(context);
-        String url ="http://13.70.2.33:5000/";
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -153,6 +156,59 @@ public class TimetableHomeAdapter extends RecyclerView.Adapter<TimetableHomeAdap
         queue.add(stringRequest);
 
     }
+
+    private String getToken(String timetableName){
+        String android_id = Secure.getString(context.getContentResolver(),
+                Secure.ANDROID_ID);
+        return HashGenerator.toHashCode(android_id)+HashGenerator.toHashCode(timetableName);
+    }
+
+    @Nullable
+    private List<String> getSQLCommands(String timetableName){
+        List<String> schedules=new ArrayList<>();
+        String token=getToken(timetableName);
+        SharedPreferences mPref = PreferenceManager.getDefaultSharedPreferences(context);
+        String PREF_MON_WED="monwed_"+timetableName;
+        String PREF_THR_SUN="thrsun_"+timetableName;
+        String monwedData = mPref.getString(PREF_MON_WED, "");
+        String thrsunData = mPref.getString(PREF_THR_SUN, "");
+        if(TextUtils.isEmpty(monwedData)&&TextUtils.isEmpty(thrsunData)){
+            Toast.makeText(context,"your timetable is empty!",Toast.LENGTH_SHORT);
+            return null;
+        }
+        schedules.addAll(formatJsonToSQL(monwedData,token,timetableName));
+        schedules.addAll(formatJsonToSQL(thrsunData,token,timetableName));
+        return schedules;
+    }
+
+    private List<String> formatJsonToSQL(String json,String token,String timetableName){
+        Gson gson = new Gson();
+        ArrayList<Schedule> schedules=gson.fromJson(json,new TypeToken<ArrayList<Schedule>>(){}.getType());
+        List<String> commands=new ArrayList<>();
+        for(Schedule schedule:schedules) {
+            String class_place = schedule.getClassPlace();
+            String class_title = schedule.getClassTitle();
+            int day = schedule.getDay();
+            int start_hr = schedule.getStartTime().getHour();
+            int start_min = schedule.getStartTime().getMinute();
+            int end_hr = schedule.getEndTime().getHour();
+            int end_min = schedule.getEndTime().getMinute();
+            String professor_name = schedule.getProfessorName();
+            commands.add(String.format(Locale.ENGLISH,
+                    "IF EXIST (SELECT * FROM dbo.user_schedule where token=%s) " +
+                            " update class_place=%s, class_title=%s, day_of_week=%d, start_hour=%d, " +
+                            "start_min=%d, end_hour=%d, end_min=%d, professor_name=%s, table_name=%s where token=%s else" +
+                            "insert into  dbo.user_schedule(class_place,class_title,day_of_week,start_hour" +
+                            "start_min,end_hour,end_min,professor_name,token,table_name), values(%s, %s," +
+                            "%d, %d, %d, %d, %d,%s,%s,%s)",
+                    token, class_place, class_title, day, start_hr, start_min, end_hr, end_min, professor_name,
+                    timetableName, token,
+                    class_place, class_title, day, start_hr, start_min, end_hr, end_min, professor_name,
+                    token, timetableName));
+        }
+        return commands;
+    }
+
 
     @Override
     public int getItemCount() {

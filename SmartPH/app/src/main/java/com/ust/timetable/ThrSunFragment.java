@@ -97,6 +97,7 @@ public class ThrSunFragment extends BaseTimetable {
     private void loadTimetable() {
         SharedPreferences mPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         String thrsunData = mPref.getString(PREF_THR_SUN, "");
+
         Gson gson = new Gson();
         if (!TextUtils.isEmpty(thrsunData)) {
             ArrayList<Schedule> thrSun = gson.fromJson(thrsunData, new TypeToken<ArrayList<Schedule>>() {

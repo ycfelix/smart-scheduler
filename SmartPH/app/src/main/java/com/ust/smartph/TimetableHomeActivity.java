@@ -95,28 +95,6 @@ public class TimetableHomeActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-//    @OnClick(R.id.home_export_fab)
-//    void exportSchedule(View v){
-//        AlertDialog.Builder builder=new AlertDialog.Builder(this);
-//        final View dialogView = LayoutInflater.from(this)
-//                .inflate(R.layout.timetable_export,null);
-//        builder.setTitle("Your generated share code");
-//        TextView edit_text = dialogView.findViewById(R.id.timetable_token);
-//        //TODO: send schedules to server
-//        //TODO: recevice token from server
-//        String token="1234";//getTokenFromServer(uid)...
-//        edit_text.setText(token);
-//        builder.setView(dialogView);
-//        builder.setPositiveButton("Share",
-//                new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                    }
-//                });
-//        builder.show();
-//    }
-
-
     @OnClick(R.id.home_add_fab)
     void addTimetable(View v){
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
@@ -133,7 +111,7 @@ public class TimetableHomeActivity extends Activity {
                         String result=name.getText().toString();
                         String note=description.getText().toString();
                         note=TextUtils.isEmpty(note)?"custom timetable":note;
-                        if(!TextUtils.isEmpty(result)){
+                        if(!TextUtils.isEmpty(result) && isNameExist(result)){
                             saveToSharePreference(result,note);
                             timetables.add(result);
                             notes.add(note);
@@ -180,10 +158,16 @@ public class TimetableHomeActivity extends Activity {
                     public void onClick(DialogInterface dialog, int which) {
                         EditText edit_text = dialogView.findViewById(R.id.timetable_input_token);
                         if(!TextUtils.isEmpty(edit_text.getText().toString())){
-                            dialog.dismiss();
                             //TODO: received schedules by token
-                            //TODO: create a preview dialog
                             //TODO: merge into gp/personal timetable
+                            //TODO: create new timetable
+                            // get table name from database, save to pref, content+=timetable
+                            // parse the schedule into json and save into monwed_name, thrsun_name
+//                          timetables.add(name);
+//                          notes.add(note);
+//                          adapter.notifyDataSetChanged();
+//                          menu.close(true);
+                            dialog.dismiss();
                         }
                         else{
                             Toast.makeText(getApplicationContext(),"wrong input!",Toast.LENGTH_SHORT);
@@ -203,6 +187,11 @@ public class TimetableHomeActivity extends Activity {
     void saveToSharePreference(String prefix,String desciption){
         SharedPreferences pref=PreferenceManager.getDefaultSharedPreferences(this);
         pref.edit().putString(prefix,"timetable"+desciption).commit();
+    }
+
+    boolean isNameExist(String name){
+        SharedPreferences pref=PreferenceManager.getDefaultSharedPreferences(this);
+        return pref.getString(name,null)!=null;
     }
 
     @Override
