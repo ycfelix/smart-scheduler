@@ -17,7 +17,7 @@ public class DashboardActivity extends AppCompatActivity {
         startActivity(new Intent(this, AboutUsActivity.class));
     }
     public void startCalendar(View arg){
-        startActivity(new Intent(this, UserActionActivity.class));
+        startActivity(new Intent(this, CalendarActivity.class));
     }
     public void startTimetable(View arg){
         startActivity(new Intent(this, TimetableHomeActivity.class));
@@ -37,6 +37,6 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     public void startActionDetection(View arg){
-        startActivity(new Intent(this, CustomActionDetectionActivity.class));
+        startActivity(new Intent(this, UserActionActivity.class));
     }
 }

@@ -184,6 +184,11 @@ public class TimetableHomeActivity extends Activity {
         builder.show();
     }
 
+    void getScheduleFromServer(String token){
+        String sqlCommand="Select * from dbo.user_schedule where token="+token+";";
+
+    }
+
     void saveToSharePreference(String prefix,String desciption){
         SharedPreferences pref=PreferenceManager.getDefaultSharedPreferences(this);
         pref.edit().putString(prefix,"timetable"+desciption).commit();
