@@ -29,14 +29,24 @@ public class ThrSunFragment extends BaseTimetable {
     @BindView(R.id.timetable_thrsun)
     TimetableView timetable;
 
+    String PREF_THR_SUN="thrsun_";
+
     Unbinder unbinder;
+
+    public ThrSunFragment(){}
+
+    @Override
+    public void setArguments(@Nullable Bundle args) {
+        super.setArguments(args);
+        assert args != null;
+        PREF_THR_SUN+=args.getString("TABLE_NAME");
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.timetable_thursun, container, false);
         unbinder = ButterKnife.bind(this, root);
-        PREF_THR_SUN=getActivity().getClass().getSimpleName().contains("GroupTimetableActivity")?
-                "group_thrsun":"personal_thrsun";
         loadTimetable();
         timetable.setOnStickerSelectEventListener(new TimetableView.OnStickerSelectedListener() {
             @Override
@@ -48,6 +58,7 @@ public class ThrSunFragment extends BaseTimetable {
                     public void onEditResult(@Nullable Schedule schedule, RequestType type) {
                         if(type==RequestType.DELETE){
                             timetable.remove(idx);
+                            timetable.getAllSchedulesInStickers().remove(idx);
                         }
                         else{
                             if(schedule!=null){
@@ -86,6 +97,7 @@ public class ThrSunFragment extends BaseTimetable {
     private void loadTimetable() {
         SharedPreferences mPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         String thrsunData = mPref.getString(PREF_THR_SUN, "");
+
         Gson gson = new Gson();
         if (!TextUtils.isEmpty(thrsunData)) {
             ArrayList<Schedule> thrSun = gson.fromJson(thrsunData, new TypeToken<ArrayList<Schedule>>() {

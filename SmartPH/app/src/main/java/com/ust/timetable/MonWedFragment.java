@@ -38,13 +38,20 @@ public class MonWedFragment extends BaseTimetable {
 
     Unbinder unbinder;
 
+    String PREF_MON_WED="monwed_";
+
+    @Override
+    public void setArguments(@Nullable Bundle args) {
+        super.setArguments(args);
+        assert args != null;
+        PREF_MON_WED+=args.getString("TABLE_NAME");
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.timetable_monwed, container, false);
-        PREF_MON_WED=getActivity().getClass().getSimpleName().contains("GroupTimetableActivity")?
-                "group_monwed":"personal_monwed";
         unbinder = ButterKnife.bind(this, root);
         loadTimetable();
         timetable.setOnStickerSelectEventListener(new TimetableView.OnStickerSelectedListener() {
@@ -64,6 +71,8 @@ public class MonWedFragment extends BaseTimetable {
                             }
                         }
                         Gson gson=new Gson();
+                        System.out.println(gson.toJson(timetable.getAllSchedulesInStickers()));
+                        System.out.println(PREF_MON_WED);
                         saveByPreference(PREF_MON_WED,gson.toJson(timetable.getAllSchedulesInStickers()));
                     }
                 });

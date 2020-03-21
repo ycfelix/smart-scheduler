@@ -9,18 +9,17 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     xmlns:fab="http://schemas.android.com/tools"
-    tools:context=".PersonalTimetableActivity">
+    tools:context=".TimetableItemActivity">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:background="@color/colorPrimaryDark"
         android:gravity="center">
 
-        <Button
-            android:id="@+id/switch_timetable"
+        <TextView
+            android:id="@+id/current_timetable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="PERSONAL TIMETABLE \n SWITCH TO GROUP TIMETABLE ?"
             android:shadowColor="@color/backgroundcolor"
             android:textColor="@color/list_item_background"
             android:background="@android:color/transparent" />
@@ -95,25 +94,6 @@
                 app:fab_colorPressed="#6b7b8d"
                 fab:fab_size="mini" />
 
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/export_fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src=" @drawable/baseline_input_white_36dp"
-                app:fab_label="export your timetable"
-                app:fab_colorNormal="#556270"
-                app:fab_colorPressed="#6b7b8d"
-                fab:fab_size="mini" />
-
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/import_fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/baseline_get_app_white_36dp"
-                app:fab_label="import timetable"
-                app:fab_colorNormal="#556270"
-                app:fab_colorPressed="#6b7b8d"
-                fab:fab_size="mini" />
             <com.github.clans.fab.FloatingActionButton
                 android:id="@+id/add_fab"
                 android:layout_width="wrap_content"
