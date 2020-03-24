@@ -1,10 +1,9 @@
 package com.ust.timetable;
-import android.provider.Settings.Secure;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+import android.provider.Settings.Secure;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -21,7 +20,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.github.tlaabs.timetableview.Schedule;
 import com.google.gson.Gson;
@@ -29,10 +28,13 @@ import com.google.gson.reflect.TypeToken;
 import com.ust.smartph.R;
 import com.ust.smartph.TimetableItemActivity;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Function;
 
 public class TimetableHomeAdapter extends RecyclerView.Adapter<TimetableHomeAdapter.TimetableViewHolder> {
 
@@ -81,9 +83,13 @@ public class TimetableHomeAdapter extends RecyclerView.Adapter<TimetableHomeAdap
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 String toDelete=timetableViewHolder.timetableName.getText().toString();
-                                SharedPreferences pref= PreferenceManager.getDefaultSharedPreferences(TimetableHomeAdapter.this.context);
-                                pref.edit().putString(toDelete,"").commit();
-                                timetables.remove(toDelete);
+                                updateDB(toDelete,null);
+                                TimetableLoader.setSchedule(toDelete,"");
+                                TimetableLoader.setSchedule("monwed_"+toDelete,"");
+                                TimetableLoader.setSchedule("thrsun_"+toDelete,"");
+                                int index=timetables.indexOf(toDelete);
+                                timetables.remove(index);
+                                notes.remove(index);
                                 TimetableHomeAdapter.this.notifyDataSetChanged();
                                 dialog.dismiss();
                             }
@@ -108,8 +114,12 @@ public class TimetableHomeAdapter extends RecyclerView.Adapter<TimetableHomeAdap
                 builder.setTitle("Your generated share code");
                 TextView tokenTv = dialogView.findViewById(R.id.timetable_token);
                 String tableName=timetableViewHolder.timetableName.getText().toString();
-                //TODO: send schedules to server
-                //sendScheduleToServer(tableName);
+                updateDB(tableName, new Function<String, Void>() {
+                    @Override
+                    public Void apply(String s) {
+                        return sendScheduleToServer(s);
+                    }
+                });
                 String token = getToken(tableName);
                 tokenTv.setText(token);
                 builder.setView(dialogView);
@@ -131,30 +141,58 @@ public class TimetableHomeAdapter extends RecyclerView.Adapter<TimetableHomeAdap
         });
     }
 
-    private void sendScheduleToServer(String timetableName){
+    private void updateDB(String timetableName, Function<String,Void> callback){
         String url = context.getString(R.string.server_ip);
-        List<String> commands=getSQLCommands(timetableName);
+        HashMap<String, String> data = new HashMap<>();
+        String token=getToken(timetableName);
+        data.put("db_name", "Smart Scheduler");
+        data.put("sql_cmd", String.format("delete from dbo.user_schedule where token ='%s'",token));
         RequestQueue queue = Volley.newRequestQueue(context);
-
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
+                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        Toast.makeText(context,
-                                "It works! Content = " + response, Toast.LENGTH_SHORT).show();
+                    public void onResponse(JSONObject response) {
+                        System.out.println(response);
+                        if(callback!=null){
+                            callback.apply(timetableName);
+                        }
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context,
-                        "That didn't work!", Toast.LENGTH_SHORT).show();
-            }
-        });
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                    }
+                }
+        );
+        queue.add(request);
+    }
 
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
+    private Void sendScheduleToServer(String timetableName){
+        String url = context.getString(R.string.server_ip);
+        //do a select first, then
+        List<String> commands=getSQLCommands(timetableName);
+        for(int i=0;i<commands.size();i++){
+            HashMap<String,String> data=new HashMap<>();
+            data.put("db_name","Smart Scheduler");
+            data.put("sql_cmd",commands.get(i));
 
+            RequestQueue queue = Volley.newRequestQueue(context);
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            System.out.println(response);
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                        }
+                    }
+            );
+            queue.add(request);
+        }
+        return null;
     }
 
     private String getToken(String timetableName){
@@ -167,11 +205,10 @@ public class TimetableHomeAdapter extends RecyclerView.Adapter<TimetableHomeAdap
     private List<String> getSQLCommands(String timetableName){
         List<String> schedules=new ArrayList<>();
         String token=getToken(timetableName);
-        SharedPreferences mPref = PreferenceManager.getDefaultSharedPreferences(context);
         String PREF_MON_WED="monwed_"+timetableName;
         String PREF_THR_SUN="thrsun_"+timetableName;
-        String monwedData = mPref.getString(PREF_MON_WED, "");
-        String thrsunData = mPref.getString(PREF_THR_SUN, "");
+        String monwedData = TimetableLoader.getSchedule(PREF_MON_WED);
+        String thrsunData = TimetableLoader.getSchedule(PREF_THR_SUN);
         if(TextUtils.isEmpty(monwedData)&&TextUtils.isEmpty(thrsunData)){
             Toast.makeText(context,"your timetable is empty!",Toast.LENGTH_SHORT);
             return null;
@@ -194,17 +231,12 @@ public class TimetableHomeAdapter extends RecyclerView.Adapter<TimetableHomeAdap
             int end_hr = schedule.getEndTime().getHour();
             int end_min = schedule.getEndTime().getMinute();
             String professor_name = schedule.getProfessorName();
-            commands.add(String.format(Locale.ENGLISH,
-                    "IF EXIST (SELECT * FROM dbo.user_schedule where token=%s) " +
-                            " update class_place=%s, class_title=%s, day_of_week=%d, start_hour=%d, " +
-                            "start_min=%d, end_hour=%d, end_min=%d, professor_name=%s, table_name=%s where token=%s else" +
-                            "insert into  dbo.user_schedule(class_place,class_title,day_of_week,start_hour" +
-                            "start_min,end_hour,end_min,professor_name,token,table_name), values(%s, %s," +
-                            "%d, %d, %d, %d, %d,%s,%s,%s)",
-                    token, class_place, class_title, day, start_hr, start_min, end_hr, end_min, professor_name,
-                    timetableName, token,
-                    class_place, class_title, day, start_hr, start_min, end_hr, end_min, professor_name,
-                    token, timetableName));
+            commands.add(String.format(Locale.US,
+                            "insert into dbo.user_schedule(class_place,class_title,day_of_week,start_hour," +
+                            "start_min,end_hour,end_min,professor_name,token,table_name) values('%s', '%s'," +
+                            "%d, %d, %d, %d, %d,'%s','%s','%s')", class_place, class_title, day, start_hr, start_min, end_hr, end_min, professor_name,
+                    token, timetableName)
+            );
         }
         return commands;
     }

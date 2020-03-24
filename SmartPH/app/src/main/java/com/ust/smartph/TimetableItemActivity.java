@@ -1,11 +1,9 @@
 package com.ust.smartph;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -26,12 +24,10 @@ import com.ust.timetable.MonWedFragment;
 import com.ust.timetable.RequestType;
 import com.ust.timetable.ThrSunFragment;
 import com.ust.timetable.TimetableAdapter;
+import com.ust.timetable.TimetableLoader;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -125,8 +121,8 @@ public class TimetableItemActivity extends AppCompatActivity {
                     String monwedData=gson.toJson(monWed);
                     System.out.println(monwedData);
                     String thrsunData=gson.toJson(thrSun);
-                    saveByPreference(PREF_MON_WED,monwedData);
-                    saveByPreference(PREF_THR_SUN,thrsunData);
+                    TimetableLoader.setSchedule(PREF_MON_WED,monwedData);
+                    TimetableLoader.setSchedule(PREF_THR_SUN,thrsunData);
                     adapter.notifyDataSetChanged();
                 }
             }
@@ -140,9 +136,8 @@ public class TimetableItemActivity extends AppCompatActivity {
     private void loadByPreference(){
         this.monWed=new ArrayList<>();
         this.thrSun=new ArrayList<>();
-        SharedPreferences mPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String monwedData = mPref.getString(PREF_MON_WED, "");
-        String thrsunData = mPref.getString(PREF_THR_SUN, "");
+        String monwedData = TimetableLoader.getSchedule(PREF_MON_WED);
+        String thrsunData = TimetableLoader.getSchedule(PREF_THR_SUN);
         Gson gson=new Gson();
         if(!TextUtils.isEmpty(monwedData)){
            this.monWed = gson.fromJson(monwedData,new TypeToken<ArrayList<Schedule>>(){}.getType());
@@ -150,13 +145,6 @@ public class TimetableItemActivity extends AppCompatActivity {
         if(!TextUtils.isEmpty(thrsunData)){
             this.thrSun = gson.fromJson(thrsunData,new TypeToken<ArrayList<Schedule>>(){}.getType());
         }
-    }
-
-    private void saveByPreference(String filename,String data) {
-        SharedPreferences mPref = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = mPref.edit();
-        editor.putString(filename, data);
-        editor.commit();
     }
 
     @Override

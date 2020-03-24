@@ -105,6 +105,6 @@
     <string name="error_permission">Can\'t download, Permission Denied.</string>
     <string name="error_unknown">Unknown ERROR</string>
 
-    <string name="server_ip">http://13.70.2.33:5000/</string>
+    <string name="server_ip">http://13.70.2.33/api/sql_db</string>
 
 </resources>
