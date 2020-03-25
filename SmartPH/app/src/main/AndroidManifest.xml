@@ -49,15 +49,10 @@
         <activity android:name=".TimetableItemActivity"/>
         <activity android:name=".TimetableHomeActivity"/>
         <activity android:name=".UserActionActivity"/>
+        <activity android:name=".ChecklistHomeActivity"/>
         <service android:name="com.ust.focusmode.StudyModeService"
             android:enabled="true"
             android:exported="true"/>
 
     </application>
-
-
-
-
 </manifest>
-
-

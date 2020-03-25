@@ -27,7 +27,4 @@ public class TimetableLoader extends Application {
         editor.putString(name,data);
         editor.commit();
     }
-
-
-
 }
