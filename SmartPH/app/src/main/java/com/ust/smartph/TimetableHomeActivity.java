@@ -149,8 +149,10 @@ public class TimetableHomeActivity extends Activity {
         Map<String,?> prefs =pref.getAll();
         Set<String> keys =new TreeSet<>(prefs.keySet());
         keys.forEach(e->{
-            System.out.println("key is "+e);
-            editor.remove(e);
+            if(((String)prefs.get(e)).contains("timetable")){
+                System.out.println("key is "+e);
+                editor.remove(e);
+            }
         });
         editor.commit();
         adapter.notifyDataSetChanged();

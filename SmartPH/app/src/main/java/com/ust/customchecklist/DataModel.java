@@ -12,6 +12,14 @@ public class DataModel {
     private int icon;
     private boolean checked;
 
+    public DataModel(){
+        this.title="";
+        this.detail="";
+        //this.date=date;
+        this.icon=0;
+        this.checked=false;
+    }
+
     public DataModel(String title,String detail,int icon,boolean checked){
         this.title=title;
         this.detail=detail;
@@ -58,4 +66,5 @@ public class DataModel {
     public String toString() {
         return String.format(Locale.US,"title is %s detail is %s",title,detail);
     }
+
 }

@@ -23,7 +23,7 @@ import com.ust.timetable.EditDialogListener;
 import com.ust.timetable.MonWedFragment;
 import com.ust.timetable.RequestType;
 import com.ust.timetable.ThrSunFragment;
-import com.ust.timetable.TimetableAdapter;
+import com.ust.timetable.TimetablePagerAdapter;
 import com.ust.timetable.TimetableLoader;
 
 import java.util.ArrayList;
@@ -48,7 +48,7 @@ public class TimetableItemActivity extends AppCompatActivity {
     @BindView(R.id.current_timetable)
     TextView timetableName;
 
-    TimetableAdapter adapter;
+    TimetablePagerAdapter adapter;
 
     @BindView(R.id.fab_timetable_menu)
     FloatingActionMenu menu;
@@ -97,7 +97,7 @@ public class TimetableItemActivity extends AppCompatActivity {
         timetableTab.addTab(timetableTab.newTab());
         timetableTab.addTab(timetableTab.newTab());
         timetableTab.setupWithViewPager(this.pager, false);
-        adapter = new TimetableAdapter(getSupportFragmentManager(), fms);
+        adapter = new TimetablePagerAdapter(getSupportFragmentManager(), fms);
         pager.setAdapter(adapter);
         timetableTab.getTabAt(0).setText("Mon-Wed");
         timetableTab.getTabAt(1).setText("Thr-Sun");

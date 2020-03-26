@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     xmlns:fab="http://schemas.android.com/tools"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/checklist_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <TextView
+        android:id="@+id/top_text"
+        android:text="Checklist"
+        android:gravity="center"
+        android:textColor="@color/list_item_background"
         android:background="@color/colorPrimary"
-        android:elevation="@dimen/imageView_icon_margin"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="@style/ToolbarTheme">
-    </android.support.v7.widget.Toolbar>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <RelativeLayout
-        android:layout_below="@id/checklist_toolbar"
+        android:layout_below="@id/top_text"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ListView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/checklist_list"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
@@ -29,7 +30,7 @@
 
         <com.github.clans.fab.FloatingActionMenu
             android:layout_gravity="end|bottom"
-            android:id="@+id/fab_timetable_menu"
+            android:id="@+id/checklist_fab_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -73,7 +74,7 @@
             fab:menu_shadowYOffset="3dp"
             fab:menu_showShadow="true">
             <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/debug_fab"
+                android:id="@+id/checklist_debug_fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:fab_label="debug item"
@@ -83,7 +84,7 @@
 
 
             <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/home_import_fab"
+                android:id="@+id/checklist_import_fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/baseline_get_app_white_36dp"
@@ -92,7 +93,7 @@
                 app:fab_colorPressed="#6b7b8d"
                 fab:fab_size="mini" />
             <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/home_add_fab"
+                android:id="@+id/checklist_add_fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/fab_add"

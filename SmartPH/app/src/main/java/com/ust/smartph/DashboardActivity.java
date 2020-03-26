@@ -23,7 +23,7 @@ public class DashboardActivity extends AppCompatActivity {
         startActivity(new Intent(this, TimetableHomeActivity.class));
     }
     public void startChecklist(View arg){
-        startActivity(new Intent(this, ChecklistActivity.class));
+        startActivity(new Intent(this, ChecklistHomeActivity.class));
     }
     public void startAppUsage(View arg){
         startActivity(new Intent(this, AppUsageHomeActivity.class));
