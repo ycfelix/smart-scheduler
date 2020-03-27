@@ -1,7 +1,9 @@
 package com.ust.customchecklist;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.ust.smartph.ChecklistHomeActivity;
 import com.ust.smartph.R;
 
@@ -23,14 +26,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.ViewHolder> {
-    private ItemClickListener onItemClickListener;
     Context context;
     ArrayList<DataModel> data;
+    private static final String PREF_NAME="checklist";
 
-    public ChecklistAdapter(@NonNull Context context,ArrayList<DataModel> data,ItemClickListener listener) {
+    public ChecklistAdapter(@NonNull Context context,ArrayList<DataModel> data) {
         this.context=context;
         this.data=data;
-        this.onItemClickListener=listener;
     }
 
     @NonNull
@@ -73,6 +75,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.View
                             ChecklistAdapter.this.data.set(index,data);
                             notifyItemChanged(index);
                         }
+                        saveDataToPreference();
                         dialog.dismiss();
                     }
                 });
@@ -88,18 +91,19 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.View
         holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RelativeLayout r= (RelativeLayout) v.getParent();
-                LinearLayout l= (LinearLayout) r.getChildAt(0);
-                TextView title= (TextView) l.getChildAt(0);
-                TextView detail= (TextView) l.getChildAt(1);
+                //maybe future inplment the strike style
+//                RelativeLayout r= (RelativeLayout) v.getParent();
+//                LinearLayout l= (LinearLayout) r.getChildAt(0);
+//                TextView title= (TextView) l.getChildAt(0);
+//                TextView detail= (TextView) l.getChildAt(1);
                 if (((CheckBox)v).isChecked()){
+                    Collections.swap(data,holder.getAdapterPosition(),data.size()-1);
                     notifyItemMoved(holder.getAdapterPosition(),data.size()-1);
                     selected.setChecked(true);
-                    Collections.swap(data,holder.getAdapterPosition(),data.size()-1);
                 }
                 else{
-                    notifyItemMoved(holder.getAdapterPosition(),0);
                     Collections.swap(data,holder.getAdapterPosition(),0);
+                    notifyItemMoved(holder.getAdapterPosition(),0);
                     selected.setChecked(false);
                 }
             }
@@ -111,6 +115,13 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.View
         return data.size();
     }
 
+    void saveDataToPreference(){
+        Gson gson=new Gson();
+        SharedPreferences pref= PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor=pref.edit();
+        editor.putString(PREF_NAME,gson.toJson(data));
+        editor.commit();
+    }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView icon;

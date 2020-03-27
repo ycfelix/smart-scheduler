@@ -87,28 +87,7 @@ public class ChecklistHomeActivity extends AppCompatActivity {
         unbinder= ButterKnife.bind(this);
         loadDataFromPreference();
         checklist.setLayoutManager(new LinearLayoutManager(this));
-        adapter=new ChecklistAdapter(this, data, new ItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                EditDialog dialog = new EditDialog(ChecklistHomeActivity.this, RequestType.EDIT,data.get(position));
-                dialog.setEditDialogListener(new EditDialogListener() {
-                    @Override
-                    public void onEditResult(@NotNull DataModel data, RequestType type) {
-                        if(type==RequestType.DELETE){
-                            ChecklistHomeActivity.this.data.remove(position);
-                            adapter.notifyItemRemoved(position);
-                        }
-                        else{
-                            ChecklistHomeActivity.this.data.set(position,data);
-                            adapter.notifyItemChanged(position);
-                        }
-                        saveDataToPreference();
-                        dialog.dismiss();
-                    }
-                });
-                dialog.show();
-            }
-        });
+        adapter=new ChecklistAdapter(this, data);
         checklist.setAdapter(adapter);
     }
 
@@ -223,7 +202,7 @@ public class ChecklistHomeActivity extends AppCompatActivity {
         }
         int size=data.size();
         data.addAll(dataModels);
-        adapter.notifyItemRangeInserted(size,data.size());
+        adapter.notifyItemRangeInserted(size,data.size()-1);
     }
 
 
