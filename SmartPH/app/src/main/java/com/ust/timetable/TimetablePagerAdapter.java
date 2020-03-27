@@ -8,10 +8,10 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
-public class TimetableAdapter extends FragmentStatePagerAdapter {
+public class TimetablePagerAdapter extends FragmentStatePagerAdapter {
     private List<Fragment> fmList;
 
-    public TimetableAdapter(FragmentManager fm, List<Fragment> fmList) {
+    public TimetablePagerAdapter(FragmentManager fm, List<Fragment> fmList) {
         super(fm);
         this.fmList=fmList;
 

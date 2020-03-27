@@ -61,16 +61,8 @@
     </string-array>
 
     <!-->app usage strings<!-->
-    <string name="open_app_usage_setting">Open Apps with usage access settings</string>
-    <string name="last_time_used">"Last time used: "</string>
-    <string name="time_span">"Time span: "</string>
-    <string name="explanation_access_to_appusage_is_not_enabled">Failed to retrieve app usage
-        statistics. You may need to enable access
-        for this app through Settings > Security > Apps with usage access
-    </string>
 
     <!-->focus mode strings<!-->
-    <string name="description_accessibility">Help you get attention to your work.</string>
     <string name="setting">Setting</string>
     <string name="start">Start</string>
     <string name="next">Next</string>
@@ -89,22 +81,13 @@
     <string name="nil">(null)</string>
     <string name="app_waiting">APP is opening, please wait</string>
     <string name="floating">Please give the permission of floating window.</string>
-    <string name="floating_">If study mode run without expectation, please give the permission of floating window.</string>
-    <string name="usage_null">Your phone didn\'t have the UsageStats Function, you can\'t use this APP, but I\'ll add support later.</string>
     <string name="usage">Please give the permission of UsageStats.</string>
     <string name="forceExit">Provide a way to force exit.</string>
     <string name="forceExitHelp">If you want exit when the study mode is opened, just touch the time on the screen. While you touching, long click the invisible button where is at the lower-left of the screen, then it will quit.</string>
     <string name="permission_get">In order to get the wallpaper, please give the \"External Storage Reading\" permission.</string>
     <string name="ok">OK</string>
     <string name="permission_get_setting">Please let this program using the storage permission.</string>
-    <string name="latest">Your version is the latest.</string>
-    <string name="error_server">Server ERROR</string>
-    <string name="error_net">Network ERROR</string>
-    <string name="error_net_change">Network Changed</string>
-    <string name="error_space">Can\'t download, Lack Of Space</string>
-    <string name="error_permission">Can\'t download, Permission Denied.</string>
-    <string name="error_unknown">Unknown ERROR</string>
 
-    <string name="server_ip">http://13.70.2.33:5000/</string>
+    <string name="server_ip">http://13.70.2.33/api/sql_db</string>
 
 </resources>

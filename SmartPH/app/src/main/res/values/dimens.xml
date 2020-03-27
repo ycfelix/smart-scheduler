@@ -3,6 +3,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="color_splotch_height">40dp</dimen>
+    <dimen name="left_margin">16dp</dimen>
+    <dimen name="top_margin">16dp</dimen>
 
     <!-- List -->
     <dimen name="list_element_height">72dp</dimen>
@@ -24,5 +26,4 @@
     <!-- Elevation -->
     <dimen name="elevation">4dp</dimen>
 
-    <dimen name="usage_row_height">72dp</dimen>
 </resources>

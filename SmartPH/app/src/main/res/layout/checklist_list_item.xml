@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/checklist_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/left_margin"
+        android:background="@drawable/color_splotch_selector"
+        android:foregroundGravity="left"
+        android:scaleType="center" />
+
+    <RelativeLayout
+        android:id="@+id/item_text_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/top_margin"
+        android:paddingBottom="@dimen/top_margin">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/checklist_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/primary_text_color"
+                android:textSize="@dimen/text_size"
+                tools:text="title" />
+
+            <TextView
+                android:id="@+id/checklist_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/secondary_text_color"
+                android:textSize="@dimen/subtitle_text_size"
+                tools:text="info" />
+        </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/checklist_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:checked="true"
+            android:focusable="false"
+            android:paddingEnd="16dp" />
+
+    </RelativeLayout>
+
+
+</LinearLayout>

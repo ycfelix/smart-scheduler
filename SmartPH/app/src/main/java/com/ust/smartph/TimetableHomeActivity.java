@@ -3,8 +3,6 @@ package com.ust.smartph;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
@@ -15,16 +13,27 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.github.tlaabs.timetableview.Schedule;
+import com.github.tlaabs.timetableview.Time;
+import com.google.gson.Gson;
 import com.ust.timetable.TimetableHomeAdapter;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -66,7 +75,6 @@ public class TimetableHomeActivity extends Activity {
         notes=new ArrayList<>();
         adapter=new TimetableHomeAdapter(this,timetables,notes);
         recycler.setAdapter(adapter);
-
         getTimetables();
     }
 
@@ -100,7 +108,7 @@ public class TimetableHomeActivity extends Activity {
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
         final View dialogView = LayoutInflater.from(this)
                 .inflate(R.layout.timetable_create,null);
-        builder.setTitle("Your generated share code");
+        builder.setTitle("Create new timetable");
         EditText name = dialogView.findViewById(R.id.timetable_name);
         EditText description = dialogView.findViewById(R.id.timetable_description);
         builder.setView(dialogView);
@@ -111,7 +119,7 @@ public class TimetableHomeActivity extends Activity {
                         String result=name.getText().toString();
                         String note=description.getText().toString();
                         note=TextUtils.isEmpty(note)?"custom timetable":note;
-                        if(!TextUtils.isEmpty(result) && isNameExist(result)){
+                        if(!TextUtils.isEmpty(result) && !timetables.contains(result)){
                             saveToSharePreference(result,note);
                             timetables.add(result);
                             notes.add(note);
@@ -120,7 +128,7 @@ public class TimetableHomeActivity extends Activity {
                             dialog.dismiss();
                         }
                         else{
-                            Toast.makeText(getApplicationContext(),"wrong input!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),"timetable already exist!", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -139,7 +147,12 @@ public class TimetableHomeActivity extends Activity {
         SharedPreferences.Editor editor=pref.edit();
         Map<String,?> prefs =pref.getAll();
         Set<String> keys =new TreeSet<>(prefs.keySet());
-        keys.forEach(e->editor.remove(e));
+        keys.forEach(e->{
+            if(((String)prefs.get(e)).contains("timetable")){
+                System.out.println("key is "+e);
+                editor.remove(e);
+            }
+        });
         editor.commit();
         adapter.notifyDataSetChanged();
     }
@@ -149,24 +162,18 @@ public class TimetableHomeActivity extends Activity {
     void importSchedule(View v){
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
         final View dialogView = LayoutInflater.from(this)
-                .inflate(R.layout.timetable_import,null);
+                .inflate(R.layout.dialog_import,null);
         builder.setTitle("Input the generated number");
         builder.setView(dialogView);
         builder.setPositiveButton("enter",
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        EditText edit_text = dialogView.findViewById(R.id.timetable_input_token);
-                        if(!TextUtils.isEmpty(edit_text.getText().toString())){
-                            //TODO: received schedules by token
-                            //TODO: merge into gp/personal timetable
-                            //TODO: create new timetable
-                            // get table name from database, save to pref, content+=timetable
-                            // parse the schedule into json and save into monwed_name, thrsun_name
-//                          timetables.add(name);
-//                          notes.add(note);
-//                          adapter.notifyDataSetChanged();
-//                          menu.close(true);
+                        EditText tokenEt = dialogView.findViewById(R.id.import_token);
+                        String token=tokenEt.getText().toString();
+                        if(!TextUtils.isEmpty(token)){
+                            getScheduleFromServer(token);
+                            menu.close(true);
                             dialog.dismiss();
                         }
                         else{
@@ -185,18 +192,78 @@ public class TimetableHomeActivity extends Activity {
     }
 
     void getScheduleFromServer(String token){
-        String sqlCommand="Select * from dbo.user_schedule where token="+token+";";
+        HashMap<String,String> data=new HashMap<>();
+        String sqlCommand="Select * from dbo.user_schedule where token= '"+token+"'";
+        data.put("db_name","Smart Scheduler");
+        data.put("sql_cmd",sqlCommand);
 
+        String url = this.getString(R.string.server_ip);
+        RequestQueue queue = Volley.newRequestQueue(this);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray result= response.getJSONArray("result");
+                            if(result.length()==0){
+                                return;
+                            }
+                            saveScheduleToPreference(result);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println(error.toString());
+                    }
+                }
+        );
+        queue.add(request);
+    }
+
+    void saveScheduleToPreference(JSONArray arr) throws JSONException {
+        ArrayList<Schedule> monwed=new ArrayList<>();
+        ArrayList<Schedule> thrsun=new ArrayList<>();
+        String tableName="";
+        for(int i=0;i<arr.length();i++){
+            JSONObject row=arr.getJSONObject(i);
+            Schedule schedule=new Schedule();
+            schedule.setClassPlace(row.getString("class_place"));
+            schedule.setClassTitle(row.getString("class_title"));
+            schedule.setDay(row.getInt("day_of_week"));
+            schedule.setStartTime(new Time(row.getInt("start_hour"),row.getInt("start_min")));
+            schedule.setEndTime(new Time(row.getInt("end_hour"),row.getInt("end_min")));
+            schedule.setProfessorName(row.getString("professor_name"));
+            tableName=row.getString("table_name");
+            if(schedule.getDay()<3){
+                monwed.add(schedule);
+            }
+            else{
+                thrsun.add(schedule);
+            }
+        }
+        int cnt=0;
+        while(this.timetables.contains(tableName)){
+            tableName+=String.valueOf(cnt);
+        }
+        Gson gson=new Gson();
+        saveToSharePreference(tableName,"");
+        SharedPreferences pref=PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor=pref.edit();
+        editor.putString("monwed_"+tableName,gson.toJson(monwed));
+        editor.putString("thrsun_"+tableName,gson.toJson(thrsun));
+        editor.commit();
+        timetables.add(tableName);
+        notes.add("imported timetable");
+        adapter.notifyDataSetChanged();
     }
 
     void saveToSharePreference(String prefix,String desciption){
         SharedPreferences pref=PreferenceManager.getDefaultSharedPreferences(this);
         pref.edit().putString(prefix,"timetable"+desciption).commit();
-    }
-
-    boolean isNameExist(String name){
-        SharedPreferences pref=PreferenceManager.getDefaultSharedPreferences(this);
-        return pref.getString(name,null)!=null;
     }
 
     @Override

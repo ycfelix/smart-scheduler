@@ -19,6 +19,8 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
     <application
+        android:name="com.ust.timetable.TimetableLoader"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -47,15 +49,10 @@
         <activity android:name=".TimetableItemActivity"/>
         <activity android:name=".TimetableHomeActivity"/>
         <activity android:name=".UserActionActivity"/>
+        <activity android:name=".ChecklistHomeActivity"/>
         <service android:name="com.ust.focusmode.StudyModeService"
             android:enabled="true"
             android:exported="true"/>
 
     </application>
-
-
-
-
 </manifest>
-
-
