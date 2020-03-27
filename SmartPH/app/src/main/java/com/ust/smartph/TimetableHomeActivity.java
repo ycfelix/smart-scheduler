@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -163,14 +162,14 @@ public class TimetableHomeActivity extends Activity {
     void importSchedule(View v){
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
         final View dialogView = LayoutInflater.from(this)
-                .inflate(R.layout.timetable_import,null);
+                .inflate(R.layout.dialog_import,null);
         builder.setTitle("Input the generated number");
         builder.setView(dialogView);
         builder.setPositiveButton("enter",
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        EditText tokenEt = dialogView.findViewById(R.id.timetable_input_token);
+                        EditText tokenEt = dialogView.findViewById(R.id.import_token);
                         String token=tokenEt.getText().toString();
                         if(!TextUtils.isEmpty(token)){
                             getScheduleFromServer(token);

@@ -1,7 +1,6 @@
 package com.ust.customchecklist;
 
 import android.content.Context;
-import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -9,16 +8,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.ust.smartph.ChecklistHomeActivity;
 import com.ust.smartph.R;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,37 +43,64 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int i) {
         DataModel selected = data.get(i);
-        Drawable icon = ContextCompat.getDrawable(context, IconDictionary.getIcon(selected.getIcon()));
+        int id=IconDictionary.getIcon(selected.getIcon());
+        if(id!=-1){
+            Drawable icon = ContextCompat.getDrawable(context, IconDictionary.getIcon(selected.getIcon()));
+            holder.icon.setImageDrawable(icon);
+        }
+        else{
+            holder.icon.setImageDrawable( ContextCompat.getDrawable(context,
+                    IconDictionary.getIcon(R.id.default_icon)));
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemClickListener.onItemClick(v,i);
+                final int index=holder.getAdapterPosition();
+                EditDialog dialog = new EditDialog(
+                        ChecklistAdapter.this.context,
+                        RequestType.EDIT,
+                        data.get(index));
+
+                dialog.setEditDialogListener(new EditDialogListener() {
+                    @Override
+                    public void onEditResult(@NotNull DataModel data, RequestType type) {
+                        if(type==RequestType.DELETE){
+                            ChecklistAdapter.this.data.remove(index);
+                            notifyItemRemoved(index);
+                        }
+                        else{
+                            ChecklistAdapter.this.data.set(index,data);
+                            notifyItemChanged(index);
+                        }
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
             }
         });
         holder.title.setText(selected.getTitle());
         holder.detail.setText(selected.getDetail());
         holder.checkBox.setChecked(selected.isChecked());
-        holder.icon.setImageDrawable(icon);
         holder.checkBox.setTag(i);
         holder.checkBox.setChecked(selected.isChecked());
 
         holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                RelativeLayout r= (RelativeLayout) v.getParent();
-//                LinearLayout l= (LinearLayout) r.getChildAt(0);
-//                TextView title= (TextView) l.getChildAt(0);
-//                TextView detail= (TextView) l.getChildAt(1);
+                RelativeLayout r= (RelativeLayout) v.getParent();
+                LinearLayout l= (LinearLayout) r.getChildAt(0);
+                TextView title= (TextView) l.getChildAt(0);
+                TextView detail= (TextView) l.getChildAt(1);
                 if (((CheckBox)v).isChecked()){
                     notifyItemMoved(holder.getAdapterPosition(),data.size()-1);
                     selected.setChecked(true);
                     Collections.swap(data,holder.getAdapterPosition(),data.size()-1);
                 }
                 else{
+                    notifyItemMoved(holder.getAdapterPosition(),0);
                     Collections.swap(data,holder.getAdapterPosition(),0);
                     selected.setChecked(false);
-                    notifyItemMoved(holder.getAdapterPosition(),0);
                 }
             }
         });

@@ -20,6 +20,7 @@ public class DataModel {
         this.checked=false;
     }
 
+
     public DataModel(String title,String detail,int icon,boolean checked){
         this.title=title;
         this.detail=detail;

@@ -110,9 +110,9 @@ public class TimetableHomeAdapter extends RecyclerView.Adapter<TimetableHomeAdap
             public void onClick(View v) {
                 AlertDialog.Builder builder=new AlertDialog.Builder(TimetableHomeAdapter.this.context);
                 final View dialogView = LayoutInflater.from(TimetableHomeAdapter.this.context)
-                        .inflate(R.layout.timetable_export, null);
+                        .inflate(R.layout.dialog_export, null);
                 builder.setTitle("Your generated share code");
-                TextView tokenTv = dialogView.findViewById(R.id.timetable_token);
+                TextView tokenTv = dialogView.findViewById(R.id.export_token);
                 String tableName=timetableViewHolder.timetableName.getText().toString();
                 updateDB(tableName, new Function<String, Void>() {
                     @Override
