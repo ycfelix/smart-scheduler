@@ -2,12 +2,6 @@
     <string name="app_name">Smart Scheduler</string>
     <string name="copy_right">KWT1 for HKUST CSE FYP 2020</string>
     <string name="action_settings">Settings</string>
-    <string name="item_title_label_text">Title</string>
-    <string name="item_details_label_text">Details</string>
-    <string name="item_title_input_hint">Enter a title</string>
-    <string name="item_details_input_hint">Enter some details</string>
-    <string name="item_icon_select_label_text">Icon</string>
-    <string name="interval_description_label">Select an interval for notifications to appear.</string>
 
     <!-- Icons -->
     <string name="empty_icon_content_description">Empty Icon</string>
@@ -22,18 +16,8 @@
     <string name="mail_icon_content_description">Mail Icon</string>
     <string name="people_icon_content_description">Social Icon</string>
     <string name="food_icon_content_description">Cook Icon</string>
-    <string name="empty_listView_text">Nothing to show</string>
-    <string name="reminder_settings_interval_label_text">Interval</string>
-    <string name="switch_enabled_text">Enabled</string>
 
     <!-- Notifications -->
-    <string name="reminder_radioButton_thirty_minutes_text">30 Minutes</string>
-    <string name="reminder_radioButton_one_hour_text">1 Hour</string>
-    <string name="reminder_radioButton_two_hours_text">2 Hours</string>
-    <string name="reminder_radioButton_four_hours_text">4 Hours</string>
-    <string name="reminder_radioButton_eight_hours_text">8 Hours</string>
-    <string name="reminder_radioButton_twelve_hours_text">12 Hours</string>
-    <string name="reminder_radioButton_twenty_four_hours_text">24 Hours</string>
 
     <string-array name="days">
         <item >Mon</item>

@@ -169,11 +169,14 @@ public class ChecklistHomeActivity extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             JSONArray result= response.getJSONArray("result");
+                            System.out.println(response);
                             if(result.length()==0){
                                 return;
                             }
                             addToChecklist(result);
+                            adapter.notifyItemInserted(ChecklistHomeActivity.this.data.size()-1);
                             saveDataToPreference();
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -212,6 +215,31 @@ public class ChecklistHomeActivity extends AppCompatActivity {
         return HashGenerator.toHashCode(android_id)+HashGenerator.toHashCode(timetableName);
     }
 
+    void updateDB(){
+        HashMap<String,String> data=new HashMap<>();
+        String sqlCommand= "delete from dbo.user_checklist where token = '%s'";
+        data.put("db_name","Smart Scheduler");
+        data.put("sql_cmd",sqlCommand);
+        String url = this.getString(R.string.server_ip);
+        RequestQueue queue = Volley.newRequestQueue(this);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println(response);
+                        sendChecklistToServer();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println(error.toString());
+                    }
+                }
+        );
+        queue.add(request);
+    }
+
 
     @OnClick(R.id.checklist_export_fab)
     void exportChecklist(View v){
@@ -219,7 +247,7 @@ public class ChecklistHomeActivity extends AppCompatActivity {
         final View dialogView = LayoutInflater.from(this)
                 .inflate(R.layout.dialog_export, null);
         builder.setTitle("Your generated share code");
-        sendChecklistToServer();
+        updateDB();
         TextView tokenTv = dialogView.findViewById(R.id.export_token);
         String token = getToken(PREF_NAME);
         tokenTv.setText(token);
@@ -278,7 +306,7 @@ public class ChecklistHomeActivity extends AppCompatActivity {
            int icon=model.getIcon();
            sql.add(String.format(Locale.US,
                    "insert into dbo.user_checklist(checked,title,detail,icon,"+
-                           "token) values(%b,'%s', '%s',%d,'%s')",checked,title,detail,icon,token));
+                           "token) values(%d,'%s', '%s',%d,'%s')",checked?1:0,title,detail,icon,token));
        }
        return sql;
     }

@@ -8,25 +8,44 @@ import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 
+import com.ust.signup.SignupDialog;
+import com.ust.signup.SigupDialogListener;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 public class LoginActivity extends AppCompatActivity {
-    private EditText emailEditText;
-    private EditText passEditText;
+
+    @BindView(R.id.username)
+    EditText emailEditText;
+
+    @BindView(R.id.password)
+    EditText passEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_screen);
-        // Address the email and password field
-        emailEditText = findViewById(R.id.username);
-        passEditText = findViewById(R.id.password);
-
+        ButterKnife.bind(this);
     }
     public void enterAboutUs(View arg){
         startActivity(new Intent(LoginActivity.this, AboutUsActivity.class));
+    }
+
+    public void signupNow(View v){
+        SignupDialog dialog=new SignupDialog(this);
+        dialog.setSigupDialogListener(new SigupDialogListener() {
+            @Override
+            public void onEditResult(String email, String password) {
+                emailEditText.setText(email);
+                passEditText.setText(password);
+            }
+        });
+        dialog.show();
     }
 
     public void forgetPassword(View arg){
