@@ -37,6 +37,6 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     public void startActionDetection(View arg){
-        startActivity(new Intent(this, UserActionActivity.class));
+        startActivity(new Intent(this, CustomActionDetectionActivity.class));
     }
 }

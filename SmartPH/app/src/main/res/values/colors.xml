@@ -5,9 +5,7 @@
     <color name="colorAccent">#1cd09c</color>
 
     <!-- List -->
-    <color name="divider_color">#1F000000</color>
     <color name="list_item_background">#FFFFFF</color>
-    <color name="list_item_selected_background">#AAAAAA</color>
 
     <!-- Text -->
     <color name="primary_text_color">#000000</color>
