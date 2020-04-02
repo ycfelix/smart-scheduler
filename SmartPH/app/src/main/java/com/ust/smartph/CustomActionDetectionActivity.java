@@ -7,7 +7,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,7 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.ust.customactiondetection.ActionDetectionAdaptor;
+import com.ust.customactiondetection.ActionDetectionAdapter;
 import com.ust.customactiondetection.DataModel;
 
 import java.util.ArrayList;
@@ -42,7 +41,7 @@ public class CustomActionDetectionActivity extends AppCompatActivity {
     @BindView(R.id.action_detection_list)
     ListView listView;
 
-    private ActionDetectionAdaptor adapter;
+    private ActionDetectionAdapter adapter;
 
     SensingKitLibInterface mSensingKitLib;
 
@@ -71,7 +70,7 @@ public class CustomActionDetectionActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        adapter= new ActionDetectionAdaptor(dataModels,getApplicationContext());
+        adapter= new ActionDetectionAdapter(dataModels,getApplicationContext());
 
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

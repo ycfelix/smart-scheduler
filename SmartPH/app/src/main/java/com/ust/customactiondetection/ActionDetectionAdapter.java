@@ -15,7 +15,7 @@ import com.ust.smartph.R;
 
 import java.util.ArrayList;
 
-public class ActionDetectionAdaptor extends ArrayAdapter<DataModel> implements View.OnClickListener {
+public class ActionDetectionAdapter extends ArrayAdapter<DataModel> implements View.OnClickListener {
 
     private ArrayList<DataModel> dataSet;
     Context mContext;
@@ -27,7 +27,7 @@ public class ActionDetectionAdaptor extends ArrayAdapter<DataModel> implements V
         ImageView info;
     }
 
-    public ActionDetectionAdaptor(ArrayList<DataModel> data, Context context) {
+    public ActionDetectionAdapter(ArrayList<DataModel> data, Context context) {
         super(context, R.layout.action_detection_row_item, data);
         this.dataSet = data;
         this.mContext=context;
