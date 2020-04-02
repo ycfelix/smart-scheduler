@@ -28,7 +28,6 @@
         <item>Sat</item>
         <item>Sun</item>
     </string-array>
-
     <string-array name="mon_wed">
         <item></item>
         <item >Mon</item>
@@ -49,5 +48,16 @@
     <!-->focus mode strings<!-->
 
     <string name="server_ip">http://13.70.2.33/api/sql_db</string>
+
+    <!-->feedback strings<!-->
+    <string name="feedback">Feedback</string>
+    <string name="feedback_description">We cherish every user\'s feedback. Please write down your comments below!</string>
+    <string name="feedback_subject">Subject:</string>
+    <string name="feedback_content">Content:</string>
+    <string name="feedback_subject_hint">Enter feedback subject</string>
+    <string name="feedback_content_hint">Enter your feedback</string>
+    <string name="feedback_btn_caption">Submit</string>
+    <string name="feedback_rating_label">Rate this app:</string>
+
 
 </resources>
