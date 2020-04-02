@@ -1,5 +1,6 @@
 package com.ust.smartph;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +26,7 @@ public class AboutUsActivity  extends AppCompatActivity {
                 .setImage(R.drawable.app_name)
                 .addItem(new Element().setTitle("Version 1.0"))
                 .addItem(adsElement)
+                .addItem(getFeedbackElement())
                 .addGroup("Connect with us")
                 .addEmail("cfyauab@connect.ust.hk")
                 .addWebsite("https://github.com/ycfelix")
@@ -59,6 +61,16 @@ public class AboutUsActivity  extends AppCompatActivity {
             }
         });
         return copyRightsElement;
+    }
+
+    Element getFeedbackElement() {
+        Element feedbackElement = new Element();
+        final String feedbackString = getResources().getString(R.string.feedback);
+        feedbackElement.setTitle(feedbackString);
+        feedbackElement.setOnClickListener((View v) -> {
+            startActivity(new Intent(AboutUsActivity.this, FeedbackActivity.class));
+        });
+        return feedbackElement;
     }
 
     void simulateDayNight(int currentSetting) {

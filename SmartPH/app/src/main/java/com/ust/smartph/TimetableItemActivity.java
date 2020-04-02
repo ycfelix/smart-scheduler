@@ -45,8 +45,6 @@ public class TimetableItemActivity extends AppCompatActivity {
     @BindView(R.id.swipe_timetable)
     ViewPager pager;
 
-    @BindView(R.id.current_timetable)
-    TextView timetableName;
 
     TimetablePagerAdapter adapter;
 
@@ -101,7 +99,6 @@ public class TimetableItemActivity extends AppCompatActivity {
         pager.setAdapter(adapter);
         timetableTab.getTabAt(0).setText("Mon-Wed");
         timetableTab.getTabAt(1).setText("Thr-Sun");
-        timetableName.setText("PERSONAL TIMETABLE \n SWITCH TO GROUP TIMETABLE ?");
     }
 
     @OnClick(R.id.add_fab)

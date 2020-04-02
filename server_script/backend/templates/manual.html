@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500&display=swap" rel="stylesheet">
+	<title>FYP Server API manual</title>
+	<link rel="stylesheet" type="text/css" href="../static/styles.css">
+</head>
+<body>
+	<h1>Smart Scheduler Server API Manual</h1>
+	<hr>
+	<div id="intro">
+		<p class="subsection">
+			1. Introduction:
+		</p>
+		<p>This API provides services for retrieving, processing and returning output of given simple SQL commands in JSON format.
+			<br>Supported SQL commands are <span class="code">SELECT, UPDATE, INSERT INTO, DELETE, <sup>(1)</sup>IF ... ELSE ...</span>
+			<br>Brief introduction of this site:
+			<ul>
+				<li><a href="http://13.70.2.33">http://13.70.2.33</a> is the index page of the server. A string "Smart Scheduler server" should appear if the server is running.</li>
+				<li><a href="http://13.70.2.33/help">http://13.70.2.33/help</a> is this manual page.</li>
+				<li><a href="http://13.70.2.33/api/sql_db">http://13.70.2.33/api/sql_db</a> is the link to send SQL command. If you click this link, a "Method Not Allowed" error should appear on the browser screen.</li>
+			</ul>
+			<br>For enquiry or report bug, please find John through WhatsApp.
+		</p>
+	</div>
+	<div id="usage">
+		<p class="subsection">
+			2. Usage:
+		</p>
+		<p>You need to <span class="code">POST</span> a SQL command to this server in the following JSON format:
+			<pre>
+<code>{
+	"db_name": "your database name",
+	"sql_cmd": "your SQL command"
+}</code>
+			</pre>Suppose we have a demo table <span class="code">Products</span> in database <span class="code">TestData</span>:
+			<br><br><table id="demo_tb" align="center">
+				<tr>
+					<th>ProductID</th>
+					<th>ProductName</th>
+					<th>Price</th>
+					<th>ProductDescription</th>
+				</tr>
+				<tr>
+					<td>1</td>
+					<td>iPad</td>
+					<td>299.0</td>
+					<td>Hello!</td>
+				</tr>
+				<tr>
+					<td>50</td>
+					<td>Screwdriver</td>
+					<td>3.17</td>
+					<td>Flat head</td>
+				</tr>
+				<tr>
+					<td>75</td>
+					<td>Tire Bar</td>
+					<td>null</td>
+					<td>Tool for changing tires</td>
+				</tr>
+				<tr>
+					<td>3000</td>
+					<td>3mm bracket</td>
+					<td>0.52</td>
+					<td>null</td>
+				</tr>
+			</table>
+			<br>
+			In this table, <span class="code">ProductID</span> and <span class="code">ProductName</span> are non-nullable. <span class="code">ProductID</span> is the primary key.
+			<br>
+			<p class="subsection">
+				2a. Query using <span class="code">SELECT</span>:
+			</p>
+			We can retrieve the whole table by posting a JSON string below:
+			<pre>
+<code>{
+	"db_name": "TestData",
+	"sql_cmd": "SELECT * FROM Products"
+}</code>
+			</pre>
+			The returning JSON string will be:
+			<pre>
+<code>{
+    "type": "query",
+    "result": [
+        {
+            "ProductID": 1,
+            "ProductName": "iPad",
+            "Price": 299.0,
+            "ProductDescription": "Hello!"
+        },
+        {
+            "ProductID": 50,
+            "ProductName": "Screwdriver",
+            "Price": 3.17,
+            "ProductDescription": "Flat head"
+        },
+        {
+            "ProductID": 75,
+            "ProductName": "Tire Bar",
+            "Price": null,
+            "ProductDescription": "Tool for changing tires."
+        },
+        {
+            "ProductID": 3000,
+            "ProductName": "3mm bracket",
+            "Price": 0.52,
+            "ProductDescription": null
+        }
+    ]
+}</code>
+			</pre>
+			Please be reminded that although SQL keywords are case-insensitive, it is better to capitalise all SQL keywords. Table and column names are case-sensitive.
+			<p class="subsection">
+				2b. Update an existing record using <span class="code">UPDATE</span>:
+			</p>
+			Now, we want to update the <span class="code">ProductDescription</span> of iPad from "Hello!" to "Hello (again)!". The original record is:
+			<pre>
+<code>{
+    "ProductID": 1,
+    "ProductName": "iPad",
+    "Price": 299.0,
+    "ProductDescription": "Hello!"
+}</code>
+			</pre>
+			With the JSON string below:
+			<pre>
+<code>{
+	"db_name": "TestData",
+	"sql_cmd": "UPDATE Products SET ProductDescription='Hello (again)!' WHERE ProductID=1"
+}</code>
+			</pre>
+			If successful, the returned JSON string will be:
+			<pre>
+<code>{
+    "type": "update",
+    "result": true,
+    "num_rows_affected": 1
+}</code>
+			</pre>
+			<sup>(1)</sup>Where <span class="code">num_rows_affected</span> means number of modified rows. From the JSON string, we can see it is 1.<br><strike>In this case, <span class="code">num_rows_affected</span> is a bug. This should be 1 and will be fixed later.</strike>
+			<p class="subsection">
+				2c. Insert a new record using <span class="code">INSERT INTO</span>:
+			</p>
+			Suppose we want to insert a new record storing information of a new product shown below:
+			<pre>
+<code>{
+    "ProductID": 6,
+    "ProductName": "MacBook Pro",
+    "Price": 1999.99,
+    "ProductDescription": "The most expensive MacBook Pro ever!!! HAHA!"
+}</code>
+			</pre>
+			We can use the floolwing JSON string:
+			<pre>
+<code>{
+	"db_name": "TestData",
+	"sql_cmd": "INSERT INTO Products (ProductID, ProductName, Price, ProductDescription)
+	VALUES (6, 'MacBook Pro', 1999.99, 'The most expensive MacBook Pro ever!!! HAHA!')"
+}</code>
+			</pre>Using this method, you have to match each field value with the corresponding column. For example, integral value 6 is corresponding to <span class="code">ProductID</span>.
+			<br>That being said, you can also do this:
+			<pre>
+<code>{
+	"db_name": "TestData",
+	"sql_cmd": "INSERT INTO Products (ProductName, ProductID, ProductDescription, Price)
+	VALUES ('MacBook Pro', 6, 'The most expensive MacBook Pro ever!!! HAHA!', 1999.99)"
+}</code>
+			</pre>As long as all values corresponds to their appropriate columns.
+			<br>If the insertion is successful, the API will return:
+			<pre>
+<code>{
+    "type": "insert",
+    "result": true,
+    "num_rows_affected": 1
+}</code>
+			</pre>In this case, <span class="code">num_rows_affected</span> is number of new rows inserted.
+			<br>However, if the insertion fails (for example, you do the above insertion again), the API will return:
+			<pre>
+				<code>
+{
+    "type": "insert",
+    "result": false,
+    "error msg": "('23000', \"[23000] [Microsoft][ODBC Driver 17 for SQL Server]
+    [SQL Server]Violation of PRIMARY KEY constraint 'PK__Products__B40CC6ED75D45141'.
+     Cannot insert duplicate key in object 'dbo.Products'.
+     The duplicate key value is (6). (2627) (SQLExecDirectW)\")",
+    "num_rows_affected": 0
+}
+				</code>
+			</pre>This JSON string is to indicate the insertion fails.
+			<p class="subsection">
+				2d. Delete a record using <span class="code">DELETE</span>:
+			</p>
+			To delete an existing record, <span class="code">POST</span> the JSON string below:
+			<pre>
+				<code>{
+	"db_name": "TestData",
+	"sql_cmd": "DELETE Products Where ProductID=6"
+}</code>
+			</pre>
+			In this string, we want to delete the record with <span class="code">ProductID</span> as 6. When the operation is successful, this will be returned:
+			<pre>
+				<code>{
+    "type": "delete",
+    "result": true,
+    "num_rows_affected": 1
+}</code>
+			</pre>
+		</p>
+	</div>
+	<div id="more_info">
+		<p class="subsection">
+			3. More on SQL usage
+		</p>
+		For more information on usage of above SQL commands, please consult <a href="https://www.w3schools.com/sql/default.asp">w3schools.com</a>.
+		<p class="subsection">
+			4. Change Log
+		</p>
+		<footer>
+			<p>(1) Changed on 23/3/2020.</p>
+		</footer>
+	</div>
+</body>
+</html>
