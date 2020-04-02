@@ -4,56 +4,105 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentBottom="true"
+    android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context=".TimetableActivity">
-
-
-    <LinearLayout
+    xmlns:fab="http://schemas.android.com/tools"
+    tools:context=".TimetableItemActivity">
+    <RelativeLayout
         android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@color/colorPrimaryDark"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/current_timetable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:shadowColor="@color/backgroundcolor"
+            android:textColor="@color/list_item_background"
+            android:background="@android:color/transparent" />
+    </RelativeLayout>
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/timetable_tab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <RelativeLayout
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:layout_width="wrap_content">
 
-        <Button
-            android:id="@+id/save_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Save" />
-
-        <Button
-            android:id="@+id/load_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Load" />
-
-        <Button
-            android:id="@+id/add_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Add" />
-
-        <Button
-            android:id="@+id/clear_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Clear" />
-
-        <Button
-            android:id="@+id/match_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Match" />
-
-    </LinearLayout>
-
-    <com.github.tlaabs.timetableview.TimetableView
-        android:id="@+id/timetable"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/swipe_timetable"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:header_highlight_image="@drawable/button_background"
-        app:header_highlight_image_size="36dp"
-        app:header_highlight_type="image"
-        app:header_title="@array/header_title" />
+        android:layout_height="wrap_content" >
 
+    </android.support.v4.view.ViewPager>
+        <com.github.clans.fab.FloatingActionMenu
+            android:id="@+id/fab_timetable_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            fab:menu_animationDelayPerItem="50"
+            fab:menu_backgroundColor="#55FFFFFF"
+            fab:menu_buttonSpacing="0dp"
+            app:menu_colorNormal="#556270"
+            app:menu_colorPressed="#6b7b8d"
+            fab:menu_colorRipple="#99FFFFFF"
+            fab:menu_fab_hide_animation="@anim/my_hide_animation"
+            fab:menu_fab_show_animation="@anim/my_show_animation"
+            fab:menu_fab_size="normal"
+            app:menu_icon="@drawable/baseline_list_white_36dp"
+            fab:menu_labels_colorNormal="#333333"
+            fab:menu_labels_colorPressed="#444444"
+            fab:menu_labels_colorRipple="#66FFFFFF"
+            fab:menu_labels_cornerRadius="3dp"
+            fab:menu_labels_ellipsize="none"
+            fab:menu_labels_hideAnimation="@anim/fab_slide_out_to_right"
+            fab:menu_labels_margin="0dp"
+            fab:menu_labels_maxLines="-1"
+            fab:menu_labels_padding="8dp"
+            fab:menu_labels_paddingBottom="4dp"
+            fab:menu_labels_paddingLeft="8dp"
+            fab:menu_labels_paddingRight="8dp"
+            fab:menu_labels_paddingTop="4dp"
+            fab:menu_labels_position="left"
+            fab:menu_labels_showAnimation="@anim/fab_slide_in_from_right"
+            fab:menu_labels_showShadow="true"
+            fab:menu_labels_singleLine="false"
+            fab:menu_labels_textColor="#FFFFFF"
+            fab:menu_labels_textSize="14sp"
+            fab:menu_openDirection="up"
+            fab:menu_shadowColor="#66000000"
+            fab:menu_shadowRadius="4dp"
+            fab:menu_shadowXOffset="1dp"
+            fab:menu_shadowYOffset="3dp"
+            fab:menu_showShadow="true">
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/match_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_assignment_white_36dp"
+                app:fab_label="match with friend"
+                app:fab_colorNormal="#556270"
+                app:fab_colorPressed="#6b7b8d"
+                fab:fab_size="mini" />
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/add_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/fab_add"
+                app:fab_label="add a schedule"
+                app:fab_colorNormal="#556270"
+                app:fab_colorPressed="#6b7b8d"
+                fab:fab_size="mini" />
+        </com.github.clans.fab.FloatingActionMenu>
+    </RelativeLayout>
 </LinearLayout>

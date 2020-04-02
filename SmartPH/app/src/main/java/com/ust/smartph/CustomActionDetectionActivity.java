@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.ust.customactiondetection.ActionDetectionAdaptor;
 import com.ust.customactiondetection.DataModel;
 
@@ -53,6 +54,14 @@ public class CustomActionDetectionActivity extends AppCompatActivity {
         setContentView(R.layout.action_detection_custom_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.action_detection_toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                Gson gson=new Gson();
+                System.out.println(gson.toJson(dataModels));
+                return false;
+            }
+        });
         ButterKnife.bind(this);
 
         try{

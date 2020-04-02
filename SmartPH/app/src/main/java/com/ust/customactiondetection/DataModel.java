@@ -1,5 +1,9 @@
 package com.ust.customactiondetection;
 
+import com.google.gson.Gson;
+
+import androidx.annotation.NonNull;
+
 public class DataModel {
 
     String sensorName;

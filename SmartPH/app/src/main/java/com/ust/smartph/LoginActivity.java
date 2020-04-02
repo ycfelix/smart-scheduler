@@ -1,6 +1,7 @@
 package com.ust.smartph;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,24 +14,34 @@ import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.ust.signup.SignupDialog;
+import com.ust.signup.SigupDialogListener;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 public class LoginActivity extends AppCompatActivity {
-    private EditText emailEditText;
-    private EditText passEditText;
     private final String TAG = "LOGIN";
-    private JSONObject resultJSON = new JSONObject();
+    private String resultStr = null;
+    private Integer error_code = null;
 
     // T table for Pearson hashing from RFC 3074.
     private char T[] = {
@@ -53,17 +64,97 @@ public class LoginActivity extends AppCompatActivity {
         149, 80, 170, 68, 6, 169, 234, 151
     };
 
+    @BindView(R.id.username)
+    EditText emailEditText;
+
+    @BindView(R.id.password)
+    EditText passEditText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_screen);
-        // Address the email and password field
-        emailEditText = findViewById(R.id.username);
-        passEditText = findViewById(R.id.password);
-
+        ButterKnife.bind(this);
+        Log.d(TAG, "onCreate");
+//        load();
     }
+
+//    private void load() {
+//        Log.d(TAG, "load()");
+//        FileInputStream fis = null;
+//        try {
+//            fis = openFileInput(FILE_NAME);
+//            InputStreamReader isr = new InputStreamReader(fis);
+//            BufferedReader br = new BufferedReader(isr);
+//            StringBuilder sb = new StringBuilder();
+//            String text;
+//
+//            while ((text = br.readLine()) != null) {
+//                sb.append(text).append("\n");
+//            }
+//
+//            Log.d(TAG, "Content in appInfo.txt: \n" + sb.toString());
+//            String[] accInfo = sb.toString().split("\n");
+//            emailEditText.setText(accInfo[0]);
+//            passEditText.setText(accInfo[1]);
+//
+//            File dir = getFilesDir();
+//            File file = new File(dir, FILE_NAME);
+//            Log.d(TAG, "Delete file: " + file.delete());
+//
+//        } catch (FileNotFoundException e) {
+//            Log.d(TAG, "File not found");
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            Log.d(TAG, "I/O error");
+//            e.printStackTrace();
+//        } finally {
+//            if (fis != null) {
+//                try {
+//                    fis.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//    }
+
     public void enterAboutUs(View arg){
         startActivity(new Intent(LoginActivity.this, AboutUsActivity.class));
+    }
+
+    public void signupNow(View v){
+        SignupDialog dialog=new SignupDialog(this);
+        dialog.setSigupDialogListener(new SigupDialogListener() {
+            @Override
+            public void onEditResult(String email, String password) {
+                emailEditText.setText(email);
+                passEditText.setText(password);
+            }
+
+            @Override
+            public char onGetHashedPwd(String pass) {
+//                Log.d(TAG, "pass = " + pass);
+//                Log.d(TAG, "hashed_pwd in listener = " + phash(pass));
+                return phash(pass);
+            }
+
+            @Override
+            public void onGetCnxn(JSONObject jsonData, String api, final VolleyCallback callback) {
+                connectServer(jsonData, api, callback);
+            }
+
+            @Override
+            public boolean onCheckEmail(String email) {
+                return isValidEmail(email);
+            }
+
+            @Override
+            public boolean onCheckPass(String pass) {
+                return isValidPassword(pass);
+            }
+        });
+        dialog.show();
     }
 
     public void forgetPassword(View arg){
@@ -77,6 +168,7 @@ public class LoginActivity extends AppCompatActivity {
 
         final String email = emailEditText.getText().toString();
         final String pass = passEditText.getText().toString();
+
         if (!isValidEmail(email)) {
             //Set error message for email field
             emailEditText.setError("Invalid Email");
@@ -87,24 +179,55 @@ public class LoginActivity extends AppCompatActivity {
             passEditText.setError("Invalid password");
         }
         if (isValidEmail(email) && isValidPassword(pass)) {
-            final char hashed_pwd = phash(pass);
+            final String hashed_pwd = Character.toString(phash(pass));
+            Log.d(TAG, "hashed_password = " + hashed_pwd);
+            final JSONObject accInfo = new JSONObject();
+            try {
+                accInfo.put("email", email);
+                accInfo.put("hashed_pwd", hashed_pwd);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            String api = "http://13.70.2.33:5000/api/user/login";
             Log.d(TAG, "hashed_pwd@checkLogin: " + hashed_pwd);
-//            isValid(email, pass, (JSONObject result) -> resultJSON = result);
-            if (isValid(email, pass, (JSONObject result) -> resultJSON = result)) {
-                Log.d(TAG, "finish isValid, success");
-                if (true) {
-                    Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
-                    intent.putExtra("email", email);
-                    startActivity(intent);
+
+            connectServer(accInfo, api,
+                    new VolleyCallback() {
+                @Override
+                public void onSuccess(JSONObject result) {
+                    try {
+                        resultStr = result.getString("result");
+                        error_code = result.getInt("error_code");
+                        Log.d(TAG, "resultStr = " + resultStr);
+                        Log.d(TAG, "error_code = " + error_code);
+                        if (error_code == -1 || error_code == 0 ) {
+                            if (error_code == 0) {
+                                SharedPreferences emailSP = getSharedPreferences("EMAIL", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = emailSP.edit();
+                                editor.putString("EMAIL", email);
+                                editor.putString("PASS", pass);
+                                editor.apply();
+                            }
+                            Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+//                            intent.putExtra("email", email);
+                            startActivity(intent);
+                        }
+                        else {
+                            // Indicate authentication error
+                            Log.d(TAG, "Authentication failed...");
+                            emailEditText.setError("Wrong email or password.");
+                        }
+
+                    } catch (JSONException e) {
+                        Log.d(TAG, "JSON retrieve result failed!");
+                    }
                 }
-                else {
-                    // Indicate error
+                @Override
+                public void onFailure() {
+                    Log.d(TAG, "Failed to check!");
+                    emailEditText.setError("Login timeout!");
                 }
-            }
-            else {
-                Log.d(TAG, "finish isValid, failed");
-                // create a pop-up saying login failed.
-            }
+            });
         }
     }
 
@@ -124,39 +247,33 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     // send email to server for validation
-    private boolean isValid(String email, String pass, final VolleyCallback callback) {
+    private void connectServer(JSONObject jsonData, String api, final VolleyCallback callback) {
 
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
-        String api ="http://13.70.2.33:5000/api/user/login";
-        final JSONObject accInfo = new JSONObject();
-        try {
-            accInfo.put("email", email);
-            accInfo.put("hashed_pwd", pass);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
         // Request a JSONObject response from the provided URL.
-        JsonObjectRequest accPostRequest = new JsonObjectRequest(Request.Method.POST, api, accInfo,
+        JsonObjectRequest accPostRequest = new JsonObjectRequest(Request.Method.POST, api, jsonData,
             (JSONObject response) -> {
                 try {
                     Log.d(TAG, "Volley success");
                     callback.onSuccess(response);
                 }
                 catch (Exception e) {
-
+                    Log.d(TAG, "Exception occurred in volley!");
+                    Log.d(TAG, "Exception = " + e.toString());
+                    callback.onFailure();
                 }
             },
             (VolleyError error) -> {
                 Log.d(TAG, "Volley failed");
+                Log.d(TAG, "Volley error = " + error.toString());
+                callback.onFailure();
             }
         );
 
         // Add the request to the RequestQueue.
         queue.add(accPostRequest);
-
-        return true;
     }
 
     private char phash(String key) {

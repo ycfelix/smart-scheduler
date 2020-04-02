@@ -2,12 +2,6 @@
     <string name="app_name">Smart Scheduler</string>
     <string name="copy_right">KWT1 for HKUST CSE FYP 2020</string>
     <string name="action_settings">Settings</string>
-    <string name="item_title_label_text">Title</string>
-    <string name="item_details_label_text">Details</string>
-    <string name="item_title_input_hint">Enter a title</string>
-    <string name="item_details_input_hint">Enter some details</string>
-    <string name="item_icon_select_label_text">Icon</string>
-    <string name="interval_description_label">Select an interval for notifications to appear.</string>
 
     <!-- Icons -->
     <string name="empty_icon_content_description">Empty Icon</string>
@@ -22,47 +16,36 @@
     <string name="mail_icon_content_description">Mail Icon</string>
     <string name="people_icon_content_description">Social Icon</string>
     <string name="food_icon_content_description">Cook Icon</string>
-    <string name="empty_listView_text">Nothing to show</string>
-    <string name="reminder_settings_interval_label_text">Interval</string>
-    <string name="switch_enabled_text">Enabled</string>
 
     <!-- Notifications -->
-    <string name="reminder_radioButton_thirty_minutes_text">30 Minutes</string>
-    <string name="reminder_radioButton_one_hour_text">1 Hour</string>
-    <string name="reminder_radioButton_two_hours_text">2 Hours</string>
-    <string name="reminder_radioButton_four_hours_text">4 Hours</string>
-    <string name="reminder_radioButton_eight_hours_text">8 Hours</string>
-    <string name="reminder_radioButton_twelve_hours_text">12 Hours</string>
-    <string name="reminder_radioButton_twenty_four_hours_text">24 Hours</string>
-
-    <string-array name="header_title">
-        <item></item>
-        <item>Mon</item>
-        <item>Tue</item>
-        <item>Wed</item>
-        <item>Thu</item>
-        <item>Fri</item>
-    </string-array>
 
     <string-array name="days">
-        <item>Mon</item>
-        <item>Tue</item>
-        <item>Wed</item>
-        <item>Thu</item>
-        <item>Fri</item>
+        <item >Mon</item>
+        <item >Tue</item>
+        <item >Wed</item>
+        <item >Thu</item>
+        <item >Fri</item>
+        <item>Sat</item>
+        <item>Sun</item>
+    </string-array>
+    <string-array name="mon_wed">
+        <item></item>
+        <item >Mon</item>
+        <item >Tue</item>
+        <item >Wed</item>
+    </string-array>
+
+    <string-array name="thr_sun">
+        <item></item>
+        <item >Thu</item>
+        <item >Fri</item>
+        <item>Sat</item>
+        <item>Sun</item>
     </string-array>
 
     <!-->app usage strings<!-->
-    <string name="open_app_usage_setting">Open Apps with usage access settings</string>
-    <string name="last_time_used">"Last time used: "</string>
-    <string name="time_span">"Time span: "</string>
-    <string name="explanation_access_to_appusage_is_not_enabled">Failed to retrieve app usage
-        statistics. You may need to enable access
-        for this app through Settings > Security > Apps with usage access
-    </string>
 
     <!-->focus mode strings<!-->
-    <string name="description_accessibility">Help you get attention to your work.</string>
     <string name="setting">Setting</string>
     <string name="start">Start</string>
     <string name="next">Next</string>
@@ -81,21 +64,14 @@
     <string name="nil">(null)</string>
     <string name="app_waiting">APP is opening, please wait</string>
     <string name="floating">Please give the permission of floating window.</string>
-    <string name="floating_">If study mode run without expectation, please give the permission of floating window.</string>
-    <string name="usage_null">Your phone didn\'t have the UsageStats Function, you can\'t use this APP, but I\'ll add support later.</string>
     <string name="usage">Please give the permission of UsageStats.</string>
     <string name="forceExit">Provide a way to force exit.</string>
     <string name="forceExitHelp">If you want exit when the study mode is opened, just touch the time on the screen. While you touching, long click the invisible button where is at the lower-left of the screen, then it will quit.</string>
     <string name="permission_get">In order to get the wallpaper, please give the \"External Storage Reading\" permission.</string>
     <string name="ok">OK</string>
     <string name="permission_get_setting">Please let this program using the storage permission.</string>
-    <string name="latest">Your version is the latest.</string>
-    <string name="error_server">Server ERROR</string>
-    <string name="error_net">Network ERROR</string>
-    <string name="error_net_change">Network Changed</string>
-    <string name="error_space">Can\'t download, Lack Of Space</string>
-    <string name="error_permission">Can\'t download, Permission Denied.</string>
-    <string name="error_unknown">Unknown ERROR</string>
+
+    <string name="server_ip">http://13.70.2.33/api/sql_db</string>
 
     <!-->feedback strings<!-->
     <string name="feedback">Feedback</string>

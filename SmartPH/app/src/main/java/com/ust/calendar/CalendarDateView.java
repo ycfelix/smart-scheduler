@@ -29,7 +29,7 @@ public class CalendarDateView extends ViewPager implements CalendarTopView {
     private CaledarTopViewChangeListener mCaledarLayoutChangeListener;
     private CalendarView.OnItemClickListener onItemClickListener;
 
-    private LinkedList<CalendarView> cache = new LinkedList();
+    private LinkedList<CalendarView> cache = new LinkedList<>();
 
     private int MAXCOUNT=6;
 
