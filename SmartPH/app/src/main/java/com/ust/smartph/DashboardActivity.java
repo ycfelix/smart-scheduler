@@ -10,7 +10,7 @@ public class DashboardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dashboard_home);
+        setContentView(R.layout.dashboard_friend);
     }
 
     public void startAboutUs(View arg){

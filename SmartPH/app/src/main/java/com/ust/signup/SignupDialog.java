@@ -72,7 +72,6 @@ public class SignupDialog extends Dialog {
 
     @OnClick({R.id.signup_button})
     void signupClick(View v){
-        // this.signupDialogListener.onEditResult(email.getText().toString(),password.getText().toString());
         String Email = email.getText().toString();
         String pass = password.getText().toString();
         String confirmPass = confirmPassword.getText().toString();
@@ -84,7 +83,7 @@ public class SignupDialog extends Dialog {
             Log.d(TAG, "password before hashing = " + pass);
             String hashed_pwd = Character.toString(this.signupDialogListener.onGetHashedPwd(pass));
             Log.d(TAG, hashed_pwd);
-
+            this.signupDialogListener.onEditResult(email.getText().toString(),password.getText().toString());
             password.setText("");
             confirmPassword.setText("");
 
