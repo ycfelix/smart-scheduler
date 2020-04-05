@@ -1,17 +1,281 @@
 package com.ust.smartph;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.gson.JsonArray;
+import com.ust.customchecklist.DataModel;
+import com.ust.friend.Friend;
+import com.ust.friend.FriendAdapter;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Locale;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import static com.ust.smartph.MD5Hash.*;
+
 public class DashboardActivity extends AppCompatActivity {
+
+    @BindView(R.id.friend_menu)
+    ImageButton menu;
+
+    @BindView(R.id.friend_add)
+    ImageView addFriend;
+
+    @BindView(R.id.friend_list)
+    RecyclerView friendList;
+
+    @BindView(R.id.user_name)
+    TextView name;
+
+    @BindView(R.id.last_login)
+    TextView lastLogin;
+
+    @BindView(R.id.friend_drawer)
+    DrawerLayout drawer;
+
+    @BindView(R.id.nav_friend)
+    NavigationView friendNavigation;
+
+    ArrayList<Friend> friends=new ArrayList<>();
+
+    private FriendAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dashboard_friend);
+        ButterKnife.bind(this);
+        friendList.setLayoutManager(new LinearLayoutManager(this));
+        adapter=new FriendAdapter(this,friends);
+        friendList.setAdapter(adapter);
+        SharedPreferences pref = getSharedPreferences("EMAIL", Context.MODE_PRIVATE);
+        String email = pref.getString("EMAIL", "");
+        System.out.println("UID: "+MD5(email));
+        System.out.println("email: "+email);
+        name.setText("UID: "+MD5(email));
+        lastLogin.setText(Calendar.getInstance().getTime().toString());
+        getFriendFromServer(email);
     }
+
+    private void getFriendFromServer(String myEmail){
+        HashMap<String,String> data=new HashMap<>();
+        String sqlCommand="Select * from dbo.user_friend where user_email= '"+myEmail+"'";
+        data.put("db_name","Smart Scheduler");
+        data.put("sql_cmd",sqlCommand);
+        System.out.println("getting friends");
+        String url = this.getString(R.string.server_ip);
+        RequestQueue queue = Volley.newRequestQueue(this);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray result= response.getJSONArray("result");
+                            System.out.println(response);
+                            if(result.length()==0){
+                                return;
+                            }
+                            addToFriendlist(result);
+                            adapter.notifyItemInserted(friends.size()-1);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println("cannot get frds");
+                        System.out.println(error.toString());
+                    }
+                }
+        );
+        queue.add(request);
+    }
+
+    void addToFriendlist(JSONArray arr) throws JSONException {
+        ArrayList<Friend> dataModels=new ArrayList<>();
+        for(int i=0;i<arr.length();i++){
+            JSONObject row=arr.getJSONObject(i);
+            String[] csv=row.getString("friend_list").split(",");
+            Arrays.stream(csv).forEach(e->dataModels.add(new Friend("",MD5(e),false,e)));
+        }
+        int size=friends.size();
+        friends.addAll(dataModels);
+        adapter.notifyItemRangeInserted(size,friends.size()-1);
+    }
+
+    @OnClick(R.id.friend_add)
+    void addFriend(View v){
+        final EditText editText = new EditText(this);
+        AlertDialog.Builder inputDialog =
+                new AlertDialog.Builder(this);
+        inputDialog.setTitle("Enter your friends id...").setView(editText);
+        inputDialog.setPositiveButton("Confirm",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(TextUtils.isEmpty(editText.getText())){
+                            Toast.makeText(DashboardActivity.this,"wrong input!",Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            SharedPreferences pref = getSharedPreferences("EMAIL", Context.MODE_PRIVATE);
+                            String email = pref.getString("EMAIL", "");
+                            findFriendFromDB(email,editText.getText().toString());
+                            dialog.dismiss();
+                        }
+                        //search on server
+                    }
+                });
+        inputDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        inputDialog.show();
+    }
+
+    private void findFriendFromDB(String myEmail,String fdID){
+        HashMap<String,String> data=new HashMap<>();
+        String sqlCommand="select * from dbo.Accounts where UserID= '"+fdID+"'";
+        data.put("db_name","Smart Scheduler");
+        data.put("sql_cmd",sqlCommand);
+
+        String url = this.getString(R.string.server_ip);
+        RequestQueue queue = Volley.newRequestQueue(this);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray arr=response.getJSONArray("result");
+                            if(arr.length()>0){
+                                String fdEmail=arr.getJSONObject(0).getString("Email");
+                                if(friends.stream().allMatch(e-> e.getEmail().equals(fdEmail))){
+                                    Toast.makeText(DashboardActivity.this,"friend already exist!",Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                deleteFriendFromDB(myEmail,fdEmail);
+                            }
+                            else{
+                                Toast.makeText(DashboardActivity.this, "Friend doesn't Exist", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println(error.toString());
+                    }
+                }
+        );
+        queue.add(request);
+
+    }
+
+    private void deleteFriendFromDB(String myEmail,String fdEmail){
+        HashMap<String,String> data=new HashMap<>();
+        String sqlCommand="delete from dbo.user_friend where user_email= '"+myEmail+"'";
+        data.put("db_name","Smart Scheduler");
+        data.put("sql_cmd",sqlCommand);
+
+        String url = this.getString(R.string.server_ip);
+        RequestQueue queue = Volley.newRequestQueue(this);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Friend fd=new Friend("",MD5(fdEmail),false,fdEmail);
+                        friends.add(fd);
+                        String[] arr=friends.stream().map(Friend::getEmail).toArray(String[]::new);
+                        addFriendToDB(myEmail,arr);
+                        adapter.notifyItemInserted(friends.size()-1);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println(error.toString());
+                    }
+                }
+        );
+        queue.add(request);
+    }
+
+
+    private void addFriendToDB(String myEmail, String[] csv){
+        HashMap<String,String> data=new HashMap<>();
+        String fds=String.join(",",csv);
+        String sqlCommand=String.format(Locale.US,
+                "insert into dbo.user_friend(user_email,friend_list) values('%s','%s')", myEmail,fds);
+        data.put("db_name","Smart Scheduler");
+        data.put("sql_cmd",sqlCommand);
+
+        String url = this.getString(R.string.server_ip);
+        RequestQueue queue = Volley.newRequestQueue(this);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println(error.toString());
+                    }
+                }
+        );
+        queue.add(request);
+    }
+
+
+    @OnClick(R.id.friend_menu)
+    void setMenuClick(View arg) {
+        drawer.openDrawer(Gravity.START);
+    }
+
 
     public void startAboutUs(View arg){
         startActivity(new Intent(this, AboutUsActivity.class));
@@ -38,5 +302,10 @@ public class DashboardActivity extends AppCompatActivity {
 
     public void startActionDetection(View arg){
         startActivity(new Intent(this, UserActionActivity.class));
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }

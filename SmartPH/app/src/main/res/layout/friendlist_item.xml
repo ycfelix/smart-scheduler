@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/baseline_perm_identity_black_18dp" />
+
+            <TextView
+                android:id="@+id/friend_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="1dp"
+                android:text="name:"
+                android:textSize="24sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/friend_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="user id:000000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/friend_online"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Online: False"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:orientation="horizontal"
+        android:paddingTop="30dp"
+        android:paddingRight="16dp">
+
+        <ImageView
+            android:id="@+id/delete_row"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:clickable="true"
+            android:src="@drawable/clear_black_24dp" />
+    </LinearLayout>
+</RelativeLayout>

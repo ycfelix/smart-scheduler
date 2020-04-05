@@ -75,13 +75,15 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences pref = getSharedPreferences("EMAIL", Context.MODE_PRIVATE);
         String email = pref.getString("EMAIL", "");
         String pass = pref.getString("PASS", "");
+        System.out.println(email);
         if(TextUtils.isEmpty(email)||TextUtils.isEmpty(pass)){
             //cannot find userinfo, dont login
             return;
         }
-        loginToServer(email,pass);
+        //loginToServer(email,pass);
         Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
         startActivity(intent);
+        finish();
     }
 
     public void enterAboutUs(View arg) {
@@ -147,6 +149,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(JSONObject result) {
                         try {
+                            System.out.println(result);
                             resultStr = result.getString("result");
                             error_code = result.getInt("error_code");
                             Log.d(TAG, "resultStr = " + resultStr);
