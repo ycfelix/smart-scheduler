@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +31,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.JsonArray;
 import com.ust.customchecklist.DataModel;
+import com.ust.friend.DeleteItemListener;
 import com.ust.friend.Friend;
 import com.ust.friend.FriendAdapter;
 
@@ -88,6 +90,12 @@ public class DashboardActivity extends AppCompatActivity {
         System.out.println("UID: "+MD5(email));
         System.out.println("email: "+email);
         name.setText("UID: "+MD5(email));
+        adapter.setDeleteItemListener(new DeleteItemListener() {
+            @Override
+            public void onDeleteItem() {
+                deleteFriendFromDB(email,null,null,false);
+            }
+        });
         lastLogin.setText(Calendar.getInstance().getTime().toString());
         getFriendFromServer(email);
     }
@@ -107,7 +115,7 @@ public class DashboardActivity extends AppCompatActivity {
                         try {
                             JSONArray result= response.getJSONArray("result");
                             System.out.println(response);
-                            if(result.length()==0){
+                            if(result.length()==0 || result.getJSONObject(0).getString("friend_list").equals("null")){
                                 return;
                             }
                             addToFriendlist(result);
@@ -131,10 +139,20 @@ public class DashboardActivity extends AppCompatActivity {
 
     void addToFriendlist(JSONArray arr) throws JSONException {
         ArrayList<Friend> dataModels=new ArrayList<>();
+        SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(this);
         for(int i=0;i<arr.length();i++){
             JSONObject row=arr.getJSONObject(i);
             String[] csv=row.getString("friend_list").split(",");
-            Arrays.stream(csv).forEach(e->dataModels.add(new Friend("",MD5(e),false,e)));
+            Arrays.stream(csv).forEach(e-> {
+                String name=preferences.getString(e,"");
+                if(!TextUtils.isEmpty(name)){
+                    dataModels.add(new Friend(name,MD5(e),false,e));
+                }
+                else{
+                    dataModels.add(new Friend("new friend",MD5(e),false,e));
+                }
+            });
+
         }
         int size=friends.size();
         friends.addAll(dataModels);
@@ -185,14 +203,15 @@ public class DashboardActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
+                            System.out.println(response);
                             JSONArray arr=response.getJSONArray("result");
                             if(arr.length()>0){
                                 String fdEmail=arr.getJSONObject(0).getString("Email");
-                                if(friends.stream().allMatch(e-> e.getEmail().equals(fdEmail))){
+                                if(friends.stream().anyMatch(e-> e.getEmail().equals(fdEmail))){
                                     Toast.makeText(DashboardActivity.this,"friend already exist!",Toast.LENGTH_SHORT).show();
                                     return;
                                 }
-                                deleteFriendFromDB(myEmail,fdEmail);
+                                deleteFriendFromDB(myEmail,fdEmail,fdID,true);
                             }
                             else{
                                 Toast.makeText(DashboardActivity.this, "Friend doesn't Exist", Toast.LENGTH_SHORT).show();
@@ -213,7 +232,7 @@ public class DashboardActivity extends AppCompatActivity {
 
     }
 
-    private void deleteFriendFromDB(String myEmail,String fdEmail){
+    private void deleteFriendFromDB(String myEmail,String fdEmail,String fdID, boolean add){
         HashMap<String,String> data=new HashMap<>();
         String sqlCommand="delete from dbo.user_friend where user_email= '"+myEmail+"'";
         data.put("db_name","Smart Scheduler");
@@ -225,11 +244,13 @@ public class DashboardActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Friend fd=new Friend("",MD5(fdEmail),false,fdEmail);
-                        friends.add(fd);
+                        if(add){
+                            Friend fd=new Friend("new friend",fdID,false,fdEmail);
+                            friends.add(fd);
+                            adapter.notifyItemInserted(friends.size()-1);
+                        }
                         String[] arr=friends.stream().map(Friend::getEmail).toArray(String[]::new);
                         addFriendToDB(myEmail,arr);
-                        adapter.notifyItemInserted(friends.size()-1);
                     }
                 },
                 new Response.ErrorListener() {
@@ -245,7 +266,7 @@ public class DashboardActivity extends AppCompatActivity {
 
     private void addFriendToDB(String myEmail, String[] csv){
         HashMap<String,String> data=new HashMap<>();
-        String fds=String.join(",",csv);
+        String fds=csv.length==0?null:String.join(",",csv);
         String sqlCommand=String.format(Locale.US,
                 "insert into dbo.user_friend(user_email,friend_list) values('%s','%s')", myEmail,fds);
         data.put("db_name","Smart Scheduler");
