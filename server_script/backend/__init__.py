@@ -1,3 +1,4 @@
+# app __init__
 from flask import Flask
 from backend.config import Config
 

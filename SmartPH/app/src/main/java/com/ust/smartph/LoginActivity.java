@@ -25,6 +25,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
+/**
+ * LoginActivity
+ */
 public class LoginActivity extends AppCompatActivity {
     private final String TAG = "LOGIN";
     private String resultStr = null;

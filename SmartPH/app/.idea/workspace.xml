@@ -12,27 +12,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="916fc7f9-ba7d-4491-85cf-20956e89ac1d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/gradle_models.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/gradle_models.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/ust/signup/SignupDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ust/signup/SignupDialog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/ust/signup/SigupDialogListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ust/signup/SigupDialogListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/ust/smartph/ChecklistHomeActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ust/smartph/ChecklistHomeActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/ust/smartph/DashboardActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ust/smartph/DashboardActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ust/smartph/FeedbackActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ust/smartph/FeedbackActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/ust/smartph/LoginActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ust/smartph/LoginActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/ust/smartph/SplashActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ust/smartph/SplashActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/ust/smartph/TimetableHomeActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ust/smartph/TimetableHomeActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/ust/timetable/TimetableHomeAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ust/timetable/TimetableHomeAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/layout/dashboard_home.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/dashboard_home.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/layout/splash_screen.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/splash_screen.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../server_script/Clustering/Clustering.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../server_script/Clustering/Clustering.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../server_script/Clustering/Clustering.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/../../server_script/Clustering/Clustering.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../server_script/Clustering/Clustering.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../server_script/Clustering/Clustering.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../server_script/Clustering/helper.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../server_script/Clustering/helper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../server_script/backend/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../server_script/backend/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../server_script/backend/api/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../server_script/backend/api/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../server_script/backend/api/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../server_script/backend/api/routes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../server_script/backend/api/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../server_script/backend/api/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../server_script/backend/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../server_script/backend/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../server_script/backend/main/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../server_script/backend/main/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../server_script/backend/main/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../server_script/backend/main/routes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../server_script/backend/static/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/../../server_script/backend/static/styles.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../server_script/backend/templates/manual.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../server_script/backend/templates/manual.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../server_script/backend/user/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../server_script/backend/user/routes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../server_script/server_script.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../server_script/sqltest.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../server_script/keys/id_rsa" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../server_script/keys/id_rsa.pub" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../server_script/run.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../server_script/run.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -53,15 +52,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/smartph/LoginActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="433">
-              <caret line="145" column="95" selection-start-line="145" selection-start-column="95" selection-end-line="145" selection-end-column="95" />
+            <state relative-caret-position="109">
+              <caret line="28" column="16" selection-start-line="28" selection-start-column="16" selection-end-line="28" selection-end-column="16" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#4982#5017#0" expanded="true" />
-                <element signature="e#7263#7264#0" expanded="true" />
+                <element signature="e#3506#3507#0" expanded="true" />
+                <element signature="e#3564#3565#0" expanded="true" />
+                <element signature="e#3641#3642#0" expanded="true" />
+                <element signature="e#3701#3702#0" expanded="true" />
+                <element signature="e#5032#5067#0" expanded="true" />
+                <element signature="e#7216#7217#0" expanded="true" />
+                <element signature="e#7275#7276#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -94,11 +98,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/smartph/DashboardActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="483">
-              <caret line="84" column="21" lean-forward="true" selection-start-line="84" selection-start-column="21" selection-end-line="84" selection-end-column="21" />
+            <state relative-caret-position="750">
+              <caret line="71" column="42" lean-forward="true" selection-start-line="71" selection-start-column="42" selection-end-line="71" selection-end-column="42" />
             </state>
           </provider>
         </entry>
@@ -111,6 +115,18 @@
             </state>
           </provider>
           <provider editor-type-id="android-designer2" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/smartph/FeedbackActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="183">
+              <caret line="33" column="63" lean-forward="true" selection-start-line="33" selection-start-column="63" selection-end-line="33" selection-end-column="63" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
@@ -130,7 +146,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/utility/Utils.java">
           <provider selected="true" editor-type-id="text-editor">
             <state>
-              <caret column="24" lean-forward="true" selection-start-column="24" selection-end-column="24" />
+              <caret column="24" selection-start-column="24" selection-end-column="24" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -185,14 +201,15 @@
         <option value="$PROJECT_DIR$/src/main/java/com/ust/signup/SignupDialog.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/ust/utility/Utils.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/ust/smartph/SplashActivity.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ust/smartph/LoginActivity.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/ust/smartph/DashboardActivity.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ust/smartph/FeedbackActivity.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ust/smartph/LoginActivity.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
     <option name="y" value="23" />
-    <option name="width" value="1005" />
+    <option name="width" value="1071" />
     <option name="height" value="877" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -204,7 +221,35 @@
       <pane id="ProjectPane" />
       <pane id="PackagesPane" />
       <pane id="Scope" />
-      <pane id="AndroidView" />
+      <pane id="AndroidView">
+        <subPane>
+          <expand>
+            <path>
+              <item name="SmartPH" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+            </path>
+            <path>
+              <item name="SmartPH" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+            </path>
+            <path>
+              <item name="SmartPH" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="ust" type="cbb59c9e:AndroidPsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="SmartPH" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="ust" type="cbb59c9e:AndroidPsiDirectoryNode" />
+              <item name="smartph" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -313,11 +358,11 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1005" height="877" extended-state="0" />
+    <frame x="0" y="23" width="1071" height="877" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Captures" order="0" side_tool="true" weight="0.25" />
-      <window_info content_ui="combo" id="Project" order="1" weight="0.21287642" />
+      <window_info content_ui="combo" id="Project" order="1" weight="0.19922255" />
       <window_info id="Structure" order="2" side_tool="true" />
       <window_info id="Build Variants" order="3" side_tool="true" />
       <window_info id="Image Layers" order="4" />
@@ -478,25 +523,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/smartph/ChecklistHomeActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1821">
-          <caret line="272" column="54" selection-start-line="272" selection-start-column="54" selection-end-line="272" selection-end-column="54" />
-          <folding>
-            <element signature="e#5708#5740#0" expanded="true" />
-            <element signature="e#8188#8220#0" expanded="true" />
-            <element signature="e#10265#10297#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/smartph/FeedbackActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="318">
-          <caret line="43" column="63" selection-start-line="43" selection-start-column="63" selection-end-line="43" selection-end-column="63" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/res/layout/dashboard_home.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="683">
@@ -536,7 +562,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/utility/Utils.java">
       <provider selected="true" editor-type-id="text-editor">
         <state>
-          <caret column="24" lean-forward="true" selection-start-column="24" selection-end-column="24" />
+          <caret column="24" selection-start-column="24" selection-end-column="24" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -556,18 +582,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/smartph/LoginActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="433">
-          <caret line="145" column="95" selection-start-line="145" selection-start-column="95" selection-end-line="145" selection-end-column="95" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#4982#5017#0" expanded="true" />
-            <element signature="e#7263#7264#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/res/layout/login_screen.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-457">
@@ -576,10 +590,47 @@
       </provider>
       <provider editor-type-id="android-designer2" />
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/smartph/ChecklistHomeActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1632">
+          <caret line="272" column="54" selection-start-line="272" selection-start-column="54" selection-end-line="272" selection-end-column="54" />
+          <folding>
+            <element signature="e#10265#10297#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/smartph/DashboardActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="483">
-          <caret line="84" column="21" lean-forward="true" selection-start-line="84" selection-start-column="21" selection-end-line="84" selection-end-column="21" />
+        <state relative-caret-position="750">
+          <caret line="71" column="42" lean-forward="true" selection-start-line="71" selection-start-column="42" selection-end-line="71" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/smartph/FeedbackActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="183">
+          <caret line="33" column="63" lean-forward="true" selection-start-line="33" selection-start-column="63" selection-end-line="33" selection-end-column="63" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/smartph/LoginActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="109">
+          <caret line="28" column="16" selection-start-line="28" selection-start-column="16" selection-end-line="28" selection-end-column="16" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#3506#3507#0" expanded="true" />
+            <element signature="e#3564#3565#0" expanded="true" />
+            <element signature="e#3641#3642#0" expanded="true" />
+            <element signature="e#3701#3702#0" expanded="true" />
+            <element signature="e#5032#5067#0" expanded="true" />
+            <element signature="e#7216#7217#0" expanded="true" />
+            <element signature="e#7275#7276#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
