@@ -41,7 +41,6 @@
         <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -49,18 +48,14 @@
         <activity android:name=".CalendarActivity"/>
         <activity android:name=".AboutUsActivity"/>
         <activity android:name=".ChecklistActivity"/>
-        <service android:name="com.ust.checklist.ReminderService"/>
         <activity android:name=".DashboardActivity"/>
-        <activity android:name=".FocusModeActivity"/>
         <activity android:name=".AppUsageHomeActivity"/>
         <activity android:name=".CustomActionDetectionActivity"/>
         <activity android:name=".TimetableItemActivity"/>
         <activity android:name=".TimetableHomeActivity"/>
         <activity android:name=".UserActionActivity"/>
         <activity android:name=".ChecklistHomeActivity"/>
-        <service android:name="com.ust.focusmode.StudyModeService"
-            android:enabled="true"
-            android:exported="true" />
+        <activity android:name=".CustomFocusModeActivity"/>
 
     </application>
 </manifest>

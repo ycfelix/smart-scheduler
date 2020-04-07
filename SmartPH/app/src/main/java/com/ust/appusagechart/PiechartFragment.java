@@ -100,21 +100,21 @@ public class PiechartFragment extends Fragment {
         if(ShowList.size() < 6) {
             for (int i = 0; i < ShowList.size(); i++) {
                 float apptime = (float)ShowList.get(i).getUsedTimebyDay() / 1000;
-                if(apptime / totaltime * 1000 >= 0.001)
+                if(apptime / totaltime * 1000 >= 0.01)
                     entries.add(new PieEntry(apptime, ShowList.get(i).getLabel()));
             }
         }
         else {
             for(int i = 0;i < 6;i++) {
                 float apptime = (float)ShowList.get(i).getUsedTimebyDay() / 1000;
-                if(apptime / totaltime * 1000 >= 0.001)
+                if(apptime / totaltime * 1000 >= 0.01)
                     entries.add(new PieEntry(apptime, ShowList.get(i).getLabel()));
             }
             long otherTime = 0;
             for(int i=6;i<ShowList.size();i++) {
                 otherTime += ShowList.get(i).getUsedTimebyDay() / 1000;
             }
-            if(1.0 * otherTime / totaltime * 1000 >= 0.001)
+            if(1.0 * otherTime / totaltime * 1000 >= 0.01)
                 entries.add(new PieEntry((float)otherTime, "other app"));
         }
 

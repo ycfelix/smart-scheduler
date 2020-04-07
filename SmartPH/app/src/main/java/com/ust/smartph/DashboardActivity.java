@@ -48,11 +48,11 @@ public class DashboardActivity extends AppCompatActivity {
         Toast.makeText(this.getApplicationContext(),"coming soon",Toast.LENGTH_SHORT).show();
     }
     public void startFocusMode(View arg){
-        startActivity(new Intent(this, FocusModeActivity.class));
+        startActivity(new Intent(this, CustomFocusModeActivity.class));
     }
 
     public void startActionDetection(View arg){
-        startActivity(new Intent(this, CustomActionDetectionActivity.class));
+        startActivity(new Intent(this, UserActionActivity.class));
     }
 
     public void logout(View arg) {

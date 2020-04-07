@@ -46,30 +46,6 @@
     <!-->app usage strings<!-->
 
     <!-->focus mode strings<!-->
-    <string name="setting">Setting</string>
-    <string name="start">Start</string>
-    <string name="next">Next</string>
-    <string name="until">Until: </string>
-    <string name="cancel">Cancel</string>
-    <string name="last">Last: </string>
-    <string name="permit">&#62;&gt;Permitted Application Setting&#60;&lt;</string>
-    <string name="permit_app">Permitted Application: </string>
-    <string name="error_app_null">ERROR: Can\'t find this application.</string>
-    <string name="error_time_null">ERROR: Please set last for at least one minute.</string>
-    <string name="confirm">Confirm &#038; Continue</string>
-    <string name="hour">Hour</string>
-    <string name="min">Minute</string>
-    <string name="hours">Hour(s)</string>
-    <string name="mins">Minute(s)</string>
-    <string name="nil">(null)</string>
-    <string name="app_waiting">APP is opening, please wait</string>
-    <string name="floating">Please give the permission of floating window.</string>
-    <string name="usage">Please give the permission of UsageStats.</string>
-    <string name="forceExit">Provide a way to force exit.</string>
-    <string name="forceExitHelp">If you want exit when the study mode is opened, just touch the time on the screen. While you touching, long click the invisible button where is at the lower-left of the screen, then it will quit.</string>
-    <string name="permission_get">In order to get the wallpaper, please give the \"External Storage Reading\" permission.</string>
-    <string name="ok">OK</string>
-    <string name="permission_get_setting">Please let this program using the storage permission.</string>
 
     <!-- API links -->
     <string name="sql_api">http://13.70.2.33/api/sql_db</string>
