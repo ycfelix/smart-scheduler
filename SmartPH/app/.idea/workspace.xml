@@ -12,6 +12,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="916fc7f9-ba7d-4491-85cf-20956e89ac1d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../../server_script/backend/errors/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/ust/smartph/DashboardActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ust/smartph/DashboardActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/ust/smartph/FeedbackActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ust/smartph/FeedbackActivity.java" afterDir="false" />
@@ -52,11 +53,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/smartph/LoginActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="109">
-              <caret line="28" column="16" selection-start-line="28" selection-start-column="16" selection-end-line="28" selection-end-column="16" />
+            <state relative-caret-position="94">
+              <caret line="27" selection-start-line="27" selection-end-line="29" selection-end-column="3" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#3506#3507#0" expanded="true" />
@@ -117,11 +118,11 @@
           <provider editor-type-id="android-designer2" />
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/smartph/FeedbackActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="183">
-              <caret line="33" column="63" lean-forward="true" selection-start-line="33" selection-start-column="63" selection-end-line="33" selection-end-column="63" />
+            <state relative-caret-position="-72">
+              <caret line="19" column="11" selection-start-line="19" selection-start-column="11" selection-end-line="19" selection-end-column="11" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -202,8 +203,8 @@
         <option value="$PROJECT_DIR$/src/main/java/com/ust/utility/Utils.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/ust/smartph/SplashActivity.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/ust/smartph/DashboardActivity.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ust/smartph/FeedbackActivity.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/ust/smartph/LoginActivity.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ust/smartph/FeedbackActivity.java" />
       </list>
     </option>
   </component>
@@ -607,20 +608,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/smartph/FeedbackActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="183">
-          <caret line="33" column="63" lean-forward="true" selection-start-line="33" selection-start-column="63" selection-end-line="33" selection-end-column="63" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/smartph/LoginActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="109">
-          <caret line="28" column="16" selection-start-line="28" selection-start-column="16" selection-end-line="28" selection-end-column="16" />
+        <state relative-caret-position="94">
+          <caret line="27" selection-start-line="27" selection-end-line="29" selection-end-column="3" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#3506#3507#0" expanded="true" />
@@ -630,6 +621,16 @@
             <element signature="e#5032#5067#0" expanded="true" />
             <element signature="e#7216#7217#0" expanded="true" />
             <element signature="e#7275#7276#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/smartph/FeedbackActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-72">
+          <caret line="19" column="11" selection-start-line="19" selection-start-column="11" selection-end-line="19" selection-end-column="11" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
