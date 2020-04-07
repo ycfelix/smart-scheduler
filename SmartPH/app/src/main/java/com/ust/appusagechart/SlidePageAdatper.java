@@ -28,8 +28,4 @@ public class SlidePageAdatper extends FragmentStatePagerAdapter {
         return fmList.size();
     }
 
-    @Override
-    public Object instantiateItem(ViewGroup container, int position) {
-        return super.instantiateItem(container,position);
-    }
 }

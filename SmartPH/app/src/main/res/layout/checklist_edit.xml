@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/new_item_title_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/list_element_height"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/new_item_title_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Title"
+                android:paddingLeft="16dp"
+                android:textSize="12sp"
+                android:textColor="@color/primary_text_color"/>
+
+            <EditText
+                android:id="@+id/checklist_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="put your title"
+                android:padding="16dp"
+                android:textSize="16sp"
+                android:textColorHint="@color/secondary_text_color"
+                android:textColor="@color/primary_text_color"
+                android:inputType="textCapSentences"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/new_item_details_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/new_item_title_layout"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/item_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Detail"
+                android:paddingLeft="16dp"
+                android:textSize="@dimen/label_text_size"
+                android:textColor="@color/primary_text_color" />
+
+            <EditText
+                android:id="@+id/checklist_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="any detail?"
+                android:textSize="16sp"
+                android:textColorHint="@color/secondary_text_color"
+                android:textColor="@color/primary_text_color"
+                android:inputType="textCapSentences|textMultiLine"
+                android:padding="16dp"
+                android:minLines="1"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/new_item_icon_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/label_text_size"
+            android:text="choose an icon"
+            android:paddingLeft="16dp"
+            android:textColor="@color/primary_text_color"
+            android:layout_below="@id/new_item_details_layout"/>
+
+
+        <GridLayout
+            android:id="@+id/icon_grid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/new_item_icon_label"
+            android:columnCount="4"
+            android:rowCount="1"
+            android:layout_centerHorizontal="true">
+
+            <ImageButton
+                android:id="@+id/default_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/color_splotch_selector"
+                android:scaleType="center"
+                android:layout_margin="@dimen/imageView_icon_margin"
+                android:clickable="true"
+                android:contentDescription="@string/empty_icon_content_description"/>
+
+            <ImageButton
+                android:id="@+id/workout_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_fitness_center_white_24dp"
+                android:background="@drawable/color_splotch_selector"
+                android:scaleType="center"
+                android:layout_margin="@dimen/imageView_icon_margin"
+                android:contentDescription="@string/fitness_icon_content_description"/>
+
+            <ImageButton
+                android:id="@+id/study_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_school_white_24dp"
+                android:background="@drawable/color_splotch_selector"
+                android:scaleType="center"
+                android:clickable="true"
+                android:layout_margin="@dimen/imageView_icon_margin"
+                android:contentDescription="@string/school_icon_content_description"/>
+
+            <ImageButton
+                android:id="@+id/shopping_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_local_grocery_store_white_24dp"
+                android:background="@drawable/color_splotch_selector"
+                android:scaleType="center"
+                android:clickable="true"
+                android:layout_margin="@dimen/imageView_icon_margin"
+                android:contentDescription="@string/groceries_icon_content_description"/>
+
+            <ImageButton
+                android:id="@+id/birthday_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_cake_white_24dp"
+                android:background="@drawable/color_splotch_selector"
+                android:scaleType="center"
+                android:clickable="true"
+                android:layout_margin="@dimen/imageView_icon_margin"
+                android:contentDescription="@string/party_icon_content_description"/>
+
+            <ImageButton
+                android:id="@+id/baby_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_child_friendly_white_24dp"
+                android:background="@drawable/color_splotch_selector"
+                android:scaleType="center"
+                android:clickable="true"
+                android:layout_margin="@dimen/imageView_icon_margin"
+                android:contentDescription="@string/child_icon_content_description"/>
+
+            <ImageButton
+                android:id="@+id/work_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_credit_card_white_24dp"
+                android:background="@drawable/color_splotch_selector"
+                android:scaleType="center"
+                android:clickable="true"
+                android:layout_margin="@dimen/imageView_icon_margin"
+                android:contentDescription="@string/credit_icon_content_description"/>
+
+            <ImageButton
+                android:id="@+id/airplane_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_flight_white_24dp"
+                android:background="@drawable/color_splotch_selector"
+                android:scaleType="center"
+                android:clickable="true"
+                android:layout_margin="@dimen/imageView_icon_margin"
+                android:contentDescription="@string/plane_icon_content_description"/>
+
+            <ImageButton
+                android:id="@+id/gas_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_local_gas_station_white_24dp"
+                android:background="@drawable/color_splotch_selector"
+                android:scaleType="center"
+                android:clickable="true"
+                android:layout_margin="@dimen/imageView_icon_margin"
+                android:contentDescription="@string/gas_icon_content_description"/>
+
+            <ImageButton
+                android:id="@+id/mail_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_mail_white_24dp"
+                android:background="@drawable/color_splotch_selector"
+                android:scaleType="center"
+                android:clickable="true"
+                android:layout_margin="@dimen/imageView_icon_margin"
+                android:contentDescription="@string/mail_icon_content_description"/>
+
+            <ImageButton
+                android:id="@+id/people_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_people_white_24dp"
+                android:background="@drawable/color_splotch_selector"
+                android:scaleType="center"
+                android:clickable="true"
+                android:layout_margin="@dimen/imageView_icon_margin"
+                android:contentDescription="@string/people_icon_content_description"/>
+
+            <ImageButton
+                android:id="@+id/eat_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_restaurant_menu_white_24dp"
+                android:background="@drawable/color_splotch_selector"
+                android:scaleType="center"
+                android:clickable="true"
+                android:layout_margin="@dimen/imageView_icon_margin"
+                android:contentDescription="@string/food_icon_content_description"/>
+
+        </GridLayout>
+
+        <Button
+            android:id="@+id/edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/icon_grid"
+            android:layout_alignStart="@id/icon_grid"
+            android:text="confirm" />
+        <Button
+            android:id="@+id/delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/icon_grid"
+            android:layout_alignEnd="@id/icon_grid"
+            android:text="cancel" />
+
+    </RelativeLayout>
+</LinearLayout>

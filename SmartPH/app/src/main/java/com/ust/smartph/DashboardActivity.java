@@ -20,10 +20,10 @@ public class DashboardActivity extends AppCompatActivity {
         startActivity(new Intent(this, CalendarActivity.class));
     }
     public void startTimetable(View arg){
-        startActivity(new Intent(this, TimetableActivity.class));
+        startActivity(new Intent(this, TimetableHomeActivity.class));
     }
     public void startChecklist(View arg){
-        startActivity(new Intent(this, ChecklistActivity.class));
+        startActivity(new Intent(this, ChecklistHomeActivity.class));
     }
     public void startAppUsage(View arg){
         startActivity(new Intent(this, AppUsageHomeActivity.class));
@@ -33,10 +33,10 @@ public class DashboardActivity extends AppCompatActivity {
         Toast.makeText(this.getApplicationContext(),"coming soon",Toast.LENGTH_SHORT).show();
     }
     public void startFocusMode(View arg){
-        startActivity(new Intent(this, FocusModeActivity.class));
+        startActivity(new Intent(this, CustomFocusModeActivity.class));
     }
 
     public void startActionDetection(View arg){
-        startActivity(new Intent(this, CustomActionDetectionActivity.class));
+        startActivity(new Intent(this, UserActionActivity.class));
     }
 }

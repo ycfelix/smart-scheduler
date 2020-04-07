@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -38,10 +39,10 @@ public class AppUsageHomeActivity extends AppCompatActivity {
 
     PagerAdapter adapter;
 
+    private final int REQUEST_CODE=12;
+
     @BindView(R.id.chart_tab)
     TabLayout chartTab;
-
-    private static final int PERMISSION_USAGE = 0;
 
     private String[] titles={"Piechart","Timeline","barchart"};
 
@@ -65,11 +66,19 @@ public class AppUsageHomeActivity extends AppCompatActivity {
         }
         try {
             if(!isStatAccessPermissionSet(this)){
-                startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
+                startActivityForResult(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS),REQUEST_CODE);
             }
         } catch (PackageManager.NameNotFoundException e) {
             System.out.println("cannot get permission");
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode==REQUEST_CODE && resultCode==RESULT_OK){
+            adapter.notifyDataSetChanged();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private boolean isStatAccessPermissionSet(Context c) throws PackageManager.NameNotFoundException {

@@ -66,20 +66,10 @@ public class AboutUsActivity  extends AppCompatActivity {
 
     Element getFeedbackElement() {
         Element feedbackElement = new Element();
-        final String feedback = getResources().getString(R.string.feedback);
-        feedbackElement.setTitle(feedback);
-        feedbackElement.setOnClickListener(new View.OnClickListener() {
-
-//            public static final String EXTRA_MESSAGE = "com.ust.smartph.FEEDBACK";
-
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(AboutUsActivity.this, FeedbackActivity.class);
-//                EditText editText = (EditText) findViewById(R.id.editText);
-//                String message = editText.getText().toString();
-//                intent.putExtra(EXTRA_MESSAGE);
-                startActivity(intent);
-            }
+        final String feedbackString = getResources().getString(R.string.feedback);
+        feedbackElement.setTitle(feedbackString);
+        feedbackElement.setOnClickListener((View v) -> {
+            startActivity(new Intent(AboutUsActivity.this, FeedbackActivity.class));
         });
         return feedbackElement;
     }

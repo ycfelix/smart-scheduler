@@ -2,7 +2,6 @@ package com.ust.smartph;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
@@ -17,6 +16,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+/**
+ * FeedbackActivity
+ */
 public class FeedbackActivity extends AppCompatActivity {
 
     @Override
@@ -39,7 +41,7 @@ public class FeedbackActivity extends AppCompatActivity {
 
             // Instantiate the RequestQueue.
             RequestQueue queue = Volley.newRequestQueue(this);
-            String url ="http://13.70.2.33:5000/";
+            String url ="http://13.70.2.33/";
 
             // Request a string response from the provided URL.
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
