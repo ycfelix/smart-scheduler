@@ -1,11 +1,19 @@
 from flask import jsonify, Blueprint
-from backend.api.utils import getJSON, getCnxn, getCursor
+from backend.api.utils import *
 import itertools, pyodbc
 
 api = Blueprint('api', __name__)
 
+@api.route('/api/distance_metric', methods=['GET'])
+def getDistMetric():
+	pass
+
 @api.route('/api/sql_db', methods=['POST'])
-def sql_post():
+def sql_post(input_json=None):
+	# if input_json == None:
+	# 	json = getJSON()
+	# else:
+	# 	json = input_json
 	json = getJSON()
 	if not "db_name" in json:
 	    return jsonify({'error': 'Database name field does not exist (db_name)'})
@@ -24,10 +32,10 @@ def sql_post():
 		except pyodbc.Error as pex:
 			return_dict['type'] = "pyodbc error"
 			return_dict['result'] = False
-			return_dict['error msg'] = str(pex)
+			return_dict['error_msg'] = str(pex)
 
 		else:
-			listOfSupportedOp = ['SELECT', 'UPDATE', 'INSERT', 'DELETE', 'IF', 'CREATE', 'DROP']
+			listOfSupportedOp = ['SELECT', 'UPDATE', 'INSERT', 'DELETE', 'IF', 'CREATE', 'DROP', 'ALTER']
 			cmd_to_be_exe = json['sql_cmd']
 			split_items = cmd_to_be_exe.split()
 			cmd_type = split_items[0]
@@ -58,7 +66,7 @@ def sql_post():
 					return_dict['result'] = temp_list
 				except Exception as e:
 					return_dict['result'] = 'error'
-					return_dict['error msg'] = str(e)
+					return_dict['error_msg'] = str(e)
 
 			elif (cmd_type.upper() != 'SELECT' and \
 				cmd_type.upper() in listOfSupportedOp):
@@ -71,7 +79,7 @@ def sql_post():
 
 				except Exception as e:
 					return_dict['result'] = False
-					return_dict['error msg'] = str(e)
+					return_dict['error_msg'] = str(e)
 
 				finally:
 					return_dict['num_rows_affected'] = num_rows_affected if num_rows_affected != -1 else 'not applicable'
@@ -79,7 +87,7 @@ def sql_post():
 			else:
 				return_dict['type'] = 'unsupported'
 				return_dict['result'] = False
-				return_dict['error msg'] = 'unsupported operation'
+				return_dict['error_msg'] = 'unsupported operation'
 
 			cnxn.commit()
 			cursor.close()
