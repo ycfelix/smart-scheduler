@@ -2,7 +2,6 @@ package com.ust.signup;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -13,12 +12,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.iid.InstanceID;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.ust.smartph.DashboardActivity;
-import com.ust.smartph.LoginActivity;
 import com.ust.smartph.R;
 import com.ust.smartph.VolleyCallback;
+import com.ust.utility.Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -78,12 +74,16 @@ public class SignupDialog extends Dialog {
         String confirmPass = confirmPassword.getText().toString();
         Log.d(TAG, "password received = " + pass);
         Log.d(TAG, "Confirm password received = " + confirmPass);
-        if (pass.equals(confirmPass) && pass.length() >= 4 &&
-                this.signupDialogListener.onCheckEmail(Email) &&
-                this.signupDialogListener.onCheckPass(pass)) {
+
+        if (pass.equals(confirmPass) &&
+            this.signupDialogListener.onCheckEmail(Email) &&
+            this.signupDialogListener.onCheckPass(pass) &&
+            mobile.getText().toString().length() > 0) {
             Log.d(TAG, "password before hashing = " + pass);
-            String hashed_pwd = Character.toString(this.signupDialogListener.onGetHashedPwd(pass));
-            Log.d(TAG, hashed_pwd);
+            String hashed_pwd = this.signupDialogListener.onGetHashedPwd(pass, Utils.PASS_LEN);
+            Log.d(TAG, "hashed pwd = " + hashed_pwd);
+            String id = this.signupDialogListener.onGetHashedPwd(Email, Utils.ID_LEN);
+            Log.d(TAG, "id = " + id);
 
             password.setText("");
             confirmPassword.setText("");
@@ -93,15 +93,15 @@ public class SignupDialog extends Dialog {
                 regInfo.put("email", Email);
                 regInfo.put("phoneNum", mobile.getText().toString());
                 regInfo.put("hashed_pwd", hashed_pwd);
-                regInfo.put("ID", (int)this.signupDialogListener.onGetHashedPwd(InstanceID.getInstance(context).getId()));
+                regInfo.put("ID", id);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            String api = "http://13.70.2.33:5000/api/user/register";
+            String api = context.getString(R.string.register_api_debug);
 
             this.signupDialogListener.onGetCnxn(regInfo, api, new VolleyCallback() {
                 @Override
-                public void onSuccess(JSONObject result) {
+                public void onSuccess(JSONObject result){
                     try {
                         String resultStr = result.getString("result");
                         int error_code = result.getInt("error_code");
@@ -109,38 +109,59 @@ public class SignupDialog extends Dialog {
                         Log.d(TAG, "resultStr = " + resultStr);
                         Log.d(TAG, "error_code = " + error_code);
                         Log.d(TAG, "error_msg = " + error_msg);
+
                         if (error_code == -1) {
-                            Toast.makeText(context, "Account registration successful", Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, "Account registration successful." +
+                                    "\nUse your newly created account to login!", Toast.LENGTH_LONG).show();
+                            Log.d(TAG, "Success");
                         }
                         else {
                             // Indicate authentication error
-                            Toast.makeText(context, "Account registration failed with error code " + error_code
-                                    + " and error message " + error_msg, Toast.LENGTH_LONG).show();
+//                            Toast.makeText(context, "Account registration failed with error code " + error_code
+//                                    + " and error message " + error_msg, Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, "Account registration failed: " + error_msg, Toast.LENGTH_LONG).show();
                         }
 
-                    } catch (JSONException e) { Log.d(TAG, "JSON retrieve result failed!"); }
-                    Log.d(TAG, "Success");
+                    } catch (JSONException e) {
+                        Log.d(TAG, "JSON retrieve result failed!");
+                        String report_error = "";
+                        try {
+                            report_error = result.getString("error");
+                        } catch (JSONException JSON) {JSON.printStackTrace();}
+                        Toast.makeText(context, "Please report bug in \"About Us\": " + report_error, Toast.LENGTH_LONG).show();
+                    }
                 }
 
                 @Override
                 public void onFailure() {
-                    Toast.makeText(context, "Account registration failed", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Account registration failed. Please try again later", Toast.LENGTH_LONG).show();
                     Log.d(TAG, "Failed");
                 }
             });
             dismiss();
         }
         else {
+            if (!this.signupDialogListener.onCheckEmail(Email)) {
+                email.setFocusableInTouchMode(true);
+                email.requestFocus();
+                email.setError("Invalid email.");
+                email.setText("");
+//                confirmPassword.setError("");
+            }
             if (pass.length() < 4) {
-                password.setError("Password cannot be shorter than 4.");
+//                password.requestFocus();
+                password.setError("Password cannot be shorter than 4 characters.");
+                confirmPassword.setError("Password cannot be shorter than 4 characters.");
                 password.setText("");
                 confirmPassword.setText("");
             }
             if (!pass.equals(confirmPass)) {
-                password.setError("Please check if both passwords are the same.");
-                password.setText("");
+                confirmPassword.setError("Please check if both passwords are the same.");
                 confirmPassword.setText("");
 //                confirmPassword.setError("");
+            }
+            if (mobile.getText().toString().length() == 0) {
+                mobile.setError("Please enter your mobile phone number");
             }
         }
     }

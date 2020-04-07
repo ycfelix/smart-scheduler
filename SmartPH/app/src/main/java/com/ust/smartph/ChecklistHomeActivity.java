@@ -161,7 +161,7 @@ public class ChecklistHomeActivity extends AppCompatActivity {
         data.put("db_name","Smart Scheduler");
         data.put("sql_cmd",sqlCommand);
 
-        String url = this.getString(R.string.server_ip);
+        String url = this.getString(R.string.sql_api);
         RequestQueue queue = Volley.newRequestQueue(this);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
                 new Response.Listener<JSONObject>() {
@@ -220,7 +220,7 @@ public class ChecklistHomeActivity extends AppCompatActivity {
         String sqlCommand= "delete from dbo.user_checklist where token = '%s'";
         data.put("db_name","Smart Scheduler");
         data.put("sql_cmd",sqlCommand);
-        String url = this.getString(R.string.server_ip);
+        String url = this.getString(R.string.sql_api);
         RequestQueue queue = Volley.newRequestQueue(this);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
                 new Response.Listener<JSONObject>() {
@@ -270,7 +270,7 @@ public class ChecklistHomeActivity extends AppCompatActivity {
 
 
     private void sendChecklistToServer(){
-        String url = this.getString(R.string.server_ip);
+        String url = this.getString(R.string.sql_api);
         List<String> commands=getSQLCommands();
         for(int i=0;i<commands.size();i++){
             HashMap<String,String> data=new HashMap<>();

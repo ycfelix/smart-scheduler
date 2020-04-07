@@ -197,7 +197,7 @@ public class TimetableHomeActivity extends Activity {
         data.put("db_name","Smart Scheduler");
         data.put("sql_cmd",sqlCommand);
 
-        String url = this.getString(R.string.server_ip);
+        String url = this.getString(R.string.sql_api);
         RequestQueue queue = Volley.newRequestQueue(this);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
                 new Response.Listener<JSONObject>() {

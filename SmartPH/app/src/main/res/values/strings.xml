@@ -47,7 +47,19 @@
 
     <!-->focus mode strings<!-->
 
-    <string name="server_ip">http://13.70.2.33/api/sql_db</string>
+    <!-- API links -->
+    <string name="sql_api">http://13.70.2.33/api/sql_db</string>
+    <string name="login_api">http://13.70.2.33/api/user/login</string>
+    <string name="register_api">http://13.70.2.33/api/user/register</string>
+    <string name="logout_api">http://13.70.2.33/api/user/logout</string>
+
+    <string name="sql_api_debug">http://13.70.2.33:5000/api/sql_db</string>
+    <string name="login_api_debug">http://13.70.2.33:5000/api/user/login</string>
+    <string name="register_api_debug">http://13.70.2.33:5000/api/user/register</string>
+    <string name="logout_api_debug">http://13.70.2.33:5000/api/user/logout</string>
+
+    <string name="login_hello">Hello!</string>
+    <string name="loginText">Logging in&#8230;</string>
 
     <!-->feedback strings<!-->
     <string name="feedback">Feedback</string>
@@ -58,6 +70,6 @@
     <string name="feedback_content_hint">Enter your feedback</string>
     <string name="feedback_btn_caption">Submit</string>
     <string name="feedback_rating_label">Rate this app:</string>
-
+    <string name="log_out">Log Out</string>
 
 </resources>
