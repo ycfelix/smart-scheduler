@@ -1,20 +1,27 @@
-from flask import jsonify, Blueprint
+# api routes
+from flask import jsonify, Blueprint, request
 from backend.api.utils import *
 import itertools, pyodbc
 
 api = Blueprint('api', __name__)
+
+# send string request suggestion
+# receive -> call function -> give back to them
 
 @api.route('/api/distance_metric', methods=['GET'])
 def getDistMetric():
 	pass
 
 @api.route('/api/sql_db', methods=['POST'])
-def sql_post(input_json=None):
+def sql_post():
 	# if input_json == None:
 	# 	json = getJSON()
 	# else:
 	# 	json = input_json
 	json = getJSON()
+	# print('type of json = ' + str(type(json)))
+	# print("request = " + str(request.method))
+	# print('request.db_name = ' + str(request.values.get('db_name')))
 	if not "db_name" in json:
 	    return jsonify({'error': 'Database name field does not exist (db_name)'})
 	elif not "sql_cmd" in json:

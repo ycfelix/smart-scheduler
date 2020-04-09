@@ -1,10 +1,17 @@
+# api utils
 from flask import request
 from backend.config import config
 import pyodbc
 # import os
 
 def getJSON():
-	return request.get_json()
+	if (type(request.get_json()).__name__ == 'NoneType'):
+		result = {}
+		result['db_name'] = request.values.get('db_name')
+		result['sql_cmd'] = request.values.get('sql_cmd')
+		return result
+	else:
+		return request.get_json()
 
 def getCnxn(db_name, port=1433):
 	# server = os.environ.get['FYPDB_SERVER']

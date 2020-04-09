@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
-
+# generated Clustering.py
 # In[1]:
 
 
@@ -271,7 +271,8 @@ def getUserDistanceMatrix():
     print(userDistanceMatrix)
     return userDistanceMatrix
 
-#get Nth similar Users
+#get n similar Users
+# data has to be retrieved from the database -> write sql cmd get things first, then do proc to retrieve value
 def getNthUserMostSimilarTotarget(userID,Nth):
     if userID in userIDBook:
         targetUserIdx=userIDBook.index(userID)

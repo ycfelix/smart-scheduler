@@ -56,7 +56,6 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     public void logout(View arg) {
-        Toast.makeText(this, "Logging out...", Toast.LENGTH_LONG).show();
         SharedPreferences sp = getSharedPreferences(Utils.EMAIL_PWD, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
 //        try {
@@ -83,6 +82,7 @@ public class DashboardActivity extends AppCompatActivity {
             editor.apply();
             startActivity(new Intent(this, LoginActivity.class));
             finish();
+        Toast.makeText(this, "Log out done", Toast.LENGTH_LONG).show();
 //        }
     }
 

@@ -109,7 +109,7 @@ public final class Utils {
             }
             result = buf.toString();
 //            Log.d(TAG, "MD5(" + sourceStr + ",32) = " + result);
-//            Log.d(TAG, "MD5(" + sourceStr + ",16) = " + buf.toString().substring(8, 24));
+//            Log.d(TAG, "MD5(" + sourceStr + ",16) = " + buf.toString().substring(8, 24)); // use this for UserID
 //            Log.d(TAG, "MD5(" + sourceStr + ",5) = " + buf.toString().substring(0, numDigits));
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();

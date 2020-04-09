@@ -25,6 +25,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
+/**
+ * LoginActivity
+ */
 public class LoginActivity extends AppCompatActivity {
     private final String TAG = "LOGIN";
     private String resultStr = null;
@@ -124,10 +127,12 @@ public class LoginActivity extends AppCompatActivity {
         if (isValidEmail(email) && isValidPassword(pass)) {
             final String hashed_pwd = Utils.MD5(pass, Utils.PASS_LEN);
             Log.d(TAG, "hashed_password = " + hashed_pwd);
+//            Log.d(TAG, "hashed_password (phash) = " + Character.toString(phash(pass)));
             final JSONObject accInfo = new JSONObject();
             try {
                 accInfo.put("email", email);
                 accInfo.put("hashed_pwd", hashed_pwd);
+//                accInfo.put("hashed_pwd", phash(pass));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
