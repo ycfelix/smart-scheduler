@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import mehdi.sakout.aboutpage.AboutPage;
