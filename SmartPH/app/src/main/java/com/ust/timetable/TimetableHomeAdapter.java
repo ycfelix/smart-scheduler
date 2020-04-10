@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -114,19 +115,21 @@ public class TimetableHomeAdapter extends RecyclerView.Adapter<TimetableHomeAdap
                 builder.setTitle("Your generated share code");
                 TextView tokenTv = dialogView.findViewById(R.id.export_token);
                 String tableName=timetableViewHolder.timetableName.getText().toString();
-                updateDB(tableName, new Function<String, Void>() {
-                    @Override
-                    public Void apply(String s) {
-                        return sendScheduleToServer(s);
-                    }
-                });
                 String token = getToken(tableName);
+                CheckBox shareAll=dialogView.findViewById(R.id.public_share);
                 tokenTv.setText(token);
                 builder.setView(dialogView);
                 builder.setPositiveButton("Share",
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+
+                                updateDB(tableName, new Function<String, Void>() {
+                                    @Override
+                                    public Void apply(String s) {
+                                        return sendScheduleToServer(s,shareAll.isChecked());
+                                    }
+                                });
                                 Intent sendIntent = new Intent();
                                 sendIntent.setAction(Intent.ACTION_SEND);
                                 sendIntent.putExtra(Intent.EXTRA_TEXT, token);
@@ -167,10 +170,10 @@ public class TimetableHomeAdapter extends RecyclerView.Adapter<TimetableHomeAdap
         queue.add(request);
     }
 
-    private Void sendScheduleToServer(String timetableName){
+    private Void sendScheduleToServer(String timetableName,boolean isShareAll){
         String url = context.getString(R.string.sql_api);
         //do a select first, then
-        List<String> commands=getSQLCommands(timetableName);
+        List<String> commands=getSQLCommands(timetableName,isShareAll);
         for(int i=0;i<commands.size();i++){
             HashMap<String,String> data=new HashMap<>();
             data.put("db_name","Smart Scheduler");
@@ -202,7 +205,7 @@ public class TimetableHomeAdapter extends RecyclerView.Adapter<TimetableHomeAdap
     }
 
     @Nullable
-    private List<String> getSQLCommands(String timetableName){
+    private List<String> getSQLCommands(String timetableName,boolean isShareAll){
         List<String> schedules=new ArrayList<>();
         String token=getToken(timetableName);
         String PREF_MON_WED="monwed_"+timetableName;
@@ -213,12 +216,12 @@ public class TimetableHomeAdapter extends RecyclerView.Adapter<TimetableHomeAdap
             Toast.makeText(context,"your timetable is empty!",Toast.LENGTH_SHORT);
             return null;
         }
-        schedules.addAll(formatJsonToSQL(monwedData,token,timetableName));
-        schedules.addAll(formatJsonToSQL(thrsunData,token,timetableName));
+        schedules.addAll(formatJsonToSQL(monwedData,token,timetableName,isShareAll));
+        schedules.addAll(formatJsonToSQL(thrsunData,token,timetableName,isShareAll));
         return schedules;
     }
 
-    private List<String> formatJsonToSQL(String json,String token,String timetableName){
+    private List<String> formatJsonToSQL(String json,String token,String timetableName,boolean isShareAll){
         Gson gson = new Gson();
         ArrayList<Schedule> schedules=gson.fromJson(json,new TypeToken<ArrayList<Schedule>>(){}.getType());
         List<String> commands=new ArrayList<>();
@@ -233,9 +236,9 @@ public class TimetableHomeAdapter extends RecyclerView.Adapter<TimetableHomeAdap
             String professor_name = schedule.getProfessorName();
             commands.add(String.format(Locale.US,
                             "insert into dbo.user_schedule(class_place,class_title,day_of_week,start_hour," +
-                            "start_min,end_hour,end_min,professor_name,token,table_name) values('%s', '%s'," +
-                            "%d, %d, %d, %d, %d,'%s','%s','%s')", class_place, class_title, day, start_hr, start_min, end_hr, end_min, professor_name,
-                    token, timetableName)
+                            "start_min,end_hour,end_min,professor_name,token,table_name,public_share) values('%s', '%s'," +
+                            "%d, %d, %d, %d, %d,'%s','%s','%s',%d)", class_place, class_title, day, start_hr, start_min, end_hr, end_min, professor_name,
+                    token, timetableName,isShareAll?1:0)
             );
         }
         return commands;
