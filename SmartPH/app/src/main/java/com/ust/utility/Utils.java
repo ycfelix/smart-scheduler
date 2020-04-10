@@ -80,7 +80,7 @@ public final class Utils {
                 },
                 (VolleyError error) -> {
                     Log.d(TAG, "Volley failed");
-                    Log.d(TAG, "Volley error = " + error.toString());
+                    Log.d(TAG, "Volley error = " + error.networkResponse);
                     callback.onFailure();
                 }
         );

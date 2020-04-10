@@ -145,7 +145,7 @@ public class TimetableHomeAdapter extends RecyclerView.Adapter<TimetableHomeAdap
     }
 
     private void updateDB(String timetableName, Function<String,Void> callback){
-        String url = context.getString(R.string.server_ip);
+        String url = context.getString(R.string.sql_api);
         HashMap<String, String> data = new HashMap<>();
         String token=getToken(timetableName);
         data.put("db_name", "Smart Scheduler");
@@ -171,7 +171,7 @@ public class TimetableHomeAdapter extends RecyclerView.Adapter<TimetableHomeAdap
     }
 
     private Void sendScheduleToServer(String timetableName,boolean isShareAll){
-        String url = context.getString(R.string.server_ip);
+        String url = context.getString(R.string.sql_api);
         //do a select first, then
         List<String> commands=getSQLCommands(timetableName,isShareAll);
         for(int i=0;i<commands.size();i++){

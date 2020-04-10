@@ -31,6 +31,8 @@
         android:theme="@style/AppTheme"
         android:windowSoftInputMode="adjustResize"
         tools:ignore="GoogleAppIndexingWarning">
+
+
         <activity android:name=".FeedbackActivity"
             android:parentActivityName=".AboutUsActivity">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
@@ -44,35 +46,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".CalendarActivity" />
+
+
         <activity android:name=".AboutUsActivity" />
-        <activity android:name=".ChecklistActivity" />
-
-<!--        <service android:name="com.ust.checklist.ReminderService" />-->
-
-        <activity android:name=".TimetableActivity" />
-        <activity android:name=".DashboardActivity" />
-<!--        <activity android:name=".FocusModeActivity" />-->
         <activity android:name=".AppUsageHomeActivity" />
+        <activity android:name=".CalendarActivity" />
+        <activity android:name=".ChecklistHomeActivity" />
         <activity android:name=".CustomActionDetectionActivity" />
-<!--        <activity android:name="com.ust.timetable.EditActivity" />-->
-
-<!--        <service-->
-<!--            android:name="com.ust.focusmode.StudyModeService"-->
-<!--            android:enabled="true"-->
-<!--            android:exported="true" />-->
-
-<!--        <receiver-->
-<!--            android:name="com.ust.actiondetection.BootCompletedReceiver"-->
-<!--            android:enabled="true"-->
-<!--            android:exported="true">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.BOOT_COMPLETED" />-->
-<!--            </intent-filter>-->
-<!--        </receiver>-->
-
-<!--        <service android:name="com.ust.actiondetection.ActivityDetectionService" />-->
+        <activity android:name=".CustomFocusModeActivity" />
+        <activity android:name=".DashboardActivity" />
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".TimetableHomeActivity" />
+        <activity android:name=".TimetableItemActivity" />
+        <activity android:name=".UserActionActivity" />
     </application>
 
 </manifest>

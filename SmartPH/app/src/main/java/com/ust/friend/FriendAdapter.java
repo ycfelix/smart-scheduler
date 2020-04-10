@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import static com.ust.smartph.MD5Hash.MD5;
+import static com.ust.utility.Utils.MD5;
 
 public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder> {
 
@@ -122,7 +122,7 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
         data.put("db_name", "Smart Scheduler");
         data.put("sql_cmd", sqlCommand);
         System.out.println("getting "+schedule);
-        String url = context.getString(R.string.server_ip);
+        String url = context.getString(R.string.sql_api);
         RequestQueue queue = Volley.newRequestQueue(context);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
                 new Response.Listener<JSONObject>() {
