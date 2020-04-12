@@ -68,7 +68,6 @@ public class SignupDialog extends Dialog {
 
     @OnClick({R.id.signup_button})
     void signupClick(View v){
-        // this.signupDialogListener.onEditResult(email.getText().toString(),password.getText().toString());
         String Email = email.getText().toString();
         String pass = password.getText().toString();
         String confirmPass = confirmPassword.getText().toString();
@@ -114,6 +113,7 @@ public class SignupDialog extends Dialog {
                             Toast.makeText(context, "Account registration successful." +
                                     "\nUse your newly created account to login!", Toast.LENGTH_LONG).show();
                             Log.d(TAG, "Success");
+                            signupDialogListener.onEditResult(email.getText().toString(),password.getText().toString());
                         }
                         else {
                             // Indicate authentication error

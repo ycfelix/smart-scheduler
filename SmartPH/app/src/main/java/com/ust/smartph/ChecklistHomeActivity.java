@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +32,6 @@ import com.ust.customchecklist.ChecklistAdapter;
 import com.ust.customchecklist.DataModel;
 import com.ust.customchecklist.EditDialog;
 import com.ust.customchecklist.EditDialogListener;
-import com.ust.customchecklist.ItemClickListener;
 import com.ust.customchecklist.RequestType;
 import com.ust.timetable.HashGenerator;
 
@@ -215,7 +215,7 @@ public class ChecklistHomeActivity extends AppCompatActivity {
         return HashGenerator.toHashCode(android_id)+HashGenerator.toHashCode(timetableName);
     }
 
-    void updateDB(){
+    void updateDB(boolean isShareAll){
         HashMap<String,String> data=new HashMap<>();
         String sqlCommand= "delete from dbo.user_checklist where token = '%s'";
         data.put("db_name","Smart Scheduler");
@@ -227,7 +227,7 @@ public class ChecklistHomeActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         System.out.println(response);
-                        sendChecklistToServer();
+                        sendChecklistToServer(isShareAll);
                     }
                 },
                 new Response.ErrorListener() {
@@ -247,15 +247,16 @@ public class ChecklistHomeActivity extends AppCompatActivity {
         final View dialogView = LayoutInflater.from(this)
                 .inflate(R.layout.dialog_export, null);
         builder.setTitle("Your generated share code");
-        updateDB();
         TextView tokenTv = dialogView.findViewById(R.id.export_token);
         String token = getToken(PREF_NAME);
+        CheckBox publicShare=dialogView.findViewById(R.id.public_share);
         tokenTv.setText(token);
         builder.setView(dialogView);
         builder.setPositiveButton("Share",
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        updateDB(publicShare.isChecked());
                         Intent sendIntent = new Intent();
                         sendIntent.setAction(Intent.ACTION_SEND);
                         sendIntent.putExtra(Intent.EXTRA_TEXT, token);
@@ -269,9 +270,9 @@ public class ChecklistHomeActivity extends AppCompatActivity {
     }
 
 
-    private void sendChecklistToServer(){
+    private void sendChecklistToServer(boolean isShareAll){
         String url = this.getString(R.string.sql_api);
-        List<String> commands=getSQLCommands();
+        List<String> commands=getSQLCommands(isShareAll);
         for(int i=0;i<commands.size();i++){
             HashMap<String,String> data=new HashMap<>();
             data.put("db_name","Smart Scheduler");
@@ -296,7 +297,7 @@ public class ChecklistHomeActivity extends AppCompatActivity {
     }
 
     @NotNull
-    private List<String> getSQLCommands(){
+    private List<String> getSQLCommands(boolean isShareAll){
        String token=getToken(PREF_NAME);
        ArrayList<String> sql=new ArrayList<>();
        for(DataModel model:data){
@@ -306,7 +307,8 @@ public class ChecklistHomeActivity extends AppCompatActivity {
            int icon=model.getIcon();
            sql.add(String.format(Locale.US,
                    "insert into dbo.user_checklist(checked,title,detail,icon,"+
-                           "token) values(%d,'%s', '%s',%d,'%s')",checked?1:0,title,detail,icon,token));
+                           "token,public_share) values(%d,'%s', '%s',%d,'%s',%d)",checked?1:0,title,detail,icon,token,
+                   isShareAll?1:0));
        }
        return sql;
     }

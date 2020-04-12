@@ -32,7 +32,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.splash_screen);
         ButterKnife.bind(this);
         final int delayMS = 2000;
-        final int timeOut = 30000; // 30 secounds
+        final int timeOut = 10000; // 10 secounds
         SharedPreferences sp = getSharedPreferences(Utils.EMAIL_PWD, Context.MODE_PRIVATE);
         String emailStr = sp.getString("email", null);
         String passStr = sp.getString("hashed_pwd", null);
@@ -116,6 +116,9 @@ public class SplashActivity extends AppCompatActivity {
                         "\nError: JSON_Parse_accInfo_Error");
                 msg.sendToTarget();
                 startActivity(loginIntent);
+            }
+            finally {
+                finish();
             }
             }
         };
