@@ -8,8 +8,13 @@ api = Blueprint('api', __name__)
 # send string request suggestion
 # receive -> call function -> give back to them
 
-@api.route('/api/distance_metric', methods=['GET'])
-def getDistMetric():
+@api.route('/api/distance_metric/<int:type>', methods=['GET'])
+def getDistMetric(type):
+	if (type == 0):
+	elif (type == 1):
+	elif (type == 2):
+	else:
+		
 	pass
 
 @api.route('/api/sql_db', methods=['POST'])

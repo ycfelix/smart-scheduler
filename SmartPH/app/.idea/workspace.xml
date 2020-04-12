@@ -12,33 +12,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="916fc7f9-ba7d-4491-85cf-20956e89ac1d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/gen/com/ust/smartph/BuildConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/gen/com/ust/smartph/Manifest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/gen/com/ust/smartph/R.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../server_script/backend/errors/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/caches/gradle_models.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/gradle_models.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/ust/smartph/AboutUsActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ust/smartph/AboutUsActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/ust/smartph/DashboardActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ust/smartph/DashboardActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/ust/smartph/FeedbackActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ust/smartph/FeedbackActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ust/signup/SignupDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ust/signup/SignupDialog.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/ust/smartph/LoginActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ust/smartph/LoginActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ust/smartph/SplashActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ust/smartph/SplashActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/ust/utility/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ust/utility/Utils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../server_script/Clustering/Clustering.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../server_script/Clustering/.ipynb_checkpoints/Clustering-checkpoint.ipynb" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../../server_script/Clustering/Clustering.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/../../server_script/Clustering/Clustering.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../server_script/Clustering/Clustering.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../server_script/Clustering/Clustering.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../server_script/Clustering/Clustering.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../../server_script/Clustering/helper.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../server_script/Clustering/helper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../server_script/backend/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../server_script/backend/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../server_script/backend/api/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../server_script/backend/api/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../server_script/backend/api/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../server_script/backend/api/routes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../server_script/backend/api/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../server_script/backend/api/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../server_script/backend/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../server_script/backend/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../server_script/backend/main/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../server_script/backend/main/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../server_script/backend/main/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../server_script/backend/main/routes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../server_script/backend/static/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/../../server_script/backend/static/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../server_script/backend/templates/manual.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../server_script/backend/templates/manual.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../server_script/run.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../server_script/run.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -62,27 +47,11 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/smartph/LoginActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-88">
-              <caret line="54" column="8" lean-forward="true" selection-start-line="54" selection-start-column="8" selection-end-line="54" selection-end-column="8" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/smartph/DashboardActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="39" column="41" lean-forward="true" selection-start-line="39" selection-start-column="41" selection-end-line="39" selection-end-column="41" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/res/layout/dashboard_home.xml">
-          <provider editor-type-id="android-designer2" />
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="14" column="30" lean-forward="true" selection-start-line="14" selection-start-column="30" selection-end-line="14" selection-end-column="30" />
+            <state relative-caret-position="708">
+              <caret line="140" column="41" selection-start-line="140" selection-start-column="41" selection-end-line="140" selection-end-column="70" />
+              <folding>
+                <element signature="e#5193#5222#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -90,17 +59,32 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/utility/Utils.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="558">
-              <caret line="113" column="26" selection-start-line="113" selection-start-column="26" selection-end-line="113" selection-end-column="26" />
+            <state relative-caret-position="588">
+              <caret line="119" column="29" lean-forward="true" selection-start-line="119" selection-start-column="29" selection-end-line="119" selection-end-column="29" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/signup/SignupDialog.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="15">
+              <caret line="101" column="84" selection-start-line="101" selection-start-column="84" selection-end-line="101" selection-end-column="84" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/signup/SignupDialog.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/smartph/SplashActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="316">
-              <caret line="82" column="87" selection-start-line="82" selection-start-column="19" selection-end-line="82" selection-end-column="90" />
+            <state relative-caret-position="1035">
+              <caret line="87" column="38" selection-start-line="87" selection-start-column="38" selection-end-line="87" selection-end-column="38" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -152,7 +136,6 @@
         <option value="$PROJECT_DIR$/src/main/res/layout/dashboard_home.xml" />
         <option value="$PROJECT_DIR$/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/ust/signup/SigupDialogListener.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ust/signup/SignupDialog.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/ust/smartph/AboutUsActivity.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/ust/smartph/FeedbackActivity.java" />
         <option value="$PROJECT_DIR$/build.gradle" />
@@ -161,13 +144,15 @@
         <option value="$PROJECT_DIR$/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/src/main/res/layout/login_screen.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/ust/smartph/LoginActivity.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ust/signup/SignupDialog.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ust/smartph/SplashActivity.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/ust/utility/Utils.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
     <option name="y" value="23" />
-    <option name="width" value="1009" />
+    <option name="width" value="1075" />
     <option name="height" value="877" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -176,7 +161,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
       <pane id="AndroidView">
         <subPane>
@@ -199,12 +183,15 @@
             <path>
               <item name="SmartPH" type="1abcf292:AndroidViewProjectNode" />
               <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="res" type="d4f16f75:AndroidResFolderNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="ust" type="cbb59c9e:AndroidPsiDirectoryNode" />
+              <item name="signup" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
       <pane id="ProjectPane" />
     </panes>
   </component>
@@ -314,10 +301,11 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1009" height="877" extended-state="0" />
+    <frame x="0" y="23" width="1075" height="877" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Captures" order="0" side_tool="true" weight="0.25" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.22647363" />
+      <window_info content_ui="combo" id="Project" order="1" weight="0.160697" />
       <window_info id="Structure" order="2" side_tool="true" />
       <window_info id="Build Variants" order="3" side_tool="true" />
       <window_info id="Image Layers" order="4" />
@@ -326,15 +314,15 @@
       <window_info id="Capture Tool" order="7" />
       <window_info id="Favorites" order="8" side_tool="true" />
       <window_info anchor="bottom" id="Run" order="0" weight="0.2356688" />
-      <window_info anchor="bottom" id="Logcat" order="1" weight="0.4866242" />
+      <window_info anchor="bottom" id="Logcat" order="1" weight="0.4101911" />
       <window_info anchor="bottom" id="TODO" order="2" weight="0.3299363" />
-      <window_info anchor="bottom" id="Android Profiler" order="3" weight="0.3299363" />
+      <window_info anchor="bottom" id="Android Profiler" order="3" show_stripe_button="false" weight="0.3299363" />
       <window_info anchor="bottom" id="Debug" order="4" />
       <window_info anchor="bottom" id="Terminal" order="5" weight="0.3299363" />
       <window_info anchor="bottom" id="Event Log" order="6" side_tool="true" weight="0.3299363" />
       <window_info anchor="bottom" id="Flutter Performance" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.44713375" />
-      <window_info anchor="bottom" id="Build" order="9" weight="0.32484075" />
+      <window_info anchor="bottom" id="Build" order="9" weight="0.29299363" />
       <window_info anchor="bottom" id="Find" order="10" />
       <window_info anchor="right" id="Device File Explorer" order="0" side_tool="true" weight="0.32937685" />
       <window_info anchor="right" id="Capture Analysis" order="1" />
@@ -342,7 +330,7 @@
       <window_info anchor="right" id="Theme Preview" order="3" />
       <window_info anchor="right" id="Flutter Inspector" order="4" />
       <window_info anchor="right" id="Palette&#9;" order="5" />
-      <window_info anchor="right" id="Preview" order="6" visible="true" weight="0.2916236" />
+      <window_info anchor="right" id="Preview" order="6" weight="0.2916236" />
       <window_info anchor="right" id="Flutter Outline" order="7" weight="0.32954547" />
     </layout>
   </component>
@@ -421,12 +409,12 @@
     </entry>
     <entry file="file://$USER_HOME$/Documents/AndroidStudio/DeviceExplorer/Nexus_5X_API_29_x86 [emulator-5554]/data/user/0/com.ust.smartph/files/accInfo.txt" />
     <entry file="file://$PROJECT_DIR$/src/main/res/layout/singup_home.xml">
-      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="312">
           <caret line="63" column="37" lean-forward="true" selection-start-line="63" selection-start-column="37" selection-end-line="63" selection-end-column="37" />
         </state>
       </provider>
+      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/res/layout/splash_screen.xml">
       <provider editor-type-id="android-designer2" />
@@ -458,26 +446,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/res/values/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="76" column="26" lean-forward="true" selection-start-line="76" selection-start-column="26" selection-end-line="76" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/smartph/SplashActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="299">
-          <caret line="35" column="67" selection-start-line="35" selection-start-column="67" selection-end-line="35" selection-end-column="67" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1755#5633#0" expanded="true" />
-            <element signature="e#2981#3016#0" expanded="true" />
-            <element signature="e#5632#5633#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/smartph/ChecklistHomeActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1632">
@@ -489,7 +457,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/res/layout/activity_feedback.xml">
-      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="521">
           <caret line="104" column="49" lean-forward="true" selection-start-line="104" selection-start-column="49" selection-end-line="104" selection-end-column="49" />
@@ -498,6 +465,7 @@
           </folding>
         </state>
       </provider>
+      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/../settings.gradle">
       <provider selected="true" editor-type-id="text-editor" />
@@ -523,12 +491,12 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/res/layout/login_screen.xml">
-      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="525">
           <caret line="35" column="42" selection-start-line="35" selection-start-column="42" selection-end-line="35" selection-end-column="42" />
         </state>
       </provider>
+      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/smartph/FeedbackActivity.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -548,31 +516,24 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/AndroidManifest.xml">
+      <provider editor-type-id="android-manifest" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-322">
           <caret line="15" column="33" selection-start-line="15" selection-start-column="33" selection-end-line="15" selection-end-column="33" />
         </state>
       </provider>
-      <provider editor-type-id="android-manifest" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/smartph/DashboardActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="39" column="41" lean-forward="true" selection-start-line="39" selection-start-column="41" selection-end-line="39" selection-end-column="41" />
+        <state relative-caret-position="-78">
+          <caret line="39" column="41" selection-start-line="39" selection-start-column="41" selection-end-line="39" selection-end-column="41" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/smartph/LoginActivity.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/smartph/SplashActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-88">
-          <caret line="54" column="8" lean-forward="true" selection-start-line="54" selection-start-column="8" selection-end-line="54" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/signup/SignupDialog.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="316">
-          <caret line="82" column="87" selection-start-line="82" selection-start-column="19" selection-end-line="82" selection-end-column="90" />
+        <state relative-caret-position="1035">
+          <caret line="87" column="38" selection-start-line="87" selection-start-column="38" selection-end-line="87" selection-end-column="38" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -581,16 +542,46 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/utility/Utils.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="558">
-          <caret line="113" column="26" selection-start-line="113" selection-start-column="26" selection-end-line="113" selection-end-column="26" />
+        <state relative-caret-position="588">
+          <caret line="119" column="29" lean-forward="true" selection-start-line="119" selection-start-column="29" selection-end-line="119" selection-end-column="29" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/res/layout/dashboard_home.xml">
-      <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="210">
-          <caret line="14" column="30" lean-forward="true" selection-start-line="14" selection-start-column="30" selection-end-line="14" selection-end-column="30" />
+          <caret line="14" column="30" selection-start-line="14" selection-start-column="30" selection-end-line="14" selection-end-column="30" />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer2" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="621">
+          <caret line="75" selection-start-line="75" selection-end-line="75" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/smartph/LoginActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="708">
+          <caret line="140" column="41" selection-start-line="140" selection-start-column="41" selection-end-line="140" selection-end-column="70" />
+          <folding>
+            <element signature="e#5193#5222#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ust/signup/SignupDialog.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="101" column="84" selection-start-line="101" selection-start-column="84" selection-end-line="101" selection-end-column="84" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

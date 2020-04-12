@@ -116,4 +116,8 @@ public final class Utils {
         }
         return result.substring(0, numDigits);
     }
+
+    public enum Dist_Matrix {
+        MAP, TIMETABLE, CALENDAR
+    }
 }

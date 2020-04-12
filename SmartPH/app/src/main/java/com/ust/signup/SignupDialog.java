@@ -97,7 +97,7 @@ public class SignupDialog extends Dialog {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            String api = context.getString(R.string.register_api_debug);
+            String api = context.getString(R.string.register_api);
 
             this.signupDialogListener.onGetCnxn(regInfo, api, new VolleyCallback() {
                 @Override

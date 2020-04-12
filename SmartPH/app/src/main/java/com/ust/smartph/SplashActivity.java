@@ -72,7 +72,7 @@ public class SplashActivity extends AppCompatActivity {
                 } else {
                     accInfo.put("email", emailStr);
                     accInfo.put("hashed_pwd", passStr);
-                    Utils.connectServer(accInfo, getString(R.string.login_api_debug),
+                    Utils.connectServer(accInfo, getString(R.string.login_api),
                             timeOut, SplashActivity.this,
                         new VolleyCallback() {
                         @Override

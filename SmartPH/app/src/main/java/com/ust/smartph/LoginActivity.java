@@ -138,7 +138,7 @@ public class LoginActivity extends AppCompatActivity {
             }
             Log.d(TAG, "hashed_pwd@checkLogin: " + hashed_pwd);
 
-            Utils.connectServer(accInfo, getString(R.string.login_api_debug), LoginActivity.this,
+            Utils.connectServer(accInfo, getString(R.string.login_api), LoginActivity.this,
                     new VolleyCallback() {
                 @Override
                 public void onSuccess(JSONObject result) {
