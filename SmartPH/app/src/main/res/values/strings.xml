@@ -72,4 +72,19 @@
     <string name="feedback_rating_label">Rate this app:</string>
     <string name="log_out">Log Out</string>
 
+    <!--sugges event activity type-->
+    <string-array name="Type">
+        <item></item>
+        <item>Other</item>
+        <item>Work</item>
+        <item>Date</item>
+        <item>Sport</item>
+        <item>Reading</item>
+        <item>Travel</item>
+        <item>Volunteer</item>
+        <item>Study</item>
+        <item>Shopping</item>
+        <item>Chill</item>
+    </string-array>
+
 </resources>

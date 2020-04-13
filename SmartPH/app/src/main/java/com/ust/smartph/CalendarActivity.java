@@ -1,107 +1,827 @@
 package com.ust.smartph;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.AdapterView;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import android.app.AlarmManager;
+import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
+import android.widget.Button;
+import android.widget.CalendarView;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+
+import android.widget.TimePicker;
+import android.widget.Toast;
+
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
-import com.ust.calendar.*;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
-public class CalendarActivity extends AppCompatActivity {
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.ust.calendarhandle.ActivityTypeKeys;
+import com.ust.calendarhandle.DBOpenHelper;
+import com.ust.calendarhandle.DBStructure;
+import com.ust.calendarhandle.EventRecyclerAdapter;
+import com.ust.calendarhandle.Events;
+import com.ust.calendarhandle.ViewAdapter;
+import com.ust.calendarhandle.ieEvent;
 
-    @BindView(R.id.title)
-    TextView mTitle;
-    @BindView(R.id.calendarDateView)
-    CalendarDateView mCalendarDateView;
-    @BindView(R.id.list)
-    ListView mList;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class CalendarActivity extends AppCompatActivity implements EventRecyclerAdapter.OnRecyclerListerner{
+    private static final String TAG = "Position: ";
+    CalendarView simpleCalendarView;
+    FloatingActionMenu floatingActionMenu;
+    FloatingActionButton ImportCalendar,ExportCalendar,addEvent,suggesEvent;
+    AlertDialog alertDialog, newalertDialog;
+    DBOpenHelper dbOpenHelper;
+    List<Events> eventsList = new ArrayList<>();
+    List<ieEvent> imexportList = new ArrayList<>();
+    SimpleDateFormat monthFormat = new SimpleDateFormat("MMMM", Locale.ENGLISH);
+    SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy",Locale.ENGLISH);
+    SimpleDateFormat eventDateFormate = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
+    RecyclerView recyclerView;
+    List<ImageView> mActivityTypeViews;
+    int alarmYear,alarmMonth,alarmDay,alarmHour,alarmMinute;
+    int presentday,presentmonth,presentyear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
-        ButterKnife.bind(this);
-        initView();
-        initList();
-    }
+        initializelayout();
 
-    private void initList() {
-        mList.setAdapter(new BaseAdapter() {
+        //Calendar view
+        simpleCalendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
-            public int getCount() {
-                return 100;
+            public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
+                // display the selected date by using a toast
+                //Date currentTime = Calendar.getInstance().getTime();
+                //System.out.println(currentTime);
+                presentday = dayOfMonth;
+                presentmonth = month;
+                presentyear = year;
+                initializeShowEventLayout();
+                Toast.makeText(getApplicationContext(), dayOfMonth + "/" + (month+1) + "/" + year, Toast.LENGTH_LONG).show();
             }
+        });
 
+
+
+
+        //Floating button functions
+        //SuggestEvent UI
+        suggesEvent.setOnClickListener(new View.OnClickListener() {
             @Override
-            public Object getItem(int position) {
-                return null;
+            public void onClick(View v) {
+                final Context suggesContext = v.getContext();
+                AlertDialog.Builder builder = new AlertDialog.Builder(suggesContext);
+                builder.setCancelable(true);
+                final View suggestView = LayoutInflater.from(v.getContext()).inflate(R.layout.suggest_layout,null);
+                final Button go = suggestView.findViewById(R.id.search);
+                Button back = suggestView.findViewById(R.id.back);
+                final ListView selection = (ListView) suggestView.findViewById(R.id.listview);
+                Calendar suggestdate = Calendar.getInstance();
+                suggestdate.set(Calendar.MONTH,presentmonth);
+                suggestdate.set(Calendar.YEAR,presentyear);
+                suggestdate.set(Calendar.DAY_OF_MONTH,presentday);
+                final String date = eventDateFormate.format(suggestdate.getTime());
+                final String month = monthFormat.format(suggestdate.getTime());
+                final String year = yearFormat.format(suggestdate.getTime());
+
+                go.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Spinner spinner = suggestView.findViewById(R.id.type);
+                        //TextView brands = (TextView) findViewById(R.id.ActivityType);
+                        final String activityType = String.valueOf(spinner.getSelectedItem());
+                        ArrayList<Events> brandsList = new ArrayList<>();
+                        if (activityType.equals("Exercise")) {
+
+                            Events event1 = new Events("Basketball","3:58 PM","2020-03-04","March",
+                                    "2020","Exercise");
+                            brandsList.add(event1);
+                        }
+                        else if(activityType.equals("Study")){
+                            brandsList.add(new Events("Math","3:58 PM","2020-03-04","March",
+                                    "2020","Study"));
+                            brandsList.add(new Events("English","3:58 PM","2020-03-04","March",
+                                    "2020","Study"));
+                        }
+                        else if(activityType.equals("Entertainment")){
+                            /* brandsList.add("With mom");*/
+                        }
+                        else if(activityType.equals("Business")){
+                            /*brandsList.add("Visit company");*/
+                        }
+
+                        else {
+                            Toast.makeText(getApplicationContext(), "Please select a type", Toast.LENGTH_LONG).show();
+                        }
+                        LayoutInflater inflater = (LayoutInflater) suggesContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        ViewAdapter adapter = new ViewAdapter(brandsList,inflater);
+                        selection.setAdapter(adapter);
+                        selection.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Events selectedItem = (Events) parent.getItemAtPosition(position);
+                                System.out.println(selectedItem);
+                                AlertDialog.Builder builder1 = new AlertDialog.Builder(view.getContext());
+                                builder1.setCancelable(true);
+                                final View suggestOuterView = LayoutInflater.from(view.getContext()).inflate(R.layout.show_suggestevents_rowlayout,null);
+                                final EditText eventname = suggestOuterView.findViewById(R.id.eventname);
+                                final TextView eventtime = suggestOuterView.findViewById(R.id.eventtime);
+                                Button add = suggestOuterView.findViewById(R.id.add);
+                                ImageButton timeicon = suggestOuterView.findViewById(R.id.seteventtime);
+                                eventname.setText(selectedItem.getEVENT());
+                                timeicon.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Calendar calendar = Calendar.getInstance();
+                                        int hours = calendar.get(Calendar.HOUR_OF_DAY);
+                                        int minuts = calendar.get(Calendar.MINUTE);
+                                        TimePickerDialog timePickerDialog = new TimePickerDialog(suggestOuterView.getContext(), R.style.Theme_AppCompat_Dialog
+                                                , new TimePickerDialog.OnTimeSetListener() {
+                                            @Override
+                                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                                Calendar c = Calendar.getInstance();
+                                                c.set(Calendar.HOUR_OF_DAY,hourOfDay);
+                                                c.set(Calendar.MINUTE,minute);
+                                                c.setTimeZone(TimeZone.getDefault());
+                                                SimpleDateFormat hformate = new SimpleDateFormat("K:mm a", Locale.ENGLISH);
+                                                String event_Time = hformate.format(c.getTime());
+                                                eventtime.setText(event_Time);
+                                            }
+                                        },hours,minuts,false);
+                                        timePickerDialog.show();
+                                    }
+                                });
+
+                                add.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        SaveEvent(eventname.getText().toString(),eventtime.getText().toString(),date,month,year,"off", activityType);
+                                        System.out.println("Add successfully");
+                                        newalertDialog.dismiss();
+                                        alertDialog.dismiss();
+                                        initializeShowEventLayout();
+                                    }
+                                });
+
+                                builder1.setView(suggestOuterView);
+                                newalertDialog = builder1.create();
+                                newalertDialog.show();
+                            }
+                        });
+                    }
+                });
+
+                back.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog.dismiss();
+                    }
+                });
+
+                builder.setView(suggestView);
+                alertDialog = builder.create();
+                alertDialog.show();
             }
+        });
 
+        //Import function
+        ImportCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
-            public long getItemId(int position) {
-                return 0;
-            }
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                if (convertView == null) {
-                    convertView = LayoutInflater.from(CalendarActivity.this).inflate(android.R.layout.simple_list_item_1, null);
+            public void onClick(View view) {
+                try {
+                    setAddEvent();
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
+            }
+        });
 
-                TextView textView = (TextView) convertView;
-                textView.setText("position:" + position);
+        //Export function
+        ExportCalendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-                return convertView;
+                Gson gson = new Gson();
+                imexportList.clear();
+                dbOpenHelper = new DBOpenHelper(view.getContext());
+                SQLiteDatabase database = dbOpenHelper.getReadableDatabase();
+                //Cursor cursor = dbOpenHelper.ReadEventsperMonth(monthFormat.format(simpleCalendarView.getDate()),yearFormat.format(simpleCalendarView.getDate()),database);
+                Cursor cursor = dbOpenHelper.ReadAllEvents(database);
+                while(cursor.moveToNext()){
+                    String event = cursor.getString(cursor.getColumnIndex(DBStructure.EVENT));
+                    String time = cursor.getString(cursor.getColumnIndex(DBStructure.TIME));
+                    String date = cursor.getString(cursor.getColumnIndex(DBStructure.DATE));
+                    String month = cursor.getString(cursor.getColumnIndex(DBStructure.MONTH));
+                    String Year = cursor.getString(cursor.getColumnIndex(DBStructure.YEAR));
+                    String type = cursor.getString(cursor.getColumnIndex(DBStructure.TYPE));
+                    String ID = cursor.getString(cursor.getColumnIndex(DBStructure.ID));
+                    String Notify = cursor.getString(cursor.getColumnIndex(DBStructure.Notify));
+                    ieEvent ieevents = new ieEvent(event,time,date,month,Year,type,ID,Notify);
+                    System.out.println(ID);
+                    imexportList.add(ieevents);
+                }
+                cursor.close();
+                dbOpenHelper.close();
+                System.out.println(gson.toJson(imexportList));
+
+                //setExportEvent(gson.toJson(imexportList));
+
+
+
+            }
+        });
+
+        //Add event and time picker diaglo
+        addEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                builder.setCancelable(true);
+                final View addView = LayoutInflater.from(v.getContext()).inflate(R.layout.add_newevent_layout,null);
+                final EditText EventName = addView.findViewById(R.id.eventname);
+                final TextView EventTime = addView.findViewById(R.id.eventtime);
+
+
+                ImageButton SetTime = addView.findViewById(R.id.seteventtime);
+                final CheckBox alarmMe = addView.findViewById(R.id.alarmme);
+                Calendar dateCalendar = Calendar.getInstance();
+                dateCalendar.set(Calendar.MONTH,presentmonth);
+                dateCalendar.set(Calendar.YEAR,presentyear);
+                dateCalendar.set(Calendar.DAY_OF_MONTH,presentday);
+                System.out.println(dateCalendar.getTime());
+                alarmYear = dateCalendar.get(Calendar.YEAR);
+                alarmMonth = dateCalendar.get(Calendar.MONTH);
+                alarmDay = dateCalendar.get(Calendar.DAY_OF_MONTH);
+
+                Button AddEvent = addView.findViewById(R.id.addevent);
+                SetTime.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Calendar calendar = Calendar.getInstance();
+                        int hours = calendar.get(Calendar.HOUR_OF_DAY);
+                        int minuts = calendar.get(Calendar.MINUTE);
+                        TimePickerDialog timePickerDialog = new TimePickerDialog(addView.getContext(), R.style.Theme_AppCompat_Dialog
+                                , new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                Calendar c = Calendar.getInstance();
+                                c.set(Calendar.HOUR_OF_DAY,hourOfDay);
+                                c.set(Calendar.MINUTE,minute);
+                                c.setTimeZone(TimeZone.getDefault());
+                                SimpleDateFormat hformate = new SimpleDateFormat("K:mm a",Locale.ENGLISH);
+                                String event_Time = hformate.format(c.getTime());
+                                EventTime.setText(event_Time);
+                                alarmHour = c.get(Calendar.HOUR_OF_DAY);
+                                alarmMinute = c.get(Calendar.MINUTE);
+                            }
+                        },hours,minuts,false);
+                        timePickerDialog.show();
+                    }
+                });
+                final String date = eventDateFormate.format(dateCalendar.getTime());
+                final String month = monthFormat.format(dateCalendar.getTime());
+                final String year = yearFormat.format(dateCalendar.getTime());
+
+                //Activity type initialize and arraylist
+                final String[] mActicityTypeTag = new String[1]; // Store the Activity
+                mActivityTypeViews = new ArrayList<>();
+                final TextView selectedtype = addView.findViewById(R.id.selectedType);
+                ImageView mOtherView = addView.findViewById(R.id.icon_other);
+                ImageView mWorkView = addView.findViewById(R.id.icon_work);
+                ImageView mDateView = addView.findViewById(R.id.icon_date);
+                ImageView mSportView = addView.findViewById(R.id.icon_sport);
+                ImageView mReadingView = addView.findViewById(R.id.icon_reading);
+                ImageView mTravelView = addView.findViewById(R.id.icon_travel);
+                ImageView mVolunteerView = addView.findViewById(R.id.icon_volunteer);
+                ImageView mStudyView = addView.findViewById(R.id.icon_study);
+                ImageView mShoppingView = addView.findViewById(R.id.icon_shopping);
+                ImageView mChillView = addView.findViewById(R.id.icon_chill);
+                mActivityTypeViews.add(mOtherView);
+                mActivityTypeViews.add(mWorkView);
+                mActivityTypeViews.add(mDateView);
+                mActivityTypeViews.add(mSportView);
+                mActivityTypeViews.add(mReadingView);
+                mActivityTypeViews.add(mTravelView);
+                mActivityTypeViews.add(mVolunteerView);
+                mActivityTypeViews.add(mStudyView);
+                mActivityTypeViews.add(mShoppingView);
+                mActivityTypeViews.add(mChillView);
+                //Set the default selected
+                mOtherView.setBackgroundResource(R.drawable.color_splotch_selected);
+                mActicityTypeTag[0] = ActivityTypeKeys.OTHER_TAG;
+                selectedtype.setText("Other");
+                //Relative imageview listener
+                mOtherView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        repaintIcons((ImageView) v);
+                        mActicityTypeTag[0] = ActivityTypeKeys.OTHER_TAG;
+                        selectedtype.setText("Other");
+                    }
+                });
+                mWorkView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        repaintIcons((ImageView) v);
+                        mActicityTypeTag[0] = ActivityTypeKeys.WORK_TAG;
+                        selectedtype.setText("Work");
+                    }
+                });
+                mDateView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        repaintIcons((ImageView) v);
+                        mActicityTypeTag[0] = ActivityTypeKeys.DATE_TAG;
+                        selectedtype.setText("Date");
+                    }
+                });
+                mSportView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        repaintIcons((ImageView) v);
+                        mActicityTypeTag[0] = ActivityTypeKeys.SPORT_TAG;
+                        selectedtype.setText("Sport");
+                    }
+                });
+                mReadingView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        repaintIcons((ImageView) v);
+                        mActicityTypeTag[0] = ActivityTypeKeys.READING_TAG;
+                        selectedtype.setText("Reading");
+                    }
+                });
+                mTravelView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        repaintIcons((ImageView) v);
+                        mActicityTypeTag[0] = ActivityTypeKeys.TRAVEL_TAG;
+                        selectedtype.setText("Travel");
+                    }
+                });
+                mVolunteerView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        repaintIcons((ImageView) v);
+                        mActicityTypeTag[0] = ActivityTypeKeys.VOLUNTEER_TAG;
+                        selectedtype.setText("Volunteer");
+                    }
+                });
+                mStudyView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        repaintIcons((ImageView) v);
+                        mActicityTypeTag[0] = ActivityTypeKeys.STUDY_TAG;
+                        selectedtype.setText("Study");
+                    }
+                });
+                mShoppingView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        repaintIcons((ImageView) v);
+                        mActicityTypeTag[0] = ActivityTypeKeys.SHOPPING_TAG;
+                        selectedtype.setText("Shopping");
+                    }
+                });
+                mChillView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        repaintIcons((ImageView) v);
+                        mActicityTypeTag[0] = ActivityTypeKeys.CHILL_TAG;
+                        selectedtype.setText("Chill");
+                    }
+                });
+
+
+                AddEvent.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(alarmMe.isChecked()){
+                            SaveEvent(EventName.getText().toString(),EventTime.getText().toString(),date,month,year,"on", mActicityTypeTag[0]);
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.set(alarmYear,alarmMonth,alarmDay,alarmHour,alarmMinute,00);
+                            setAlarm(calendar,EventName.getText().toString(),EventTime.getText().toString(),
+                                    getRequestCode(date,EventName.getText().toString(),EventName.getText().toString()));
+                            alertDialog.dismiss();
+                        }else{
+                            SaveEvent(EventName.getText().toString(),EventTime.getText().toString(),date,month,year,"off", mActicityTypeTag[0]);
+
+                            alertDialog.dismiss();
+                        }
+
+                        initializeShowEventLayout();
+                    }
+                });
+
+                builder.setView(addView);
+                alertDialog = builder.create();
+                alertDialog.show();
             }
         });
     }
 
-    private void initView() {
 
-        mCalendarDateView.setAdapter(new CaledarAdapter() {
+
+    //Initialze the layout part
+    private void initializelayout(){
+        Date currentTime = Calendar.getInstance().getTime();
+        System.out.println(currentTime);
+        simpleCalendarView = (CalendarView) findViewById(R.id.simpleCalendarView);
+        ImportCalendar = findViewById(R.id.importcalendar);
+        ExportCalendar = findViewById(R.id.exportcalendar);
+        addEvent = findViewById(R.id.addEvent);
+        suggesEvent = findViewById(R.id.suggestEvent);
+        floatingActionMenu = findViewById(R.id.menu);
+        //Show today event
+        Calendar firstpresentday = Calendar.getInstance();
+        long todaydate = simpleCalendarView.getDate();
+        Date date1 = new Date(todaydate);
+        firstpresentday.setTime(date1);
+        presentday = firstpresentday.get(Calendar.DAY_OF_MONTH);
+        presentmonth = firstpresentday.get(Calendar.MONTH);
+        presentyear = firstpresentday.get(Calendar.YEAR);
+        System.out.println("Firstday: " + presentday + "/" + (presentmonth+1) + "/" + presentyear);
+        String date = eventDateFormate.format(date1);
+        ArrayList<Events> liarray = CollectEventByDate(date);
+        recyclerView = findViewById(R.id.EventsRV2);
+        recyclerView.setAdapter(null);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
+        EventRecyclerAdapter eventRecyclerAdapter = new EventRecyclerAdapter(getApplicationContext()
+                , liarray,this);
+        recyclerView.setAdapter(eventRecyclerAdapter);
+        eventRecyclerAdapter.notifyDataSetChanged();
+    }
+    @Override
+    public void onRecyclerClick(int position) {
+        Log.d(TAG,"onRecyclerClick:clicked."+position);
+
+        Calendar calendardate = Calendar.getInstance();
+        calendardate.set(Calendar.YEAR,presentyear);
+        calendardate.set(Calendar.MONTH,presentmonth);
+        calendardate.set(Calendar.DAY_OF_MONTH,presentday);
+        String date = eventDateFormate.format(calendardate.getTime());
+        final ArrayList<Events> listarray = CollectEventByDate(date);
+        final Events events = listarray.get(position);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        final View ShowView = LayoutInflater.from(this).inflate(R.layout.show_events_rowlayout,null);
+        final TextView eventdate = ShowView.findViewById(R.id.eventdate);
+        final TextView eventname = ShowView.findViewById(R.id.eventname);
+        final TextView activitytype = ShowView.findViewById(R.id.TypeOfActivity);
+        final TextView eventtime = ShowView.findViewById(R.id.eventime);
+        final ImageButton Alarmset = ShowView.findViewById(R.id.alarmmeBtn);
+        Button delete = ShowView.findViewById(R.id.delete);
+
+        eventdate.setText(events.getDATE());
+        eventname.setText(events.getEVENT());
+        activitytype.setText(events.getType());
+        eventtime.setText(events.getTIME());
+        if(isAlarmed(events.getDATE(),events.getEVENT(),events.getTIME())){
+            Alarmset.setImageResource(R.drawable.ic_action_notification_on);
+
+        }else {
+            Alarmset.setImageResource(R.drawable.ic_action_notification_off);
+
+        }
+
+        Calendar datecalendar = Calendar.getInstance();
+        datecalendar.setTime(ConvertStringToDate(events.getDATE()));
+        final int alarmYear1 = datecalendar.get(Calendar.YEAR);
+        final int alarmMonth1 = datecalendar.get(Calendar.MONTH);
+        final int alarmDay1 = datecalendar.get(Calendar.DAY_OF_MONTH);
+        Calendar timecalendar = Calendar.getInstance();
+        timecalendar.setTime(ConvertStringToTime(events.getTIME()));
+        final int alarmHour1 = timecalendar.get(Calendar.HOUR_OF_DAY);
+        final int alarmMinute1 = timecalendar.get(Calendar.MINUTE);
+        Alarmset.setOnClickListener(new View.OnClickListener() {
             @Override
-            public View getView(View convertView, ViewGroup parentView, CalendarBean bean) {
-
-                if (convertView == null) {
-                    convertView = LayoutInflater.from(parentView.getContext()).inflate(R.layout.item_calendar, null);
+            public void onClick(View v) {
+                if(isAlarmed(events.getDATE(),events.getEVENT(),events.getTIME())){
+                    Alarmset.setImageResource(R.drawable.ic_action_notification_off);
+                    cancelAlarm(getRequestCode(events.getDATE(),events.getEVENT(),events.getTIME()));
+                    updateEvent(events.getDATE(),events.getEVENT(),events.getTIME(),"off",events.getType());
+                }else {
+                    Alarmset.setImageResource(R.drawable.ic_action_notification_on);
+                    Calendar alarmCalendar = Calendar.getInstance();
+                    alarmCalendar.set(alarmYear1,alarmMonth1,alarmDay1,alarmHour1,alarmMinute1);
+                    setAlarm(alarmCalendar,events.getEVENT(),events.getTIME(),getRequestCode(events.getDATE(),
+                            events.getEVENT(),events.getTIME()));
+                    updateEvent(events.getDATE(),events.getEVENT(),events.getTIME(),"on",events.getType());
                 }
-
-                TextView chinaText = (TextView) convertView.findViewById(R.id.chinaText);
-                TextView text = (TextView) convertView.findViewById(R.id.text);
-
-                text.setText("" + bean.day);
-                if (bean.mothFlag != 0) {
-                    text.setTextColor(0xff9299a1);
-                } else {
-                    text.setTextColor(0xff444444);
-                }
-                chinaText.setText(bean.chinaDay);
-
-                return convertView;
             }
         });
-
-        mCalendarDateView.setOnItemClickListener(new CalendarView.OnItemClickListener() {
+        delete.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(View view, int postion, CalendarBean bean) {
-                mTitle.setText(bean.year + "/" + bean.moth + "/" + bean.day);
+            public void onClick(View v) {
+                deleteCalendarEvent(events.getEVENT(),events.getDATE(),events.getTIME(),events.getType());
+                listarray.remove(position);
+                alertDialog.dismiss();
+                initializeShowEventLayout();
             }
         });
-
-        int[] data = CalendarUtil.getYMD(new Date());
-        mTitle.setText(data[0] + "/" + data[1] + "/" + data[2]);
+        builder.setView(ShowView);
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
+    private void initializeShowEventLayout(){
+        Calendar calendardate = Calendar.getInstance();
+        calendardate.set(Calendar.YEAR,presentyear);
+        calendardate.set(Calendar.MONTH,presentmonth);
+        calendardate.set(Calendar.DAY_OF_MONTH,presentday);
+        String date = eventDateFormate.format(calendardate.getTime());
+        ArrayList<Events> listarray = CollectEventByDate(date);
+        recyclerView = findViewById(R.id.EventsRV2);
+        //recyclerView.setAdapter(null);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
+        EventRecyclerAdapter eventRecyclerAdapter = new EventRecyclerAdapter(getApplicationContext()
+                , listarray, this);
+        recyclerView.setAdapter(eventRecyclerAdapter);
+        eventRecyclerAdapter.notifyDataSetChanged();
     }
 
-    @OnClick(R.id.back)
-    public void onClick() {
-        finish();
+
+
+
+
+
+    //Alarm part
+    private void setAlarm(Calendar calendar, String contenttitle, String contenttext, int RequesCode){
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        intent.putExtra("ContentTitle",contenttitle);
+        intent.putExtra("ContentText",contenttext);
+        intent.putExtra("id",RequesCode);
+        System.out.println(calendar.getTime()+"here");
+        System.out.println(calendar.getTimeInMillis());
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this,RequesCode,intent,PendingIntent.FLAG_ONE_SHOT);
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
+    }
+    public boolean isAlarmed(String date,String event,String time){
+        boolean alarmed = false;
+        dbOpenHelper = new DBOpenHelper(this);
+        SQLiteDatabase database = dbOpenHelper.getReadableDatabase();
+        Cursor cursor = dbOpenHelper.ReadIDEvents(date,event,time,database);
+        while(cursor.moveToNext()){
+            String notify = cursor.getString(cursor.getColumnIndex(DBStructure.Notify));
+            if(notify.equals("on")){
+                alarmed = true;
+            }else{
+                alarmed = false;
+            }
+        }
+        cursor.close();
+        dbOpenHelper.close();
+        return alarmed;
+    }
+    public void cancelAlarm(int RequesCode){
+        Intent intent = new Intent(this,AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this,RequesCode,intent,PendingIntent.FLAG_ONE_SHOT);
+        AlarmManager alarmManager = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
+    }
+
+
+
+
+
+
+    //DataBase part
+    private  ArrayList<Events> CollectEventByDate(String date){
+        ArrayList<Events> arrayList = new ArrayList<>();
+        dbOpenHelper = new DBOpenHelper(this);
+        SQLiteDatabase database = dbOpenHelper.getReadableDatabase();
+        Cursor cursor = dbOpenHelper.ReadEvents(date,database);
+        while(cursor.moveToNext()){
+            String event = cursor.getString(cursor.getColumnIndex(DBStructure.EVENT));
+            String time = cursor.getString(cursor.getColumnIndex(DBStructure.TIME));
+            String Date = cursor.getString(cursor.getColumnIndex(DBStructure.DATE));
+            String month = cursor.getString(cursor.getColumnIndex(DBStructure.MONTH));
+            String Year = cursor.getString(cursor.getColumnIndex(DBStructure.YEAR));
+            String type = cursor.getString(cursor.getColumnIndex(DBStructure.TYPE));
+            Events events = new Events(event,time,Date,month,Year,type);
+            arrayList.add(events);
+        }
+        cursor.close();
+        dbOpenHelper.close();
+
+        return arrayList;
+    }
+    public void updateEvent(String date,String event,String time,String notify, String type){
+        dbOpenHelper = new DBOpenHelper(this);
+        SQLiteDatabase database = dbOpenHelper.getWritableDatabase();
+        dbOpenHelper.updateEvent(date,event,time,notify, type,database);
+        dbOpenHelper.close();
+    }
+    public  void deleteCalendarEvent(String event, String date, String time, String type){
+        dbOpenHelper = new DBOpenHelper(this);
+        SQLiteDatabase database = dbOpenHelper.getWritableDatabase();
+        dbOpenHelper.deleteEvent(event,date,time,type,database);
+        dbOpenHelper.close();
+    }
+    private void SaveEvent(String event, String time, String date, String month,String year,String notify,String type){
+        dbOpenHelper = new DBOpenHelper(this);
+        SQLiteDatabase database = dbOpenHelper.getWritableDatabase();
+        dbOpenHelper.SaveEvent(event,time,date,month,year,notify,type,database);
+        dbOpenHelper.close();
+        Toast.makeText(this,"Event Saved", Toast.LENGTH_SHORT).show();
+    }
+    private int getRequestCode(String date,String event,String time){
+        int code = 0;
+        dbOpenHelper = new DBOpenHelper(this);
+        SQLiteDatabase database = dbOpenHelper.getReadableDatabase();
+        Cursor cursor = dbOpenHelper.ReadIDEvents(date,event,time,database);
+        while(cursor.moveToNext()){
+            code = cursor.getInt(cursor.getColumnIndex(DBStructure.ID));
+        }
+        cursor.close();
+        dbOpenHelper.close();
+        return code;
+    }
+
+
+
+
+    //String and date convert functions
+    public Date ConvertStringToTime(String eventDate){
+        SimpleDateFormat format = new SimpleDateFormat("kk:mm", Locale.ENGLISH);
+        Date date = null;
+        try{
+            date = format.parse(eventDate);
+        } catch (ParseException e){
+            e.printStackTrace();
+        }
+        return  date;
+    }
+    public Date ConvertStringToDate(String eventDate){
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        Date date = null;
+        try{
+            date = format.parse(eventDate);
+        } catch (ParseException e){
+            e.printStackTrace();
+        }
+        return  date;
+    }
+
+
+
+    //Import and export event part
+    private List<String> fromjsontoSQL(String json){
+        Gson gson = new Gson();
+        List<String> commands = new ArrayList<>();
+        ArrayList<ieEvent> ieEvents=gson.fromJson(json,new TypeToken<ArrayList<ieEvent>>(){}.getType());
+        for(ieEvent Eventie:ieEvents) {
+            String EventId = Eventie.getID();
+            String Event = Eventie.getEVENT();
+            String Time = Eventie.getTIME();
+            String Date = Eventie.getDATE();
+            String EventMonth = Eventie.getMONTH();
+            String EventYear = Eventie.getYEAR();
+            String Notify = Eventie.getNotify();
+            String Type = Eventie.getType();
+            commands.add(String.format(Locale.US,
+                    "insert into dbo.Calendardata(EventId,Event,Time,Date,EventMonth,EventYear,Notify,Type)" +
+                            "values('%s', '%s', '%s', '%s', '%s', '%s', '%s','%s')", EventId, Event, Time, Date, EventMonth, EventYear,
+                    Notify, Type)
+            );
+        }
+        return commands;
+    }
+    private  void setExportEvent(String json){
+        String url = "http://13.70.2.33/api/sql_db";
+        List<String> commands = fromjsontoSQL(json);
+        for(int i=0;i<commands.size();i++){
+            HashMap<String,String> data=new HashMap<>();
+            data.put("db_name","Smart Scheduler");
+            data.put("sql_cmd",commands.get(i));
+
+            RequestQueue queue = Volley.newRequestQueue(this);
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            System.out.println(response);
+                            //response whether success or not
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            System.out.println(error);
+                        }
+                    }
+            );
+            queue.add(request);
+        }
+
+    }
+    private void setAddEvent() throws JSONException {
+        HashMap<String,String> data=new HashMap<>();
+        String sqlCommand="Select * from dbo.Calendardata";
+        data.put("db_name","Smart Scheduler");
+        data.put("sql_cmd",sqlCommand);
+        String url = "http://13.70.2.33/api/sql_db";
+        RequestQueue queue = Volley.newRequestQueue(this);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray result= response.getJSONArray("result");
+                            System.out.println(result);
+                            for(int i = 0; i < result.length();i++){
+                                try{
+                                    SaveEvent(result.getJSONObject(i).getString("Event"),
+                                            result.getJSONObject(i).getString("Time"),
+                                            result.getJSONObject(i).getString("Date"),
+                                            result.getJSONObject(i).getString("EventMonth"),
+                                            result.getJSONObject(i).getString("EventYear"),
+                                            result.getJSONObject(i).getString("Notify"),
+                                            result.getJSONObject(i).getString("Type"));}
+                                catch (JSONException e){
+                                    e.printStackTrace();
+                                }
+
+                            }
+                            initializeShowEventLayout();
+                            //this is the string data you received
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println(error.toString());
+                    }
+                }
+        );
+        queue.add(request);
+    }
+
+
+
+
+    //Activity type changing
+    private void repaintIcons(ImageView thisView)
+    {
+        //Set this view to selected.
+        thisView.setBackgroundResource(R.drawable.color_splotch_selected);
+
+        //Set others to unselected.
+        for(ImageView iv : mActivityTypeViews)
+        {
+            if(!iv.equals(thisView))
+            {
+                iv.setBackgroundResource(R.drawable.color_splotch_selector);
+            }
+        }
     }
 }
 

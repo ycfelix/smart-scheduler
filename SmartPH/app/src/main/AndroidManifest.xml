@@ -59,6 +59,12 @@
         <activity android:name=".TimetableHomeActivity" />
         <activity android:name=".TimetableItemActivity" />
         <activity android:name=".UserActionActivity" />
+
+        <receiver android:name=".AlarmReceiver"
+            android:exported="true"
+            android:enabled="true">
+        </receiver>
     </application>
+
 
 </manifest>
