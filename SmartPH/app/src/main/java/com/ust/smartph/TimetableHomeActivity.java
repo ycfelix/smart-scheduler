@@ -26,8 +26,11 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.github.tlaabs.timetableview.Schedule;
 import com.github.tlaabs.timetableview.Time;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.ust.timetable.TimetableHomeAdapter;
+import com.ust.timetable.TimetableLoader;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,6 +38,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -64,6 +68,8 @@ public class TimetableHomeActivity extends Activity {
     private ArrayList<String> timetables;
 
     private ArrayList<String> notes;
+
+    ArrayList<Integer> matchChoices = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,7 +134,7 @@ public class TimetableHomeActivity extends Activity {
                             dialog.dismiss();
                         }
                         else{
-                            Toast.makeText(getApplicationContext(),"timetable already exist!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),"timetable "+result+" already exist!", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -155,6 +161,107 @@ public class TimetableHomeActivity extends Activity {
         });
         editor.commit();
         adapter.notifyDataSetChanged();
+    }
+
+    @OnClick(R.id.match_fab)
+    void matchTimetable(View v){
+        final String[] items = timetables.toArray(new String[timetables.size()]);
+        final boolean[] initChoiceSets=new boolean[items.length];
+        matchChoices.clear();
+        AlertDialog.Builder multiChoiceDialog =
+                new AlertDialog.Builder(this);
+        multiChoiceDialog.setTitle("Choose timetables to match with each other...");
+        multiChoiceDialog.setMultiChoiceItems(items, initChoiceSets,
+                new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which,
+                                        boolean isChecked) {
+                        if (isChecked) {
+                            matchChoices.add(which);
+                        } else {
+                            matchChoices.remove(which);
+                        }
+                    }
+                });
+        multiChoiceDialog.setPositiveButton("Confirm",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(matchChoices.size()<=1){
+                            Toast.makeText(TimetableHomeActivity.this, "choose more than 2 timetable to match!", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        saveToMatchedTimetable();
+                        dialog.dismiss();
+                    }
+                });
+        multiChoiceDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        multiChoiceDialog.show();
+    }
+
+    void saveToMatchedTimetable(){
+        ArrayList<Schedule> matched=getMatchedTimetable();
+        ArrayList<Schedule> monwed=new ArrayList<>();
+        ArrayList<Schedule> thrsun=new ArrayList<>();
+        String tableName="matched timetable";
+        for(int i=0;i<matched.size();i++){
+            Schedule schedule=matched.get(i);
+            if(schedule.getDay()<3){
+                monwed.add(schedule);
+            }
+            else{
+                thrsun.add(schedule);
+            }
+        }
+        int cnt=0;
+        while(this.timetables.contains(tableName)){
+            tableName+=String.valueOf(cnt);
+        }
+        Gson gson=new Gson();
+        saveToSharePreference(tableName,"");
+        SharedPreferences pref=PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor=pref.edit();
+        editor.putString("monwed_"+tableName,gson.toJson(monwed));
+        editor.putString("thrsun_"+tableName,gson.toJson(thrsun));
+        editor.commit();
+        timetables.add(tableName);
+        notes.add("matched timetable");
+        menu.close(true);
+        adapter.notifyItemInserted(timetables.size()-1);
+    }
+
+    ArrayList<Schedule> getMatchedTimetable(){
+        ArrayList<Schedule> result=null;
+        Gson gson=new Gson();
+        String now=timetables.get(matchChoices.get(0));
+        ArrayList<Schedule> t1=new ArrayList<>();
+        String nowJson= TimetableLoader.getSchedule("monwed_"+now);
+        t1.addAll(Objects.requireNonNull(gson.fromJson(nowJson, new TypeToken<ArrayList<Schedule>>() {
+        }.getType())));
+        nowJson= TimetableLoader.getSchedule("thrsun_"+now);
+        t1.addAll(Objects.requireNonNull(gson.fromJson(nowJson, new TypeToken<ArrayList<Schedule>>() {
+        }.getType())));
+        t1=TimetableLoader.getFreeTime(t1);
+        for(int i=1;i<matchChoices.size();i++){
+            String next=timetables.get(matchChoices.get(i));
+            ArrayList<Schedule> t2=new ArrayList<>();
+            String nextJson= TimetableLoader.getSchedule("monwed_"+next);
+            t2.addAll(Objects.requireNonNull(gson.fromJson(nextJson, new TypeToken<ArrayList<Schedule>>() {
+            }.getType())));
+            nextJson= TimetableLoader.getSchedule("thrsun_"+next);
+            t2.addAll(Objects.requireNonNull(gson.fromJson(nextJson, new TypeToken<ArrayList<Schedule>>() {
+            }.getType())));
+            result=TimetableLoader.matchTimeTable(t1,TimetableLoader.getFreeTime(t2));
+
+            System.out.println(result.size());
+            t1=result;
+        }
+        return result;
     }
 
 
