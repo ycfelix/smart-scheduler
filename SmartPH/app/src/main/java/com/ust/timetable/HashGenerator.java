@@ -23,7 +23,7 @@ public class HashGenerator {
     public static String toHashCode(String name){
         int hash=name.length()%256;
         for(int i:name.toCharArray()){
-            hash=hashtable[hash ^ Character.getNumericValue(i)];
+            hash=hashtable[hash ^ Math.abs(Character.getNumericValue(i)%256)];
         }
         return String.valueOf(hash);
     }

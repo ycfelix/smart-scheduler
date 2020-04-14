@@ -4,7 +4,7 @@
     android:shape="oval">
 
     <solid
-        android:color="#a1b2cc"/>
+        android:color="#758aa1"/>
 
     <size
         android:height="@dimen/color_splotch_height"
