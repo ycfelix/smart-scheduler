@@ -89,7 +89,7 @@ public class DashboardActivity extends AppCompatActivity {
         friendList.setLayoutManager(new LinearLayoutManager(this));
         adapter=new FriendAdapter(this,friends);
         friendList.setAdapter(adapter);
-        SharedPreferences pref = getSharedPreferences("email", Context.MODE_PRIVATE);
+        SharedPreferences pref = getSharedPreferences(Utils.EMAIL_PWD, Context.MODE_PRIVATE);
         String email = pref.getString("email", "");
         System.out.println("UID: "+MD5(email));
         System.out.println("email: "+email);
@@ -329,8 +329,24 @@ public class DashboardActivity extends AppCompatActivity {
         startActivity(new Intent(this, UserActionActivity.class));
     }
 
+    @OnClick(R.id.logout_btn)
+    void startLogOut (View arg) {
+        SharedPreferences mySPrefs = getSharedPreferences(Utils.EMAIL_PWD, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = mySPrefs.edit();
+        editor.remove("email");
+        editor.remove("hashed_pwd");
+        editor.apply();
+        startActivity(new Intent(this, LoginActivity.class));
+        Toast.makeText(this, "Log out successful", Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
     @Override
     public void onBackPressed() {
+//        Intent startMain = new Intent(Intent.ACTION_MAIN);
+//        startMain.addCategory(Intent.CATEGORY_HOME);
+//        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        startActivity(startMain);
         finish();
     }
 }

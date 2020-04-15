@@ -67,10 +67,14 @@ def get_raw_data(table, send_json_to_db, get_json_from_db):
         "sql_cmd": "SELECT * FROM dbo." + table}
     sql = json.dumps(command)
 
-    send_json_to_db(sql)
+    # comment out these 2 for testing
+    # send the sql to the database
+    # send_json_to_db(sql)
+    # on database retrieve
+    # result = get_json_from_db()
 
-    result = get_json_from_db()
-
+    # uncomment this for testing
+    result=test
     return json.loads(result)['result']
 
 
@@ -109,6 +113,6 @@ def get_calendar_similar_user(user_id,n):
     return sorted_user.iloc[:n]['user_id'].tolist()
 
 test1 = get_calendar_similar_user(user_id='1', n=1)
-test2 = get_calendar_similar_user(user_id='2', n=1)
+test2 = get_calendar_similar_user(user_id='2', n=2)
 print(test1)
 print(test2)

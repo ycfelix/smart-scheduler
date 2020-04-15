@@ -2,11 +2,10 @@ from flask import jsonify, Blueprint, redirect, url_for
 from backend.api.utils import *
 
 user = Blueprint('user', __name__)
-return_dict = {}
 
-@user.route('/api/user/logout', methods=['POST'])
-def logout():
-	pass
+# @user.route('/api/user/logout', methods=['POST'])
+# def logout():
+# 	pass
 	# json = getJSON()
 	# if not "email" in json:
 	# 	return jsonify({'error': 'No email'})
@@ -28,6 +27,7 @@ def logout():
 @user.route('/api/user/register', methods=['POST'])
 def register():
 	json = getJSON()
+	return_dict = {}
 	# ignore mobile phone number first
 	if not "email" in json:
 		return jsonify({'error': 'No email'})
@@ -42,18 +42,12 @@ def register():
 	elif "ID" == "":
 	    return jsonify({'error': 'ID is not specified'})
 	else:
-		# query_json = {}
-		# query_json['db_name'] = 'Smart Scheduler'
-		# query_json['sql_cmd'] = "select Email, HashedPwd, LogIn from dbo.Accounts where Email='%s'" % json['email']
-		# print(query_json['db_name'])
-		# query_result = redirect(url_for('api.sql_post', input_json=query_json))
-		# return type(query_result)
 		try:
 			cnxn = getCnxn('Smart Scheduler')
 			cursor = cnxn.cursor()
 
 		except pyodbc.Error as pex:
-			return jsonify({'error': 500, 'error msg': str(pex)})
+			return jsonify({'error_code': 500, 'error msg': str(pex)})
 
 		else:
 			# return_dict = {}
@@ -100,6 +94,7 @@ def register():
 @user.route('/api/user/login', methods=['POST'])
 def login():
 	json = getJSON()
+	return_dict = {}
 	if not "email" in json:
 		return jsonify({'error': 'No email'})
 	elif not "hashed_pwd" in json:

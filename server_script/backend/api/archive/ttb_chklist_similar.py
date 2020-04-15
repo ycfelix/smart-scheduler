@@ -54,12 +54,12 @@ def get_raw_data(table, send_json_to_db, get_json_from_db):
 
     # comment out these 2 for testing
     # send the sql to the database
-    send_json_to_db(sql)
+    # send_json_to_db(sql)
     # on database retrieve
-    result = get_json_from_db()
+    # result = get_json_from_db()
 
     # uncomment this for testing
-    # result=test
+    result=test
     return json.loads(result)['result']
 
 
@@ -127,6 +127,6 @@ def get_timetable_similar_user(user_id, n):
 
 
 test1 = get_checklist_similar_user(user_id='1', n=1)
-test2 = get_timetable_similar_user(user_id='2', n=1)
+test2 = get_timetable_similar_user(user_id='2', n=2)
 print(test1)
 print(test2)

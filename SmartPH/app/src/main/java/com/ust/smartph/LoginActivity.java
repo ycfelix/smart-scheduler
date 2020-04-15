@@ -14,6 +14,7 @@ import android.widget.EditText;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.android.volley.Request;
 import com.ust.signup.SignupDialog;
 import com.ust.signup.SigupDialogListener;
 import com.ust.utility.Utils;
@@ -67,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onGetCnxn(JSONObject jsonData, String api, final VolleyCallback callback) {
-                Utils.connectServer(jsonData, api, LoginActivity.this, callback);
+                Utils.connectServer(jsonData, api, Request.Method.POST, LoginActivity.this, callback);
             }
 
             @Override
@@ -118,7 +119,7 @@ public class LoginActivity extends AppCompatActivity {
             }
             Log.d(TAG, "hashed_pwd@checkLogin: " + hashed_pwd);
 
-            Utils.connectServer(accInfo, getString(R.string.login_api), LoginActivity.this,
+            Utils.connectServer(accInfo, getString(R.string.login_api), Request.Method.POST, LoginActivity.this,
                     new VolleyCallback() {
                 @Override
                 public void onSuccess(JSONObject result) {

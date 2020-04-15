@@ -8,22 +8,67 @@ api = Blueprint('api', __name__)
 # send string request suggestion
 # receive -> call function -> give back to them
 
-@api.route('/api/distance_metric/<int:type>', methods=['GET'])
-def getDistMetric(type):
-	if (type == 0):
-	elif (type == 1):
-	elif (type == 2):
+@api.route('/api/distance_matrix/<int:typ>', methods=['GET'])
+def getDistMetric(typ):
+	json = getJSON()
+	return_dict = {}
+	return_dict['type'] = ''
+	return_dict['result'] = ''
+	if not typ in range(0, 4):
+		return_dict['type'] = 'invalid type'
+		return_dict['result'] = 'Invalid type number. Please see available enums in com.ust.utility.Utils.DistMatrix.'
+		return jsonify(return_dict)
+
 	else:
-		
-	pass
+		# print (json)
+		# print (json.get('num_user'))
+		# print (json.get('user_id'))
+		if json.get('user_id') == None:
+			return_dict['type'] = 'missing parameter(s):'
+			return_dict['result'] = 'user_id'
+
+		if json.get('num_user') == None:
+			if return_dict['type'] == 'missing parameter(s):':
+				return_dict['result'] += ', num_user'
+			else:
+				return_dict['type'] = 'missing parameter(s):'
+				return_dict['result'] = 'num_user'
+
+		if return_dict['type'] == 'missing parameter(s):':
+			return jsonify(return_dict)
+
+		else:
+			# print ('json[\'user_id\'] = ' + json['user_id'])
+			# print ('json[\'num_user\'] = ' + json['num_user'])
+			if (typ == 0):
+				# MAP
+				return_dict['type'] = 'map'
+				return_dict['result'] = get_map_similar(int(json['user_id']), int(json['num_user']))
+			elif (typ == 1):
+				# TIMETABLE
+				return_dict['type'] = 'timetable'
+				return_dict['result'] = get_timetable_similar_user(\
+					user_id='{id}'.format(id=json['user_id']), n=int(json['num_user']))
+			elif (typ == 2):
+				# CHECKLIST
+				return_dict['type'] = 'checklist'
+				return_dict['result'] = get_checklist_similar_user(\
+					user_id='{id}'.format(id=json['user_id']), n=int(json['num_user']))
+			elif (typ == 3):
+				# CALENDAR
+				return_dict['type'] = 'calendar'
+				return_dict['result'] = get_calendar_similar_user(\
+					user_id='{id}'.format(id=json['user_id']), n=int(json['num_user']))
+			else:
+				return_dict['type'] = 'invalid type'
+				return_dict['result'] = 'Invalid type number. Please see available enums in com.ust.utility.Utils.DistMatrix.'
+
+			return jsonify(return_dict)
 
 @api.route('/api/sql_db', methods=['POST'])
 def sql_post():
-	# if input_json == None:
-	# 	json = getJSON()
-	# else:
-	# 	json = input_json
 	json = getJSON()
+	return_dict = {}
 	# print('type of json = ' + str(type(json)))
 	# print("request = " + str(request.method))
 	# print('request.db_name = ' + str(request.values.get('db_name')))
@@ -36,7 +81,6 @@ def sql_post():
 	elif "sql_cmd" == "":
 	    return jsonify({'error': 'SQL command is not specified'})
 	else:
-		return_dict = {}
 		try:
 			cnxn = getCnxn(json['db_name'])
 			cursor = cnxn.cursor()
@@ -61,21 +105,10 @@ def sql_post():
 			if (cmd_type.upper() == 'SELECT'):
 				return_dict['type'] = 'query'
 				try:
-					result = getCursor(cursor, cmd_to_be_exe).fetchall()
+					result = getServerReturnValue(getCursor(cursor, cmd_to_be_exe))
 					col_names = [col[0] for col in cursor.description]
-					return_dict['type'] = 'query'
-					temp_list = []
-
-					for row in result:
-						temp = {}
-						for (key, value) in itertools.zip_longest(col_names, row):
-							if (type(value).__name__ == "Decimal"):
-								temp[str(key)] = float(round(value, 2))
-							else:
-								temp[str(key)] = value
-						temp_list.append(temp)
-
-					return_dict['result'] = temp_list
+					return_dict['result'] = resultToListOfDict(result, col_names)
+					
 				except Exception as e:
 					return_dict['result'] = 'error'
 					return_dict['error_msg'] = str(e)
