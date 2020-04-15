@@ -34,11 +34,20 @@
                 android:layout_weight="1" />
 
             <Button
-                android:id="@+id/logout_btn"
-                android:layout_width="match_parent"
+                android:id="@+id/signout"
                 android:layout_height="wrap_content"
-                android:text="@string/log_out" />
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:text="Sign out"
+                android:background="@drawable/button"
+                android:textSize="16sp"
+                android:drawablePadding="16dp"
+                android:singleLine="true"
+                android:drawableStart="@drawable/baseline_undo_black_24dp"
+                android:textColor="@color/colorPrimaryDark"
+                style="@style/Widget.MaterialComponents.Button.TextButton"/>
         </LinearLayout>
+
 
     </android.support.design.widget.NavigationView>
 </android.support.v4.widget.DrawerLayout>

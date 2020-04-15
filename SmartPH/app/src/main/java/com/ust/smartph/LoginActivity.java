@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
 
 import org.json.JSONException;
@@ -24,6 +25,7 @@ import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 /**
@@ -136,6 +138,7 @@ public class LoginActivity extends AppCompatActivity {
                             editor.apply();
                             Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
                             startActivity(intent);
+                            finish();
                         }
                         else {
                             // Indicate authentication error
@@ -171,9 +174,4 @@ public class LoginActivity extends AppCompatActivity {
         return (pass != null && pass.length() >= 4);
     }
 
-//    private char phash(String key) {
-//        char hash = (char)(key.length() % 256);
-//        for (int i = 0; i < key.length(); ++i) hash = T[(int)(hash) ^ key.charAt(i)];
-//        return hash;
-//    }
 }

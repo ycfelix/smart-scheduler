@@ -16,6 +16,7 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -73,6 +74,9 @@ public class DashboardActivity extends AppCompatActivity {
 
     @BindView(R.id.nav_friend)
     NavigationView friendNavigation;
+
+    @BindView(R.id.signout)
+    Button signOut;
 
     ArrayList<Friend> friends=new ArrayList<>();
 
@@ -139,6 +143,21 @@ public class DashboardActivity extends AppCompatActivity {
                 }
         );
         queue.add(request);
+    }
+
+    @OnClick(R.id.signout)
+    public void signOut(View v){
+        AlertDialog.Builder dialog=new AlertDialog.Builder(this);
+        dialog.setMessage("Are you sure to sign-out?");
+        dialog.setPositiveButton("Confirm", (dialog12, which) -> {
+            SharedPreferences pref=PreferenceManager.getDefaultSharedPreferences(DashboardActivity.this);
+            pref.edit().putString("email",null).putString("hashed_pwd",null).apply();
+            startActivity(new Intent(DashboardActivity.this,LoginActivity.class));
+            dialog12.dismiss();
+            DashboardActivity.this.finish();
+        });
+        dialog.setNegativeButton("Cancel", (dialog1, which) -> dialog1.dismiss());
+        dialog.show();
     }
 
     void addToFriendlist(JSONArray arr) throws JSONException {
@@ -327,18 +346,6 @@ public class DashboardActivity extends AppCompatActivity {
 
     public void startActionDetection(View arg){
         startActivity(new Intent(this, UserActionActivity.class));
-    }
-
-    @OnClick(R.id.logout_btn)
-    void startLogOut (View arg) {
-        SharedPreferences mySPrefs = getSharedPreferences(Utils.EMAIL_PWD, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = mySPrefs.edit();
-        editor.remove("email");
-        editor.remove("hashed_pwd");
-        editor.apply();
-        startActivity(new Intent(this, LoginActivity.class));
-        Toast.makeText(this, "Log out successful", Toast.LENGTH_SHORT).show();
-        finish();
     }
 
     @Override
