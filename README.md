@@ -3,7 +3,10 @@
 This is the final year project of HKUST CSE FYP 2019-2020 KWT1.<br/>
 A integrated time management tool that help user boost their efficiency.<br/><br/>
 It includes basic features such as checklist, calendar & timetable.<br/>
-Together with helper tools such as daily app usage report & focus tool.<br/>
+Together with helper tools such as daily app usage report & focus tool.<br/><br/>
+
+## Technology
+Native Android (Java), Database (MSSQL), Python backend, Azure cloud server (Ubuntu)
 
 ## Screenshots 
 <p float="left">
