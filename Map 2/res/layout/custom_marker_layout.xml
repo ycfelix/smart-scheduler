@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/custom_marker_view"
+    android:layout_width="25dp"
+    android:layout_height="wrap_content">
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:civ_border_color="#000"
+        android:layout_gravity="center"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="5dp"
+        android:contentDescription="@null"
+        android:src="@drawable/fds"/>
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/user_dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:civ_border_color="#000"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center_horizontal"
+        android:contentDescription="@null"
+        android:src="@drawable/marker"/>
+    <RelativeLayout
+        android:layout_width="50dp"
+        android:layout_height="59dp"
+        android:backgroundTint="@color/colorPrimary">
+        <TextView android:text="janet John"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="7sp"
+            android:layout_marginLeft="10dp"
+            android:textColor="#000"
+            android:alpha="0.8"
+            android:id="@+id/name"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone"/>
+    </RelativeLayout>
+</RelativeLayout>
+
+
+
+
+<!-- Reference: https://pragmaapps.com/add-custom-image-in-google-maps-marker-android/ -->
+<!--
+    <?xml version="1.0" encoding="utf-8"?>
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/custom_marker_view"
+        android:layout_width="52dp"
+        android:layout_height="wrap_content">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/user_dp"
+            android:layout_width="42dp"
+            android:layout_height="46dp"
+            app:civ_border_color="#fff"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="4dp"
+            android:contentDescription="@null"
+            android:src="@drawable/shape_circle" />
+        <RelativeLayout android:layout_width="50dp"
+            android:layout_height="59dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:background="@drawable/marker_image_new">
+            <TextView android:text="janet John"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="7sp"
+                android:layout_marginLeft="10dp"
+                android:textColor="#000"
+                android:alpha="0.8"
+                android:background="@drawable/blur_circle"
+                android:id="@+id/name"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:visibility="gone"/>
+        </RelativeLayout>
+    </RelativeLayout>
+-->

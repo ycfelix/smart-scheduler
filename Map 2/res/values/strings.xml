@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">calendar</string>
+    <string name="title_activity_test">TestActivity</string>
+    <string name="title_activity_open_map">Map</string>
+</resources>
