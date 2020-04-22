@@ -92,6 +92,7 @@
             android:layout_margin="@dimen/imageView_icon_margin"
             android:background="@drawable/color_splotch_selector"
             android:scaleType="center"
+            android:src="@drawable/ic_work"
              />
 
         <ImageView
@@ -119,7 +120,7 @@
             android:layout_margin="@dimen/imageView_icon_margin"
             android:background="@drawable/color_splotch_selector"
             android:scaleType="center"
-            android:src="@drawable/ic_fitness_center_white_24dp" />
+            android:src="@drawable/ic_read" />
 
         <ImageView
             android:id="@+id/icon_travel"
@@ -128,7 +129,7 @@
             android:layout_margin="@dimen/imageView_icon_margin"
             android:background="@drawable/color_splotch_selector"
             android:scaleType="center"
-            android:src="@drawable/ic_fitness_center_white_24dp" />
+            android:src="@drawable/ic_flight_white_24dp" />
 
         <ImageView
             android:id="@+id/icon_volunteer"
@@ -137,7 +138,7 @@
             android:layout_margin="@dimen/imageView_icon_margin"
             android:background="@drawable/color_splotch_selector"
             android:scaleType="center"
-            android:src="@drawable/ic_fitness_center_white_24dp" />
+            android:src="@drawable/ic_volunteer" />
 
         <ImageView
             android:id="@+id/icon_study"
@@ -146,7 +147,7 @@
             android:layout_margin="@dimen/imageView_icon_margin"
             android:background="@drawable/color_splotch_selector"
             android:scaleType="center"
-            android:src="@drawable/ic_fitness_center_white_24dp" />
+            android:src="@drawable/ic_school_white_24dp" />
 
         <ImageView
             android:id="@+id/icon_shopping"
@@ -155,7 +156,7 @@
             android:layout_margin="@dimen/imageView_icon_margin"
             android:background="@drawable/color_splotch_selector"
             android:scaleType="center"
-            android:src="@drawable/ic_fitness_center_white_24dp" />
+            android:src="@drawable/ic_shopping" />
 
         <ImageView
             android:id="@+id/icon_chill"
@@ -164,7 +165,7 @@
             android:layout_margin="@dimen/imageView_icon_margin"
             android:background="@drawable/color_splotch_selector"
             android:scaleType="center"
-            android:src="@drawable/ic_fitness_center_white_24dp" />
+            android:src="@drawable/ic_chill" />
 
 
     </GridLayout>

@@ -1,9 +1,11 @@
 package com.ust.smartph;
 import android.app.TimePickerDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -59,6 +61,7 @@ import com.ust.calendarhandle.EventRecyclerAdapter;
 import com.ust.calendarhandle.Events;
 import com.ust.calendarhandle.ViewAdapter;
 import com.ust.calendarhandle.ieEvent;
+import com.ust.utility.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -78,6 +81,7 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
     SimpleDateFormat eventDateFormate = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
     RecyclerView recyclerView;
     List<ImageView> mActivityTypeViews;
+    ArrayList<Events> brandsList = new ArrayList<>();
     int alarmYear,alarmMonth,alarmDay,alarmHour,alarmMinute;
     int presentday,presentmonth,presentyear;
 
@@ -128,10 +132,12 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
                 go.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        brandsList.clear();
                         Spinner spinner = suggestView.findViewById(R.id.type);
                         //TextView brands = (TextView) findViewById(R.id.ActivityType);
                         final String activityType = String.valueOf(spinner.getSelectedItem());
-                        ArrayList<Events> brandsList = new ArrayList<>();
+                        int num = 5;
+                        getSuggestEvent(num);
                         if (activityType.equals("Exercise")) {
 
                             Events event1 = new Events("Basketball","3:58 PM","2020-03-04","March",
@@ -229,12 +235,46 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
         ImportCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    setAddEvent();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                final Context importContext = view.getContext();
+                AlertDialog.Builder builder = new AlertDialog.Builder(importContext);
+                builder.setCancelable(true);
+                final View importView = LayoutInflater.from(view.getContext()).inflate(R.layout.import_calendar_layout,null);
+                final EditText otherUserId = importView.findViewById(R.id.import_other_id);
+                Button importOwn = importView.findViewById(R.id.import_own);
+                Button importOther = importView.findViewById(R.id.import_other);
+                importOwn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        try {
+                            setAddEvent();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        alertDialog.dismiss();
+                    }
+                });
+                importOther.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String otherUserIdString = otherUserId.getText().toString();
+                        if(TextUtils.isEmpty(otherUserIdString)){
+                            otherUserId.setError("Please enter a user ID");
+                        }
+                        else{
+                            try {
+                                setAddOtherUserEvent(otherUserIdString);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            alertDialog.dismiss();
+                        }
+                    }
+                });
+                builder.setView(importView);
+                alertDialog = builder.create();
+                alertDialog.show();
             }
+
         });
 
         //Export function
@@ -265,9 +305,7 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
                 dbOpenHelper.close();
                 System.out.println(gson.toJson(imexportList));
 
-                //setExportEvent(gson.toJson(imexportList));
-
-
+                setExportEvent(gson.toJson(imexportList));
 
             }
         });
@@ -714,6 +752,7 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
     private List<String> fromjsontoSQL(String json){
         Gson gson = new Gson();
         List<String> commands = new ArrayList<>();
+        String public_share = "true";
         ArrayList<ieEvent> ieEvents=gson.fromJson(json,new TypeToken<ArrayList<ieEvent>>(){}.getType());
         for(ieEvent Eventie:ieEvents) {
             String EventId = Eventie.getID();
@@ -724,15 +763,23 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
             String EventYear = Eventie.getYEAR();
             String Notify = Eventie.getNotify();
             String Type = Eventie.getType();
+            SharedPreferences sp = getSharedPreferences(Utils.EMAIL_PWD, Context.MODE_PRIVATE);
+            String userid = sp.getString("email", null);
             commands.add(String.format(Locale.US,
-                    "insert into dbo.Calendardata(EventId,Event,Time,Date,EventMonth,EventYear,Notify,Type)" +
-                            "values('%s', '%s', '%s', '%s', '%s', '%s', '%s','%s')", EventId, Event, Time, Date, EventMonth, EventYear,
-                    Notify, Type)
+                    "insert into dbo.Calendardata(EventId,Event,Time,Date,EventMonth,EventYear,Notify,Type,user_id)" +
+                            "values('%s', '%s', '%s', '%s', '%s', '%s', '%s','%s','%s')", EventId, Event, Time, Date, EventMonth, EventYear,
+                    Notify, Type, userid)
+            );
+            commands.add(String.format(Locale.US,
+                    "insert into dbo.Calendarpresent(EventId,Event,Time,Date,EventMonth,EventYear,Notify,Type,user_id, public_share)" +
+                            "values('%s', '%s', '%s', '%s', '%s', '%s', '%s','%s','%s', '%s')", EventId, Event, Time, Date, EventMonth, EventYear,
+                    Notify, Type, userid, public_share)
             );
         }
         return commands;
     }
     private  void setExportEvent(String json){
+        deletepresentdatabase();
         String url = "http://13.70.2.33/api/sql_db";
         List<String> commands = fromjsontoSQL(json);
         for(int i=0;i<commands.size();i++){
@@ -760,9 +807,35 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
         }
 
     }
-    private void setAddEvent() throws JSONException {
+    public void deletepresentdatabase(){
+        SharedPreferences sp = getSharedPreferences(Utils.EMAIL_PWD, Context.MODE_PRIVATE);
+        String userid = sp.getString("email", null);
+        String url = "http://13.70.2.33/api/sql_db";
+        String command = String.format(Locale.US,"DELETE dbo.Calendardata WHERE user_id= '%s' ", userid);
         HashMap<String,String> data=new HashMap<>();
-        String sqlCommand="Select * from dbo.Calendardata";
+        data.put("db_name","Smart Scheduler");
+        data.put("sql_cmd",command);
+        RequestQueue queue = Volley.newRequestQueue(this);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println(response);
+                        //response whether success or not
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println(error);
+                    }
+                }
+        );
+        queue.add(request);
+    }
+    private void setAddOtherUserEvent(String userId) throws JSONException{
+        HashMap<String,String> data=new HashMap<>();
+        String sqlCommand= String.format(Locale.US,"Select * from dbo.Calendarpresent WHERE user_id = '%s' ", userId);
         data.put("db_name","Smart Scheduler");
         data.put("sql_cmd",sqlCommand);
         String url = "http://13.70.2.33/api/sql_db";
@@ -773,6 +846,11 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
                     public void onResponse(JSONObject response) {
                         try {
                             JSONArray result= response.getJSONArray("result");
+                            if(result != null && result.length() > 0){
+
+                            }
+                            else
+                                Toast.makeText(getApplicationContext(), "The userId is not exist or There are no present event in the userId ", Toast.LENGTH_LONG).show();
                             System.out.println(result);
                             for(int i = 0; i < result.length();i++){
                                 try{
@@ -781,7 +859,7 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
                                             result.getJSONObject(i).getString("Date"),
                                             result.getJSONObject(i).getString("EventMonth"),
                                             result.getJSONObject(i).getString("EventYear"),
-                                            result.getJSONObject(i).getString("Notify"),
+                                            "off",
                                             result.getJSONObject(i).getString("Type"));}
                                 catch (JSONException e){
                                     e.printStackTrace();
@@ -804,6 +882,90 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
         );
         queue.add(request);
     }
+    private void setAddEvent() throws JSONException {
+        SharedPreferences sp = getSharedPreferences(Utils.EMAIL_PWD, Context.MODE_PRIVATE);
+        String userid = sp.getString("email", null);
+        HashMap<String,String> data=new HashMap<>();
+        String sqlCommand= String.format(Locale.US,"Select * from dbo.Calendarpresent WHERE user_id = '%s' ", userid);
+        data.put("db_name","Smart Scheduler");
+        data.put("sql_cmd",sqlCommand);
+        String url = "http://13.70.2.33/api/sql_db";
+        RequestQueue queue = Volley.newRequestQueue(this);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray result= response.getJSONArray("result");
+                            System.out.println(result);
+                            for(int i = 0; i < result.length();i++){
+                                try{
+                                    SaveEvent(result.getJSONObject(i).getString("Event"),
+                                            result.getJSONObject(i).getString("Time"),
+                                            result.getJSONObject(i).getString("Date"),
+                                            result.getJSONObject(i).getString("EventMonth"),
+                                            result.getJSONObject(i).getString("EventYear"),
+                                            "off",
+                                            result.getJSONObject(i).getString("Type"));}
+                                catch (JSONException e){
+                                    e.printStackTrace();
+                                }
+
+                            }
+                            initializeShowEventLayout();
+                            //this is the string data you received
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println(error.toString());
+                    }
+                }
+        );
+        queue.add(request);
+    }
+    private ArrayList<String> getSuggestEvent(int num){
+        HashMap<String,String> data=new HashMap<>();
+        ArrayList<String> userlist = new ArrayList<>();
+        SharedPreferences sp = getSharedPreferences(Utils.EMAIL_PWD, Context.MODE_PRIVATE);
+        String userid = sp.getString("email", null);
+        String numOfUser = Integer.toString(num);
+        data.put("user_id",userid);
+        data.put("num_user",numOfUser);
+        String url = "http://13.70.2.33/api/sql_db";
+        RequestQueue queue = Volley.newRequestQueue(this);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray result= response.getJSONArray("result");
+                            System.out.println(result);
+                            //this is the string data you received
+                            for(int i = 0; i < result.length();i++){
+                                userlist.add(result.getJSONObject(i).toString());
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println(error.toString());
+                    }
+                }
+        );
+        queue.add(request);
+        return userlist;
+    }
+
+
 
 
 
