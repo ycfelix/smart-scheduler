@@ -1,4 +1,4 @@
-package com.ust.map;
+package com.ust.smartph;
 
 import android.Manifest;
 import android.app.Activity;
@@ -59,6 +59,14 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelSlideListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState;
+import com.ust.map.ExtractedJSON;
+import com.ust.map.HttpConnection;
+import com.ust.map.MyLocationService;
+import com.ust.map.PathJSONParser;
+import com.ust.map.PlaceAutoSuggestAdapter;
+import com.ust.map.SQLDB;
+import com.ust.map.SuggestedPath;
+import com.ust.map.SuggestedPathAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
