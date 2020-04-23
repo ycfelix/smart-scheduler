@@ -1,29 +1,35 @@
-package com.ust.smartph;
+package com.example.calendar;
 
-import android.Manifest;
+import androidx.core.app.ActivityCompat;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+import androidx.fragment.app.FragmentActivity;
+
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.location.LocationManager;
+import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -36,37 +42,25 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
+import com.directions.route.AbstractRouting;
+import com.directions.route.Route;
+import com.directions.route.RouteException;
+import com.directions.route.Routing;
+import com.directions.route.RoutingListener;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelSlideListener;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState;
-import com.ust.map.ExtractedJSON;
-import com.ust.map.HttpConnection;
-import com.ust.map.MyLocationService;
-import com.ust.map.PathJSONParser;
-import com.ust.map.PlaceAutoSuggestAdapter;
-import com.ust.map.SQLDB;
-import com.ust.map.SuggestedPath;
-import com.ust.map.SuggestedPathAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -77,18 +71,48 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
+import java.math.RoundingMode;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import android.os.Build;
+
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.location.LocationServices;
+
+import android.location.Location;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import androidx.core.content.ContextCompat;
+import androidx.slidingpanelayout.widget.SlidingPaneLayout;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.Place;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+
+import android.view.View.OnClickListener;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelSlideListener;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener,GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener {
     private GoogleMap mMap;
     private Marker markerFrom;
     private Marker markerTo;
@@ -100,10 +124,10 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
     //private ArrayList<Polyline> heatmapPolyline;
     private ArrayList<ArrayList<Polyline>> heatmapPolyline;
     private ArrayList<Integer> heatmapPolylineTag;
-    private static final int heatmapColor1= Color.rgb(51, 204, 255);
-    private static final int heatmapColor2= Color.rgb(255, 195, 77);
-    private static final int heatmapColor3= Color.GREEN;
-    private static final int heatmapColor4= Color.RED;
+    private static final int heatmapColor1=Color.rgb(51, 204, 255);
+    private static final int heatmapColor2=Color.rgb(255, 195, 77);
+    private static final int heatmapColor3=Color.GREEN;
+    private static final int heatmapColor4=Color.RED;
     private static final float DEFAULT_ZOOM = 15f;
     private AutoCompleteTextView tvFrom;
     private AutoCompleteTextView tvTo;
@@ -148,7 +172,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
     private TextView preferedDistance;
     private TextView preferedDuration;
     private String preferedMode;
-    private RelativeLayout.LayoutParams buttonPanelViewParams;
+    private LinearLayout.LayoutParams buttonPanelViewParams;
     private RelativeLayout buttonPanelView;
 
 
@@ -182,11 +206,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
 
         dragView = (LinearLayout) findViewById(R.id.dragView);
         alternativeSuggestedPathList= new ArrayList<SuggestedPath>();
-/*
-        buttonPanelViewParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        buttonPanelViewParams.setMargins(0,0,0,0);
-        buttonPanelView = (RelativeLayout) findViewById(R.id.buttonPanel);
-        buttonPanelView.setLayoutParams(buttonPanelViewParams);*/
+
 
         checkGPSPermission(); //need to uncomment
         preferedMode="walking"; //either "walking" or "driving"
@@ -261,6 +281,8 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                         System.out.println("debug: hide at mapClick");
                         mLayout.setPanelHeight(0);
                         mLayout.setShadowHeight(0);
+                        buttonPanelViewParams.setMargins(10,0,10,15);
+                        buttonPanelView.setLayoutParams(buttonPanelViewParams);
 
                         markerFrom=mMap.addMarker(markerOption);
                         numOfMarkers+=1;
@@ -321,6 +343,9 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                     System.out.println("debug: hide at tvFrom");
                     mLayout.setPanelHeight(0);
                     mLayout.setShadowHeight(0);
+                    mLayout.setPanelState(PanelState.COLLAPSED);
+                    buttonPanelViewParams.setMargins(10,0,10,15);
+                    buttonPanelView.setLayoutParams(buttonPanelViewParams);
                     //clear input
                     System.out.println("numOfMarkers 1, focusing: "+numOfMarkers);
                     if(markerFrom!=null){
@@ -387,6 +412,9 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                     System.out.println("debug: hide at tvTo");
                     mLayout.setPanelHeight(0);
                     mLayout.setShadowHeight(0);
+                    mLayout.setPanelState(PanelState.COLLAPSED);
+                    buttonPanelViewParams.setMargins(10,0,10,15);
+                    buttonPanelView.setLayoutParams(buttonPanelViewParams);
                     //clear input
                     System.out.println("numOfMarkers 2, focusing: "+numOfMarkers);
                     if(markerTo!=null){
@@ -430,6 +458,9 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         dragBar = (TextView) findViewById(R.id.drag_bar);
         dragBarHeight=dragBar.getHeight();
         shadowHeight=(int)(4*dpToPixel);
+
+        buttonPanelViewParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        buttonPanelView = (RelativeLayout) findViewById(R.id.buttonPanel);
 
         mLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
         layoutParams = mLayout.getLayoutParams();
@@ -551,7 +582,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                     GetDirectionTask getDirectionTask = new GetDirectionTask(false,false);
                     getDirectionTask.execute(url);
                 }
-            break;
+                break;
 
             case R.id.gps:
                 if (!keepUpdateGPS) {
@@ -617,8 +648,8 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                     showHeatmap(range1PathIdx, false);
                     range1HeatmapPolylineShown=true;
                     if(range2HeatmapPolylineShown
-                    &&range3HeatmapPolylineShown
-                    &&range4HeatmapPolylineShown){
+                            &&range3HeatmapPolylineShown
+                            &&range4HeatmapPolylineShown){
                         allHeatmapPolylineShown=true;
                     }
                 }
@@ -739,7 +770,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         }
     }
 
-//getOverlappedPolyine
+    //getOverlappedPolyine
     private void getOverlappedPolyine(ArrayList<ArrayList<LatLng>> suggestedPaths, ArrayList<ArrayList<LatLng>> userPathHistory){
         ArrayList<LatLng> intergratedUserPathHistory = new ArrayList<LatLng>();
         ArrayList<Integer> intergratedUserPathHistoryDurationTags = new ArrayList<Integer>();
@@ -897,7 +928,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                             if(Math.toDegrees(Math.atan(Math.abs((historySlope-suggestedSlope)/(1+suggestedSlope*historySlope))))>=45){
                                 pass2=false;
                             }
-                            System.out.println("degree between 2 lines: "+ Math.toDegrees(Math.atan(Math.abs((historySlope-suggestedSlope)/(1+suggestedSlope*historySlope)))));
+                            System.out.println("degree between 2 lines: "+Math.toDegrees(Math.atan(Math.abs((historySlope-suggestedSlope)/(1+suggestedSlope*historySlope)))));
 
                         }
                         else if(lat3&&lng3){    //need to fix!!!!!!!!!!!!!!!!!!
@@ -907,14 +938,14 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                             if(Math.toDegrees(Math.atan(Math.abs((historySlope-suggestedSlope)/(1+suggestedSlope*historySlope))))>=45){
                                 pass2=false;
                             }
-                            System.out.println("degree between 2 lines: "+ Math.toDegrees(Math.atan(Math.abs((historySlope-suggestedSlope)/(1+suggestedSlope*historySlope)))));
+                            System.out.println("degree between 2 lines: "+Math.toDegrees(Math.atan(Math.abs((historySlope-suggestedSlope)/(1+suggestedSlope*historySlope)))));
                             //check distance of 2 lines
-                            double HS1Distance= Math.sqrt(Math.pow(historySlopePoint1.latitude-suggestedSlopePoint1.latitude,2)+ Math.pow(historySlopePoint1.longitude-suggestedSlopePoint1.longitude,2));
-                            double HS2Distance= Math.sqrt(Math.pow(historySlopePoint2.latitude-suggestedSlopePoint2.latitude,2)+ Math.pow(historySlopePoint2.longitude-suggestedSlopePoint2.longitude,2));
-                            double linesDistance= Math.max(HS1Distance,HS2Distance);
-                            double HDistance= Math.sqrt(Math.pow(historySlopePoint1.latitude-historySlopePoint2.latitude,2)+ Math.pow(historySlopePoint1.longitude-historySlopePoint2.longitude,2));
-                            double SDistance= Math.sqrt(Math.pow(suggestedSlopePoint1.latitude-suggestedSlopePoint2.latitude,2)+ Math.pow(suggestedSlopePoint1.longitude-suggestedSlopePoint2.longitude,2));
-                            double lineLength= Math.min(HDistance,SDistance);
+                            double HS1Distance=Math.sqrt(Math.pow(historySlopePoint1.latitude-suggestedSlopePoint1.latitude,2)+Math.pow(historySlopePoint1.longitude-suggestedSlopePoint1.longitude,2));
+                            double HS2Distance=Math.sqrt(Math.pow(historySlopePoint2.latitude-suggestedSlopePoint2.latitude,2)+Math.pow(historySlopePoint2.longitude-suggestedSlopePoint2.longitude,2));
+                            double linesDistance=Math.max(HS1Distance,HS2Distance);
+                            double HDistance=Math.sqrt(Math.pow(historySlopePoint1.latitude-historySlopePoint2.latitude,2)+Math.pow(historySlopePoint1.longitude-historySlopePoint2.longitude,2));
+                            double SDistance=Math.sqrt(Math.pow(suggestedSlopePoint1.latitude-suggestedSlopePoint2.latitude,2)+Math.pow(suggestedSlopePoint1.longitude-suggestedSlopePoint2.longitude,2));
+                            double lineLength=Math.min(HDistance,SDistance);
                             if(linesDistance>lineLength){
                                 pass2=false;
                             }
@@ -1017,16 +1048,16 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                 System.out.println("Color Level:"+overlappedPathDurationTag);
                 prevousColor=color;
                 if(overlappedPathDurationTag<=5){
-                    color= Color.rgb(184, 0, 230);
+                    color=Color.rgb(184, 0, 230);
                 }
                 else if(overlappedPathDurationTag<=10){
-                    color= Color.rgb(214, 51, 255);
+                    color=Color.rgb(214, 51, 255);
                 }
                 else if(overlappedPathDurationTag<=15){
-                    color= Color.rgb(229, 128, 255);
+                    color=Color.rgb(229, 128, 255);
                 }
                 else{
-                    color= Color.rgb(122, 0, 153);
+                    color=Color.rgb(122, 0, 153);
                 }
 
                 colorChanged=!((prevousColor==0)||(prevousColor==color));
@@ -1069,7 +1100,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         }
     }
 
-//hideKeyboard
+    //hideKeyboard
     public static void hideKeyboard(Activity activity) {
         View v = activity.getCurrentFocus();
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -1077,7 +1108,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         imm.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
-//showKeyboard
+    //showKeyboard
     private static void showKeyboard(Activity activity) {
         View v = activity.getCurrentFocus();
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -1141,7 +1172,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         return false;
     }
 
-//checkGPSPermission
+    //checkGPSPermission
     private void checkGPSPermission(){
         //check location permission
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -1169,7 +1200,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         }
     }
 
-//buildGoogleApiClient
+    //buildGoogleApiClient
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -1178,78 +1209,78 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         mGoogleApiClient.connect();
     }
 
-//clearInput
+    //clearInput
     private void clearInput(int mode, boolean focusing){  //mode:0=all, 1=1st, 2=2nd
-            System.out.println("cleaning, fun, mode: "+mode);
-            System.out.println("numOfMarkers: "+numOfMarkers);
-            System.out.println("pointFrom: "+pointFrom);
-            System.out.println("markerFrom: "+markerFrom);
-            System.out.println("pointTo: "+pointTo);
-            System.out.println("markerTo: "+markerTo);
+        System.out.println("cleaning, fun, mode: "+mode);
+        System.out.println("numOfMarkers: "+numOfMarkers);
+        System.out.println("pointFrom: "+pointFrom);
+        System.out.println("markerFrom: "+markerFrom);
+        System.out.println("pointTo: "+pointTo);
+        System.out.println("markerTo: "+markerTo);
 
-            switch(mode){
-                case 0:
-                    if(markerFrom!=null) {
-                        markerFrom.remove();
-                        markerFrom = null;
-                        numOfMarkers-=1;
-                    }
-                    if(markerTo!=null) {
-                        markerTo.remove();
-                        markerTo = null;
-                        numOfMarkers-=1;
-                    }
+        switch(mode){
+            case 0:
+                if(markerFrom!=null) {
+                    markerFrom.remove();
+                    markerFrom = null;
+                    numOfMarkers-=1;
+                }
+                if(markerTo!=null) {
+                    markerTo.remove();
+                    markerTo = null;
+                    numOfMarkers-=1;
+                }
 
+                //tvFrom.setText("");
+                //tvTo.setText("");
+                if (tvFrom.length() > 0) {
+                    tvFrom.getText().clear();
+                }
+                if (tvTo.length() > 0) {
+                    tvTo.getText().clear();
+                }
+                if(polyline!=null) {
+                    polyline.remove();
+                    System.out.println("removed polyline");
+                }
+                break;
+
+            case 1:
+                if(markerFrom!=null) {
+                    markerFrom.remove();
+                    markerFrom = null;
+                    numOfMarkers-=1;
+                }
+                if(focusing) {
                     //tvFrom.setText("");
-                    //tvTo.setText("");
                     if (tvFrom.length() > 0) {
                         tvFrom.getText().clear();
                     }
+                }
+                if(polyline!=null) {
+                    polyline.remove();
+                    System.out.println("removed polyline");
+                }
+                break;
+
+            case 2:
+                if(markerTo!=null) {
+                    markerTo.remove();
+                    markerTo = null;
+                    numOfMarkers-=1;
+                }
+                if(focusing) {
+                    //tvTo.setText("");
                     if (tvTo.length() > 0) {
                         tvTo.getText().clear();
                     }
-                    if(polyline!=null) {
-                        polyline.remove();
-                        System.out.println("removed polyline");
-                    }
-                    break;
-
-                case 1:
-                    if(markerFrom!=null) {
-                        markerFrom.remove();
-                        markerFrom = null;
-                        numOfMarkers-=1;
-                    }
-                    if(focusing) {
-                        //tvFrom.setText("");
-                        if (tvFrom.length() > 0) {
-                            tvFrom.getText().clear();
-                        }
-                    }
-                    if(polyline!=null) {
-                        polyline.remove();
-                        System.out.println("removed polyline");
-                    }
-                    break;
-
-                case 2:
-                    if(markerTo!=null) {
-                        markerTo.remove();
-                        markerTo = null;
-                        numOfMarkers-=1;
-                    }
-                    if(focusing) {
-                        //tvTo.setText("");
-                        if (tvTo.length() > 0) {
-                            tvTo.getText().clear();
-                        }
-                    }
-                    if(polyline!=null) {
-                        polyline.remove();
-                        System.out.println("removed polyline");
-                    }
-                    break;
-            }
+                }
+                if(polyline!=null) {
+                    polyline.remove();
+                    System.out.println("removed polyline");
+                }
+                break;
+        }
         System.out.println("after clearing");
         System.out.println("numOfMarkers: "+numOfMarkers);
         System.out.println("pointFrom: "+pointFrom);
@@ -1258,7 +1289,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         System.out.println("markerTo: "+markerTo);
     }
 
-//getMarker
+    //getMarker
     private MarkerOptions getMarker(String searchString, int mode){ //mode:1 from, 2 to
         Geocoder geocoder = new Geocoder(OpenMapActivity.this);
         List<Address> list = new ArrayList<>();
@@ -1285,7 +1316,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         return null;
     }
 
-//getMapsApiDirectionsUrl
+    //getMapsApiDirectionsUrl
     private String getMapsApiDirectionsUrl(String preferedMode, LatLng ptF, LatLng ptT) {
         String waypoints = "waypoints=optimize:true|"
                 + (ptF).latitude + "," + (ptF).longitude
@@ -1302,7 +1333,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         return url;
     }
 
-//onRequestPermissionsResult
+    //onRequestPermissionsResult
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
                                            int[] grantResults){
@@ -1310,7 +1341,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
             case 1: {
                 if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     if (ContextCompat.checkSelfPermission(this,
-                            Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED){
+                            Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED){
                         Toast.makeText(getApplicationContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
                     }
                 }else{
@@ -1321,7 +1352,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         }
     }
 
-//onConnected
+    //onConnected
     @Override
     public void onConnected(Bundle bundle) {
         System.out.println("connected");
@@ -1350,25 +1381,25 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
 
 
 
-//getPendingIntent (Google Location Update from Background)
+    //getPendingIntent (Google Location Update from Background)
     private PendingIntent getPendingIntent(){
         android.content.Intent intent = new Intent(this, MyLocationService.class);
         intent.setAction(MyLocationService.ACTION_PROCESS_UPDATE);
         return PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-//onConnectionSuspended
+    //onConnectionSuspended
     @Override
     public void onConnectionSuspended(int i) {
     }
 
-//onConnectionFailed
+    //onConnectionFailed
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
 
-//onLocationChanged
+    //onLocationChanged
     @Override
     public void onLocationChanged(Location location) {
         if (mCurrLocationMarker != null) {
@@ -1474,7 +1505,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
     }
 
 
-//-------------------------------AsyncTask Class & Function--------------------------------------------
+    //-------------------------------AsyncTask Class & Function--------------------------------------------
 //class: GetDirectionTask
     private class GetDirectionTask extends AsyncTask<String, Void, String> {
         private boolean getOvelappedPath;
@@ -1509,7 +1540,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         }
     }
 
-//class: ParserTask
+    //class: ParserTask
     //private class ParserTask extends AsyncTask<String, Integer, ArrayList<ExtractedJSON>> {
     //version: snap route
     private class ParserTask extends AsyncTask<String, Integer, ArrayList<ExtractedJSON>> {
@@ -1554,8 +1585,8 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         }
     }
 
-//getPaths
-    private void getPaths(ArrayList<ExtractedJSON> routes, boolean getOvelappedPath, boolean showRouteInfo){
+    //getPaths
+    private void getPaths(ArrayList<ExtractedJSON> routes,boolean getOvelappedPath,boolean showRouteInfo){
         ArrayList<LatLng> pathsPoint = null;
         //ArrayList<ArrayList<LatLng>> allRoutes = new ArrayList<ArrayList<LatLng>>();
         System.out.println("routes: "+routes);
@@ -1615,7 +1646,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         }
     }*/
 
-//GetSnappedRouteTask
+    //GetSnappedRouteTask
     private class GetSnappedRouteTask extends AsyncTask<Void, Void, Void> {
         private ArrayList<ExtractedJSON> routes;
         private ArrayList<ArrayList<LatLng>> paths;
@@ -1629,7 +1660,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         private boolean getOvelappedPath;
         private boolean showRouteInfo;
 
-        public GetSnappedRouteTask(ArrayList<ExtractedJSON> routes, boolean getOvelappedPath, boolean showRouteInfo) {
+        public GetSnappedRouteTask(ArrayList<ExtractedJSON> routes, boolean getOvelappedPath,boolean showRouteInfo) {
             this.routes=routes;
             paths=new ArrayList<ArrayList<LatLng>>();
             intergratedPath = new ArrayList<LatLng>();
@@ -1831,6 +1862,8 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                 dragBarHeight=dragBar.getHeight();  //to fix the problem: dragBarHeight accidentally become zero
                 mLayout.setPanelHeight(itemHeight + dragBarHeight);
                 mLayout.setShadowHeight(shadowHeight);
+                buttonPanelViewParams.setMargins(10,0,10,15+itemHeight + dragBarHeight);
+                buttonPanelView.setLayoutParams(buttonPanelViewParams);
 
                 //solving AsyncTask problem in typing focus: delete marker -> reomve polyline -> add back marker -> add back polyline
                 System.out.println("numOfMarkers: " + numOfMarkers);
@@ -1840,6 +1873,8 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                     System.out.println("debug: hide at draw");
                     mLayout.setPanelHeight(0);
                     mLayout.setShadowHeight(0);
+                    buttonPanelViewParams.setMargins(10,0,10,15);
+                    buttonPanelView.setLayoutParams(buttonPanelViewParams);
                 }
             }
         }
@@ -1997,7 +2032,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         return result;
     }
 
-    private String convertInputStreamToString(InputStream inputStream) throws IOException {
+    private  String convertInputStreamToString(InputStream inputStream) throws IOException {
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
         String line = "";
         String result = "";

@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-    <com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:sothree="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/sliding_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="bottom"
-        sothree:umanoOverlay="true"
-        android:layout_alignParentBottom="true"
-        sothree:umanoPanelHeight="0dp"
-        sothree:umanoShadowHeight="4dp">
+<com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sothree="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/sliding_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    sothree:umanoOverlay="true"
+    android:layout_alignParentBottom="true"
+    sothree:umanoPanelHeight="0dp"
+    sothree:umanoShadowHeight="4dp"
+    sothree:umanoFadeColor="@android:color/transparent">
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -192,62 +193,62 @@
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
-                <!--
-                <TextView
-                    android:id="@+id/routeInfo"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"/>-->
+    <!--
+    <TextView
+        android:id="@+id/routeInfo"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>-->
 
 
-            <LinearLayout
-                android:id="@+id/dragView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="#ffffff"
-                android:clickable="true"
-                android:focusable="false">
-                <LinearLayout
-                    android:id="@+id/preferedSuggestedPath"
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:orientation="horizontal"
-                    android:background="#ffffff"
-                    android:gravity="center">
-                    <ImageView
-                        android:id="@+id/preferedMode"
-                        android:layout_width="80dp"
-                        android:layout_height="match_parent"
-                        android:padding="10dp"/>
-                    <TextView
-                        android:id="@+id/preferedDistance"
-                        android:layout_width="200dp"
-                        android:layout_height="match_parent"
-                        android:padding="10dp"
-                        android:gravity="center"
-                        android:textSize="16sp" />
-                    <TextView
-                        android:id="@+id/preferedDuration"
-                        android:layout_width="fill_parent"
-                        android:layout_height="match_parent"
-                        android:padding="10dp"
-                        android:gravity="center"
-                        android:textSize="16sp"/>
-                </LinearLayout>
-                <TextView
-                    android:id="@+id/drag_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="22dp"
-                    android:text="drag up to see alternative routes"
-                    android:textSize="15dp"
-                    android:gravity="center"/>
-                <ListView
-                    android:id="@+id/suggestedPaths"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"/>
-            </LinearLayout>
-    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+    <LinearLayout
+        android:id="@+id/dragView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:clickable="true"
+        android:focusable="false"
+        android:background="#ffffff">
+        <LinearLayout
+            android:id="@+id/preferedSuggestedPath"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:orientation="horizontal"
+            android:background="#ffffff"
+            android:gravity="center">
+            <ImageView
+                android:id="@+id/preferedMode"
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:padding="10dp"/>
+            <TextView
+                android:id="@+id/preferedDistance"
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:padding="10dp"
+                android:gravity="center"
+                android:textSize="16sp" />
+            <TextView
+                android:id="@+id/preferedDuration"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:padding="10dp"
+                android:gravity="center"
+                android:textSize="16sp"/>
+        </LinearLayout>
+        <TextView
+            android:id="@+id/drag_bar"
+            android:layout_width="match_parent"
+            android:layout_height="22dp"
+            android:text="drag up to see alternative routes"
+            android:textSize="15dp"
+            android:gravity="center"/>
+        <ListView
+            android:id="@+id/suggestedPaths"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"/>
+    </LinearLayout>
+</com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
 
 
