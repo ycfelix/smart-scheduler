@@ -44,19 +44,6 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         database.insert(DBStructure.EVENT_TABLE_NAME,null,contentValues);
     }
 
-    public void SaveImportEvent(String event, String time, String date, String month, String year, String notify, String type, String id, SQLiteDatabase database){
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBStructure.EVENT,event);
-        contentValues.put(DBStructure.TIME,time);
-        contentValues.put(DBStructure.DATE,date);
-        contentValues.put(DBStructure.MONTH,month);
-        contentValues.put(DBStructure.YEAR,year);
-        contentValues.put(DBStructure.Notify,notify);
-        contentValues.put(DBStructure.TYPE,type);
-        contentValues.put(DBStructure.ID,id);
-        database.insert(DBStructure.EVENT_TABLE_NAME,null,contentValues);
-    }
-
     public Cursor ReadAllEvents(SQLiteDatabase database){
         String selectQuery = "SELECT * FROM " + DBStructure.EVENT_TABLE_NAME;
         return database.rawQuery(selectQuery,null);
@@ -78,18 +65,15 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         return database.query(DBStructure.EVENT_TABLE_NAME, Projections, Selection, SelectionArgs,null,null,null);
     }
 
-    public Cursor ReadEventsperMonth(String month, String year, SQLiteDatabase database){
-        String[] Projections = {DBStructure.EVENT, DBStructure.TIME, DBStructure.DATE, DBStructure.MONTH, DBStructure.YEAR,DBStructure.Notify,DBStructure.TYPE,DBStructure.ID};
-        String Selection = DBStructure.MONTH +"=? and "+DBStructure.YEAR+"=?";
-        String[] SelectionArgs = {month,year};
-
-        return database.query(DBStructure.EVENT_TABLE_NAME, Projections, Selection, SelectionArgs,null,null,null);
-    }
-
     public void deleteEvent(String event, String date, String time, String type, SQLiteDatabase database){
         String selection = DBStructure.EVENT+"=? and "+DBStructure.DATE+"=? and "+DBStructure.TIME+"=? and "+DBStructure.TYPE+"=?";
         String[] selectionArg = {event,date,time,type};
         database.delete(DBStructure.EVENT_TABLE_NAME,selection,selectionArg);
+    }
+
+    public void DeleteAllEvent(SQLiteDatabase database){
+        /*String command = "DELETE FROM" + ;*/
+        database.delete(DBStructure.EVENT_TABLE_NAME,null,null);
     }
 
     public void updateEvent(String date, String event, String time, String notify, String type, SQLiteDatabase database){

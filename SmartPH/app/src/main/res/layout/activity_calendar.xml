@@ -84,6 +84,20 @@
             fab:fab_size="mini" />
 
         <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/MapFunction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_label="Map"
+            fab:fab_size="mini" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/DeleteAllEvent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_label="DeleteAllEvent"
+            fab:fab_size="mini" />
+
+        <com.github.clans.fab.FloatingActionButton
             android:id="@+id/suggestEvent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

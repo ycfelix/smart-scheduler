@@ -71,7 +71,7 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
     private static final String TAG = "Position: ";
     CalendarView simpleCalendarView;
     FloatingActionMenu floatingActionMenu;
-    FloatingActionButton ImportCalendar,ExportCalendar,addEvent,suggesEvent;
+    FloatingActionButton ImportCalendar,ExportCalendar,addEvent,suggesEvent, Mapfuntion, DeleteAllEvnet;
     AlertDialog alertDialog, newalertDialog;
     DBOpenHelper dbOpenHelper;
     List<Events> eventsList = new ArrayList<>();
@@ -110,6 +110,22 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
 
 
         //Floating button functions
+        //Mapfunction
+
+        Mapfuntion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(view.getContext(), com.example.calendar.OpenMapActivity.class));
+            }
+        });
+        //Delete All Event
+        DeleteAllEvnet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DeleteAllEvent();
+                initializeShowEventLayout();
+            }
+        });
         //SuggestEvent UI
         suggesEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,26 +153,43 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
                         //TextView brands = (TextView) findViewById(R.id.ActivityType);
                         final String activityType = String.valueOf(spinner.getSelectedItem());
                         int num = 5;
-                        getSuggestEvent(num);
-                        if (activityType.equals("Exercise")) {
+                        ArrayList<String> userList = getSuggestEvent(num);
+                        if (activityType.equals("Other")) {
 
                             Events event1 = new Events("Basketball","3:58 PM","2020-03-04","March",
                                     "2020","Exercise");
                             brandsList.add(event1);
                         }
-                        else if(activityType.equals("Study")){
+                        else if(activityType.equals("Work")){
                             brandsList.add(new Events("Math","3:58 PM","2020-03-04","March",
                                     "2020","Study"));
                             brandsList.add(new Events("English","3:58 PM","2020-03-04","March",
                                     "2020","Study"));
                         }
-                        else if(activityType.equals("Entertainment")){
+                        else if(activityType.equals("Date")){
                             /* brandsList.add("With mom");*/
                         }
-                        else if(activityType.equals("Business")){
+                        else if(activityType.equals("Sport")){
                             /*brandsList.add("Visit company");*/
                         }
+                        else if(activityType.equals("Reading")){
 
+                        }
+                        else if(activityType.equals("Travel")){
+
+                        }
+                        else if(activityType.equals("Volunteer")){
+
+                        }
+                        else if(activityType.equals("Study")){
+
+                        }
+                        else if(activityType.equals("Shopping")){
+
+                        }
+                        else if(activityType.equals("Chill")){
+
+                        }
                         else {
                             Toast.makeText(getApplicationContext(), "Please select a type", Toast.LENGTH_LONG).show();
                         }
@@ -475,20 +508,26 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
                 AddEvent.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(alarmMe.isChecked()){
-                            SaveEvent(EventName.getText().toString(),EventTime.getText().toString(),date,month,year,"on", mActicityTypeTag[0]);
-                            Calendar calendar = Calendar.getInstance();
-                            calendar.set(alarmYear,alarmMonth,alarmDay,alarmHour,alarmMinute,00);
-                            setAlarm(calendar,EventName.getText().toString(),EventTime.getText().toString(),
-                                    getRequestCode(date,EventName.getText().toString(),EventName.getText().toString()));
-                            alertDialog.dismiss();
-                        }else{
-                            SaveEvent(EventName.getText().toString(),EventTime.getText().toString(),date,month,year,"off", mActicityTypeTag[0]);
-
-                            alertDialog.dismiss();
+                        String EventNameTest = EventName.getText().toString();
+                        if(EventNameTest.isEmpty()){
+                            EventName.setError("Please enter an Event Name");
                         }
+                        else {
+                            if (alarmMe.isChecked()) {
+                                SaveEvent(EventName.getText().toString(), EventTime.getText().toString(), date, month, year, "on", mActicityTypeTag[0]);
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.set(alarmYear, alarmMonth, alarmDay, alarmHour, alarmMinute, 00);
+                                setAlarm(calendar, EventName.getText().toString(), EventTime.getText().toString(),
+                                        getRequestCode(date, EventName.getText().toString(), EventName.getText().toString()));
+                                alertDialog.dismiss();
+                            } else {
+                                SaveEvent(EventName.getText().toString(), EventTime.getText().toString(), date, month, year, "off", mActicityTypeTag[0]);
 
-                        initializeShowEventLayout();
+                                alertDialog.dismiss();
+                            }
+
+                            initializeShowEventLayout();
+                        }
                     }
                 });
 
@@ -511,6 +550,8 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
         addEvent = findViewById(R.id.addEvent);
         suggesEvent = findViewById(R.id.suggestEvent);
         floatingActionMenu = findViewById(R.id.menu);
+        Mapfuntion = findViewById(R.id.MapFunction);
+        DeleteAllEvnet = findViewById(R.id.DeleteAllEvent);
         //Show today event
         Calendar firstpresentday = Calendar.getInstance();
         long todaydate = simpleCalendarView.getDate();
@@ -707,6 +748,12 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
         dbOpenHelper.SaveEvent(event,time,date,month,year,notify,type,database);
         dbOpenHelper.close();
         Toast.makeText(this,"Event Saved", Toast.LENGTH_SHORT).show();
+    }
+    private void DeleteAllEvent(){
+        dbOpenHelper = new DBOpenHelper(this);
+        SQLiteDatabase database = dbOpenHelper.getWritableDatabase();
+        dbOpenHelper.DeleteAllEvent(database);
+        dbOpenHelper.close();
     }
     private int getRequestCode(String date,String event,String time){
         int code = 0;
@@ -936,7 +983,7 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
         String numOfUser = Integer.toString(num);
         data.put("user_id",userid);
         data.put("num_user",numOfUser);
-        String url = "http://13.70.2.33/api/sql_db";
+        String url = "http://13.70.2.33/api/distance_matrix/3";
         RequestQueue queue = Volley.newRequestQueue(this);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
                 new Response.Listener<JSONObject>() {
