@@ -215,6 +215,9 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng point) {
+                //hid the keyboard to prevent layout error
+                hideKeyboard(OpenMapActivity.this);
+
                 //get Location name
                 String _Location="null";
                 double longitude = point.longitude;
@@ -281,6 +284,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                         System.out.println("debug: hide at mapClick");
                         mLayout.setPanelHeight(0);
                         mLayout.setShadowHeight(0);
+                        mLayout.setPanelState(PanelState.COLLAPSED);
                         buttonPanelViewParams.setMargins(10,0,10,15);
                         buttonPanelView.setLayoutParams(buttonPanelViewParams);
 
@@ -343,6 +347,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                     System.out.println("debug: hide at tvFrom");
                     mLayout.setPanelHeight(0);
                     mLayout.setShadowHeight(0);
+                    mLayout.setPanelState(PanelState.COLLAPSED);
                     mLayout.setPanelState(PanelState.COLLAPSED);
                     buttonPanelViewParams.setMargins(10,0,10,15);
                     buttonPanelView.setLayoutParams(buttonPanelViewParams);
@@ -1862,6 +1867,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                 dragBarHeight=dragBar.getHeight();  //to fix the problem: dragBarHeight accidentally become zero
                 mLayout.setPanelHeight(itemHeight + dragBarHeight);
                 mLayout.setShadowHeight(shadowHeight);
+                mLayout.setPanelState(PanelState.COLLAPSED);
                 buttonPanelViewParams.setMargins(10,0,10,15+itemHeight + dragBarHeight);
                 buttonPanelView.setLayoutParams(buttonPanelViewParams);
 
@@ -1873,6 +1879,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                     System.out.println("debug: hide at draw");
                     mLayout.setPanelHeight(0);
                     mLayout.setShadowHeight(0);
+                    mLayout.setPanelState(PanelState.COLLAPSED);
                     buttonPanelViewParams.setMargins(10,0,10,15);
                     buttonPanelView.setLayoutParams(buttonPanelViewParams);
                 }
