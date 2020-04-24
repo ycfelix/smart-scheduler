@@ -1,4 +1,13 @@
-package com.example.calendar;
+package com.ust.smartph;
+
+import com.ust.map.SQLDB;
+import com.ust.map.ExtractedJSON;
+import com.ust.map.HttpConnection;
+import com.ust.map.MyLocationService;
+import com.ust.map.PathJSONParser;
+import com.ust.map.PlaceAutoSuggestAdapter;
+import com.ust.map.SuggestedPath;
+import com.ust.map.SuggestedPathAdapter;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
@@ -1591,7 +1600,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
             //insert new record to DB
             //method 1
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            //sqldb.insertLocationData(latLng, timestamp.getTime());
+            sqldb.insertLocationData(latLng, timestamp.getTime());
         }
 
         //draw location path
