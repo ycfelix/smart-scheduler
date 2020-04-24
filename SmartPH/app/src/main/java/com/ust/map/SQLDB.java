@@ -52,7 +52,7 @@ public class SQLDB {
         walkingPathDurationHistory=new ArrayList<Integer>();
         drivingPathLatLngHistory=new ArrayList<ArrayList<LatLng>>();
         drivingPathDurationHistory=new ArrayList<Integer>();
-        userId=1;
+        userId=1000;
         System.out.println("started http");
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);

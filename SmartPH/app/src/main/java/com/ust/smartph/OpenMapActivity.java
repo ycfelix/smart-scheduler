@@ -155,6 +155,9 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
     private ArrayList<Integer> range3PathIdx;
     private ArrayList<Integer> range4PathIdx;
     private ArrayList<Integer> range5PathIdx;
+    private static final int TIME_RANGE1=5*60*1000;
+    private static final int TIME_RANGE2=60*60*1000;
+    private static final int TIME_RANGE3=3*60*60*1000;
     private boolean allHeatmapPolylineShown;
     private boolean range1HeatmapPolylineShown;
     private boolean range2HeatmapPolylineShown;
@@ -578,13 +581,14 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         //group the same color path by storing th index
         int currentDuration;
         System.out.println("sqldb.getWalkingPathLatLngHistory().size(): "+sqldb.getWalkingPathLatLngHistory().size());
-        for(int i=0; i<sqldb.getWalkingPathLatLngHistory().size(); i++) { //1:all, 2:1-5, 3:6-10, 4:11-15, 5:16-...
+        for(int i=0; i<sqldb.getWalkingPathLatLngHistory().size(); i++) {
             currentDuration = sqldb.getWalkingPathDurationHistory().get(i);
-            if (currentDuration <= 5) {
+            //duration ragnes for test: 5, 10, 15, >15
+            if (currentDuration <= TIME_RANGE1) {
                 range1PathIdx.add(i);
-            } else if (currentDuration <= 10) {
+            } else if (currentDuration <= TIME_RANGE2) {
                 range2PathIdx.add(i);
-            } else if (currentDuration <= 15) {
+            } else if (currentDuration <= TIME_RANGE3) {
                 range3PathIdx.add(i);
             } else {
                 range4PathIdx.add(i);
@@ -593,49 +597,49 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         switch(view.getId())
         {
             case R.id.show_friends:
-                System.out.println("showFriends is clicked");
-                showFriend=!showFriend;
-                if(showFriend){
-                    //change button image
-                    fdsButton.setImageResource(R.drawable.fds_on);
-                    //instant show
-                    if(mLastLocation!=null){
-                        showFriendsLocation(mLastLocation);
-                    }
-                    //onGPSUpdate show
-                    //if GPS is not turned on
-                    if(!onGPS){
-                        FloatingActionButton gpsButton = (FloatingActionButton) findViewById(R.id.gps);
-                        gpsButton.performClick();
+                if(checkLocationEnabled()||showFriend) {
+                    showFriend = !showFriend;
+                    if (showFriend) {
+                        //change button image
+                        fdsButton.setImageResource(R.drawable.fds_on);
+                        //instant show
+                        if (mLastLocation != null) {
+                            showFriendsLocation(mLastLocation);
+                        }
+                        //onGPSUpdate show
+                        //if GPS is not turned on
+                        if (!onGPS) {
+                            FloatingActionButton gpsButton = (FloatingActionButton) findViewById(R.id.gps);
+                            gpsButton.performClick();
+                        }
+                    } else {
+                        hideFriendsLocation();
+                        //change button image
+                        fdsButton.setImageResource(R.drawable.fds_off);
                     }
                 }
-                else{
-                    hideFriendsLocation();
-                    //change button image
-                    fdsButton.setImageResource(R.drawable.fds_off);
-                }
-
                 break;
 
             case R.id.gps:
-                onGPS=!onGPS;
-                if(onGPS){
-                    //change button image
-                    gpsButton.setImageResource(R.drawable.gps_enabled);
-                    //turn on GPS
-                    //turnOnGPS();
-                    startUpdateGPS();
-                }
-                else{
-                    //off show friend if it is on
-                    if(showFriend){
-                        FloatingActionButton fdsButton = (FloatingActionButton) findViewById(R.id.show_friends);
-                        fdsButton.performClick();
+                if(checkLocationEnabled()||onGPS) {
+                    onGPS = !onGPS;
+                    if (onGPS) {
+                        //change button image
+                        gpsButton.setImageResource(R.drawable.gps_enabled);
+                        //turn on GPS
+                        //turnOnGPS();
+                        startUpdateGPS();
+                    } else {
+                        //off show friend if it is on
+                        if (showFriend) {
+                            FloatingActionButton fdsButton = (FloatingActionButton) findViewById(R.id.show_friends);
+                            fdsButton.performClick();
+                        }
+                        //turn off GPS
+                        stopUpdateGPS();
+                        //change button image
+                        gpsButton.setImageResource(R.drawable.gps_disabled);
                     }
-                    //turn off GPS
-                    stopUpdateGPS();
-                    //change button image
-                    gpsButton.setImageResource(R.drawable.gps_disabled);
                 }
                 break;
 
@@ -768,13 +772,13 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                 currentDuration=sqldb.getWalkingPathDurationHistory().get(pathIdx.get(i));
                 int currentColor;
                 //duration ragnes for test: 5, 10, 15, >15
-                if(currentDuration<=5*60*1000){
+                if(currentDuration<=TIME_RANGE1){
                     currentColor=heatmapColor1;
                 }
-                else if(currentDuration<=60*60*1000){
+                else if(currentDuration<=TIME_RANGE2){
                     currentColor=heatmapColor2;
                 }
-                else if(currentDuration<=3*60*60*1000){
+                else if(currentDuration<=TIME_RANGE3){
                     currentColor=heatmapColor3;
                 }
                 else{
@@ -1084,13 +1088,13 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                 System.out.println("Color Level:"+overlappedPathDurationTag);
                 prevousColor=color;
                 //duration ragnes for test: 5, 10, 15, >15
-                if(overlappedPathDurationTag<=5*60*1000){
+                if(overlappedPathDurationTag<=TIME_RANGE1){
                     color=Color.rgb(184, 0, 230);
                 }
-                else if(overlappedPathDurationTag<=60*60*1000){
+                else if(overlappedPathDurationTag<=TIME_RANGE2){
                     color=Color.rgb(214, 51, 255);
                 }
-                else if(overlappedPathDurationTag<=3*60*60*1000){
+                else if(overlappedPathDurationTag<=TIME_RANGE3){
                     color=Color.rgb(229, 128, 255);
                 }
                 else{
@@ -1200,13 +1204,18 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         } catch (Exception e) {
             e.printStackTrace() ;
         }
+        /*
         if (!gps_enabled && !network_enabled) {
             Toast.makeText(getApplicationContext(), "GPS is disabled", Toast.LENGTH_SHORT).show();
+            return false;
         }
         else{
             return true;
+        }*/
+        if(!gps_enabled){
+            Toast.makeText(getApplicationContext(), "GPS is disabled", Toast.LENGTH_SHORT).show();
         }
-        return false;
+        return gps_enabled;
     }
 
     //checkGPSPermission
@@ -1558,8 +1567,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
             mCurrLocationMarker.remove();
         }
 
-        // if(keepUpdateGPS) {
-        //get Location name
+        /*
         String currentLocation = "null";
         Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
         try {
@@ -1573,14 +1581,20 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
             e.printStackTrace();
             System.out.println("exception");
         }
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        markerOptions.title(currentLocation);
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        mCurrLocationMarker = mMap.addMarker(markerOptions);*/
 
         //Place current location marker
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        //MarkerOptions markerOptions = new MarkerOptions();
-        //markerOptions.position(latLng);
-        //markerOptions.title(currentLocation);
-        //markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-        //mCurrLocationMarker = mMap.addMarker(markerOptions);
+
+        //insert new record to DB
+        //method 1
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        sqldb.insertLocationData(latLng, timestamp.getTime());
+
         boolean pass=false;
         boolean noRecord=false;
         boolean sameRecord=false;
@@ -1591,18 +1605,11 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         else if((df3.format(location.getLatitude()).equals(df3.format(mLastLocation.getLatitude())))&&(df3.format(location.getLongitude()).equals(df3.format((mLastLocation.getLongitude()))))){
             sameRecord=true;
         }
-            /*if(!noRecord) {
-                System.out.println("GPS: " + mLastLocation.getLatitude() + "," + mLastLocation.getLongitude() + "  " + location.getLatitude() + "," + location.getLongitude());
-            }*/
         pass=noRecord||!sameRecord;
         //System.out.println("move cam: "+pass);
         if(pass) {
             //move map camera
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            //insert new record to DB
-            //method 1
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            sqldb.insertLocationData(latLng, timestamp.getTime());
         }
 
         //draw location path
@@ -1628,60 +1635,14 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                 }
                 drawSnappedGPSRoute(snappedPath);
             }
-
-            //update friend paths
+        }
+        //update friend paths
+        if(!sameRecord){
             if(showFriend) {
                 showFriendsLocation(location);
             }
         }
         mLastLocation = location;
-/*
-
-            if(GPSPoints==null){
-                GPSPoints = new ArrayList<LatLng>();
-            }
-            if(GPSPoints.size()<2){
-                mMap.animateCamera(CameraUpdateFactory.zoomTo(DEFAULT_ZOOM));
-                GPSPoints.add(latLng);
-            }
-            else{
-                if(GPSPolyline==null){
-                    GPSPolyline=new ArrayList<Polyline>();
-                }
-                GPSPoints.add(latLng);
-                //draw route
-                //GetSnappedGPSRouteTask getSnappedGPSRouteTask=new GetSnappedGPSRouteTask(GPSPoints);
-                //getSnappedGPSRouteTask.execute();
-                ArrayList<LatLng> snappedPath = new ArrayList<LatLng>();
-                LatLng gpsFrom=new LatLng(GPSPoints.get(GPSPoints.size()-2).latitude,GPSPoints.get(GPSPoints.size()-2).longitude);
-                LatLng gpsTo=new LatLng(GPSPoints.get(GPSPoints.size()-1).latitude,GPSPoints.get(GPSPoints.size()-1).longitude);
-                if(gpsFrom!=gpsTo) {
-                    String url = "https://roads.googleapis.com/v1/snapToRoads?path=" + gpsFrom.latitude + "," + gpsFrom.longitude + "|" + gpsTo.latitude + "," + gpsTo.longitude + "&interpolate=true&key=AIzaSyDl9jmXdHxOZglKI6uZ_Kci5w-mdvMGRmE&travelMode=walking";
-                    System.out.println("get snapToRoad URL(GPS): " + url);
-                    snappedPath = extractJson(GET(url), gpsFrom, gpsTo);
-                    System.out.println("snappedPath: " + snappedPath);
-                    if(snappedPath!=null) {
-                        if (snappedPath.get(0) != gpsFrom) {
-                            snappedPath.add(0, gpsFrom);
-                        }
-                        if (snappedPath.get(snappedPath.size() - 1) != gpsTo) {
-                            snappedPath.add(gpsTo);
-                        }
-                        drawSnappedGPSRoute(snappedPath);
-                    }
-                }
-            }*/
-/*        }
-        else{
-            stopUpdateGPS();
-            if(GPSPolyline!=null) {
-                for(int i=0; i<GPSPolyline.size(); i++){
-                    GPSPolyline.get(i).remove();
-                }
-                GPSPolyline=null;
-            }
-            GPSPoints.clear();
-        }*/
     }
 
 
