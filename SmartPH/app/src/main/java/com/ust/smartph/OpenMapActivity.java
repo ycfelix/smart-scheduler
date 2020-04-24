@@ -767,13 +767,14 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
             for(int i=0; i<pathIdx.size(); i++){
                 currentDuration=sqldb.getWalkingPathDurationHistory().get(pathIdx.get(i));
                 int currentColor;
-                if(currentDuration<=5){
+                //duration ragnes for test: 5, 10, 15, >15
+                if(currentDuration<=5*60*1000){
                     currentColor=heatmapColor1;
                 }
-                else if(currentDuration<=10){
+                else if(currentDuration<=60*60*1000){
                     currentColor=heatmapColor2;
                 }
-                else if(currentDuration<=15){
+                else if(currentDuration<=3*60*60*1000){
                     currentColor=heatmapColor3;
                 }
                 else{
@@ -1082,13 +1083,14 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                 overlappedPathDurationTag=bestPathDurationTags.get(i);
                 System.out.println("Color Level:"+overlappedPathDurationTag);
                 prevousColor=color;
-                if(overlappedPathDurationTag<=5){
+                //duration ragnes for test: 5, 10, 15, >15
+                if(overlappedPathDurationTag<=5*60*1000){
                     color=Color.rgb(184, 0, 230);
                 }
-                else if(overlappedPathDurationTag<=10){
+                else if(overlappedPathDurationTag<=60*60*1000){
                     color=Color.rgb(214, 51, 255);
                 }
-                else if(overlappedPathDurationTag<=15){
+                else if(overlappedPathDurationTag<=3*60*60*1000){
                     color=Color.rgb(229, 128, 255);
                 }
                 else{
