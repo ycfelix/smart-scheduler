@@ -103,6 +103,7 @@ import com.google.android.gms.location.LocationRequest;
 
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.Place;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import android.view.View.OnClickListener;
@@ -174,6 +175,17 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
     private String preferedMode;
     private LinearLayout.LayoutParams buttonPanelViewParams;
     private RelativeLayout buttonPanelView;
+    private int buttonPanelLeftMargin;
+    private int buttonPanelRightMargin;
+    private int buttonPanelTopMargin;
+    private int buttonPanelBottomMargin;
+    private FloatingActionButton gpsButton;
+    private FloatingActionButton fdsButton;
+    private boolean showFriend;
+    private boolean onGPS;
+    private ArrayList<Polyline> frinedsPolylines;
+    private ArrayList<Marker> friendsMarkers;
+
 
 
 
@@ -204,8 +216,14 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         mMap = googleMap;
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(22.3352301,114.2662848), DEFAULT_ZOOM));
 
+        showFriend=false;
+        onGPS=false;
         dragView = (LinearLayout) findViewById(R.id.dragView);
+        gpsButton = (FloatingActionButton) findViewById(R.id.gps);
+        fdsButton = (FloatingActionButton) findViewById(R.id.show_friends);
         alternativeSuggestedPathList= new ArrayList<SuggestedPath>();
+        frinedsPolylines = new ArrayList<Polyline>();
+        friendsMarkers = new ArrayList<Marker>();
 
 
         checkGPSPermission(); //need to uncomment
@@ -268,7 +286,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                         //Direction
                         clearSuggestedPathList();
                         String url = getMapsApiDirectionsUrl(preferedMode,pointFrom,pointTo);
-                        GetDirectionTask getDirectionTask = new GetDirectionTask(false,true);
+                        GetDirectionTask getDirectionTask = new GetDirectionTask("search");
                         getDirectionTask.execute(url);
                         //Direction
                         System.out.println("in onMapClick");
@@ -285,7 +303,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                         mLayout.setPanelHeight(0);
                         mLayout.setShadowHeight(0);
                         mLayout.setPanelState(PanelState.COLLAPSED);
-                        buttonPanelViewParams.setMargins(10,0,10,15);
+                        buttonPanelViewParams.setMargins(buttonPanelLeftMargin,buttonPanelTopMargin,buttonPanelRightMargin,buttonPanelBottomMargin);
                         buttonPanelView.setLayoutParams(buttonPanelViewParams);
 
                         markerFrom=mMap.addMarker(markerOption);
@@ -329,7 +347,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                                     System.out.println("polyline 1 start");
                                     clearSuggestedPathList();
                                     String url = getMapsApiDirectionsUrl(preferedMode,pointFrom,pointTo);
-                                    GetDirectionTask getDirectionTask = new GetDirectionTask(false,true);
+                                    GetDirectionTask getDirectionTask = new GetDirectionTask("search");
                                     getDirectionTask.execute(url);
                                     System.out.println("polyline 1 end");
                                     System.out.println("in onNotFocustvFrom");
@@ -349,7 +367,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                     mLayout.setShadowHeight(0);
                     mLayout.setPanelState(PanelState.COLLAPSED);
                     mLayout.setPanelState(PanelState.COLLAPSED);
-                    buttonPanelViewParams.setMargins(10,0,10,15);
+                    buttonPanelViewParams.setMargins(buttonPanelLeftMargin,buttonPanelTopMargin,buttonPanelRightMargin,buttonPanelBottomMargin);
                     buttonPanelView.setLayoutParams(buttonPanelViewParams);
                     //clear input
                     System.out.println("numOfMarkers 1, focusing: "+numOfMarkers);
@@ -399,7 +417,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                                     System.out.println("polyline 2 start");
                                     clearSuggestedPathList();
                                     String url = getMapsApiDirectionsUrl(preferedMode,pointFrom,pointTo);
-                                    GetDirectionTask getDirectionTask = new GetDirectionTask(false,true);
+                                    GetDirectionTask getDirectionTask = new GetDirectionTask("search");
                                     getDirectionTask.execute(url);
                                     System.out.println("polyline 2 end");
                                     System.out.println("in onNotFocustvTo");
@@ -418,7 +436,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                     mLayout.setPanelHeight(0);
                     mLayout.setShadowHeight(0);
                     mLayout.setPanelState(PanelState.COLLAPSED);
-                    buttonPanelViewParams.setMargins(10,0,10,15);
+                    buttonPanelViewParams.setMargins(buttonPanelLeftMargin,buttonPanelTopMargin,buttonPanelRightMargin,buttonPanelBottomMargin);
                     buttonPanelView.setLayoutParams(buttonPanelViewParams);
                     //clear input
                     System.out.println("numOfMarkers 2, focusing: "+numOfMarkers);
@@ -466,6 +484,12 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
 
         buttonPanelViewParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         buttonPanelView = (RelativeLayout) findViewById(R.id.buttonPanel);
+        LinearLayout.LayoutParams temLinearLayoutParams = (LinearLayout.LayoutParams) buttonPanelView.getLayoutParams();
+        buttonPanelLeftMargin=temLinearLayoutParams.leftMargin;
+        buttonPanelRightMargin=temLinearLayoutParams.rightMargin;
+        buttonPanelTopMargin=temLinearLayoutParams.topMargin;
+        buttonPanelBottomMargin=temLinearLayoutParams.bottomMargin;
+
 
         mLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
         layoutParams = mLayout.getLayoutParams();
@@ -561,51 +585,48 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         {
             case R.id.show_friends:
                 System.out.println("showFriends is clicked");
-                LatLng myLocation=new LatLng(22.324017, 114.168779);
-                MarkerOptions markerOption = new MarkerOptions().position(myLocation).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                mMap.addMarker(markerOption);
-
-                ArrayList<LatLng> friendLocations = new ArrayList<LatLng>();
-                friendLocations.add(new LatLng(22.320097, 114.168508));
-                friendLocations.add(new LatLng(22.319640, 114.169935));
-                friendLocations.add(new LatLng(22.321863, 114.167542));
-
-                for(int i=0; i<friendLocations.size(); i++){
-                    showFriendsLocation(friendLocations.get(i),null);
-                    /*
-                    ArrayList<LatLng> path = new ArrayList<LatLng>();
-                    path.add(myLocation);
-                    path.add(friendLocations.get(i));
-
-                    PolylineOptions options = new PolylineOptions();
-                    options.addAll(path);
-                    options.width(10);
-                    options.color(Color.GREEN);
-                    polyline=mMap.addPolyline(options);*/
-
-                    String url = getMapsApiDirectionsUrl(preferedMode,myLocation,friendLocations.get(i));
-                    GetDirectionTask getDirectionTask = new GetDirectionTask(false,false);
-                    getDirectionTask.execute(url);
-                }
-                break;
-
-            case R.id.gps:
-                if (!keepUpdateGPS) {
-                    if(checkLocationEnabled()){
-                        keepUpdateGPS=true;
-                        startUpdateGPS();
-                        /*
-                        if(mLastLocation!=null){
-                            mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude())));
-                            Toast.makeText(getApplicationContext(), "Current Location: "+mLastLocation.getLatitude()+","+mLastLocation.getLongitude(), Toast.LENGTH_SHORT).show();
-                        }*/
+                showFriend=!showFriend;
+                if(showFriend){
+                    //change button image
+                    fdsButton.setImageResource(R.drawable.fds_on);
+                    //instant show
+                    if(mLastLocation!=null){
+                        showFriendsLocation(mLastLocation);
                     }
-                    else{
-                        keepUpdateGPS=false;
+                    //onGPSUpdate show
+                    //if GPS is not turned on
+                    if(!onGPS){
+                        FloatingActionButton gpsButton = (FloatingActionButton) findViewById(R.id.gps);
+                        gpsButton.performClick();
                     }
                 }
                 else{
-                    keepUpdateGPS=false;
+                    hideFriendsLocation();
+                    //change button image
+                    fdsButton.setImageResource(R.drawable.fds_off);
+                }
+
+                break;
+
+            case R.id.gps:
+                onGPS=!onGPS;
+                if(onGPS){
+                    //change button image
+                    gpsButton.setImageResource(R.drawable.gps_enabled);
+                    //turn on GPS
+                    //turnOnGPS();
+                    startUpdateGPS();
+                }
+                else{
+                    //off show friend if it is on
+                    if(showFriend){
+                        FloatingActionButton fdsButton = (FloatingActionButton) findViewById(R.id.show_friends);
+                        fdsButton.performClick();
+                    }
+                    //turn off GPS
+                    stopUpdateGPS();
+                    //change button image
+                    gpsButton.setImageResource(R.drawable.gps_disabled);
                 }
                 break;
 
@@ -1185,7 +1206,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
                 buildGoogleApiClient();
-                mMap.setMyLocationEnabled(true);
+                //mMap.setMyLocationEnabled(true);
                 UiSettings settings = mMap.getUiSettings();
                 settings.setMyLocationButtonEnabled(false);
                 System.out.println("field 1");
@@ -1200,7 +1221,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         }
         else {
             buildGoogleApiClient();
-            mMap.setMyLocationEnabled(true);
+            //mMap.setMyLocationEnabled(true);
             System.out.println("field 3");
         }
     }
@@ -1363,12 +1384,113 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         System.out.println("connected");
         //GPS
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10*1000);
-        mLocationRequest.setFastestInterval(5*1000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        mLocationRequest.setInterval(60*1000);
+        mLocationRequest.setFastestInterval(15*1000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
+    private void showFriendsLocation(Location location){
+        //clear all past data
+        hideFriendsLocation();
+
+        //LatLng myLocation=new LatLng(22.324017, 114.168779);
+        LatLng myLocation=new LatLng(location.getLatitude(), location.getLongitude());
+
+        ArrayList<LatLng> friendLocations = new ArrayList<LatLng>();
+        friendLocations.add(new LatLng(22.320097, 114.168508));
+        friendLocations.add(new LatLng(22.319640, 114.169935));
+        friendLocations.add(new LatLng(22.321863, 114.167542));
+
+        for(int i=0; i<friendLocations.size(); i++){
+            //check fd button status
+            if(showFriend) {
+                //draw markers
+                drawFriendsMarkers(friendLocations.get(i), null);
+                //draw polylines
+                String url = getMapsApiDirectionsUrl(preferedMode, myLocation, friendLocations.get(i));
+                GetDirectionTask getDirectionTask = new GetDirectionTask("fd");
+                getDirectionTask.execute(url);
+            }
+            else{
+                break;
+            }
+        }
+    }
+
+    private void drawFriendsMarkers(LatLng point, Bitmap icon){
+        //get Location name
+        String _Location="null";
+        double longitude = point.longitude;
+        double latitude = point.latitude;
+        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+        try {
+            List<Address> listAddresses = geocoder.getFromLocation(latitude, longitude, 1);
+            if(null!=listAddresses&&listAddresses.size()>0){
+                _Location = listAddresses.get(0).getAddressLine(0);
+            }
+            System.out.println(_Location);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("exception");
+        }
+        //add marker
+        View marker = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.custom_marker_layout, null);
+
+        CircleImageView markerImage = (CircleImageView) marker.findViewById(R.id.user_dp);
+        //markerImage.setImageResource(R.drawable.walk);
+        TextView txt_name = (TextView)marker.findViewById(R.id.name);
+        //txt_name.setText(_name);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) this).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        marker.setLayoutParams(new ViewGroup.LayoutParams(52, ViewGroup.LayoutParams.WRAP_CONTENT));
+        marker.measure(displayMetrics.widthPixels, displayMetrics.heightPixels);
+        marker.layout(0, 0, displayMetrics.widthPixels, displayMetrics.heightPixels);
+        marker.buildDrawingCache();
+        Bitmap bitmap = Bitmap.createBitmap(marker.getMeasuredWidth(), marker.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        marker.draw(canvas);
+
+        MarkerOptions markerOption = new MarkerOptions().position(new LatLng(point.latitude, point.longitude)).title(_Location).icon(BitmapDescriptorFactory.fromBitmap(bitmap));
+        friendsMarkers.add(mMap.addMarker(markerOption));
+    }
+
+    private void hideFriendsLocation(){
+        //remove polylines
+        if(frinedsPolylines!=null){
+            for(int i=0; i<frinedsPolylines.size(); i++){
+                frinedsPolylines.get(i).remove();
+            }
+            frinedsPolylines.clear();
+        }
+        //remove mrakers
+        if(friendsMarkers!=null){
+            for(int i=0; i<friendsMarkers.size(); i++){
+                friendsMarkers.get(i).remove();
+            }
+            friendsMarkers.clear();
+        }
+    }
+
+    private void turnOnGPS(){
+        /*
+        if (!keepUpdateGPS) {
+            if(checkLocationEnabled()){
+                keepUpdateGPS=true;
+                startUpdateGPS();
+            }
+            else{
+                keepUpdateGPS=false;
+            }
+        }
+        else{
+            keepUpdateGPS=false;
+        }*/
     }
 
     private void startUpdateGPS(){
+        //turn on the blue location indicator
+        mMap.setMyLocationEnabled(true);
         //start location updates
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -1381,6 +1503,20 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         //stop location updates
         if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        }
+        //
+        if(showFriend){
+            FloatingActionButton fdsButton = (FloatingActionButton) findViewById(R.id.show_friends);
+            gpsButton.performClick();
+        }
+        //turn off the blue location indicator
+        mMap.setMyLocationEnabled(false);
+
+        if(GPSPolyline!=null) {
+            for(int i=0; i<GPSPolyline.size(); i++){
+                GPSPolyline.get(i).remove();
+            }
+            GPSPolyline.clear();
         }
     }
 
@@ -1411,50 +1547,85 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
             mCurrLocationMarker.remove();
         }
 
-        if(keepUpdateGPS) {
-            //get Location name
-            String currentLocation = "null";
-            Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
-            try {
-                List<Address> listAddresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                if (null != listAddresses && listAddresses.size() > 0) {
-                    currentLocation = listAddresses.get(0).getAddressLine(0);
-                }
-                //System.out.println("Current Location: " + location.getLatitude() + "," + location.getLongitude());
-                //Toast.makeText(getApplicationContext(), "Current Location: " + location.getLatitude() + "," + location.getLongitude(), Toast.LENGTH_SHORT).show();
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.out.println("exception");
+        // if(keepUpdateGPS) {
+        //get Location name
+        String currentLocation = "null";
+        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+        try {
+            List<Address> listAddresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            if (null != listAddresses && listAddresses.size() > 0) {
+                currentLocation = listAddresses.get(0).getAddressLine(0);
             }
+            //System.out.println("Current Location: " + location.getLatitude() + "," + location.getLongitude());
+            //Toast.makeText(getApplicationContext(), "Current Location: " + location.getLatitude() + "," + location.getLongitude(), Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("exception");
+        }
 
-            //Place current location marker
-            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(latLng);
-            markerOptions.title(currentLocation);
-            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            //mCurrLocationMarker = mMap.addMarker(markerOptions);
-            boolean pass=false;
-            if(mLastLocation==null){
-                pass=true;
-            }
-            else if((location.getLatitude()!=mLastLocation.getLatitude())||(location.getLongitude()!=mLastLocation.getLongitude())){
-                pass=true;
-            }
-            if(pass) {
-                //move map camera
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                //insert new record to DB
-                //method 1
-                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-                //sqldb.insertLocationData(latLng, timestamp.getTime());
-            }
-            mLastLocation = location;
-
-            /*
-            if(snappedGPSPoints==null){
-                snappedGPSPoints = new ArrayList<LatLng>();
+        //Place current location marker
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        //MarkerOptions markerOptions = new MarkerOptions();
+        //markerOptions.position(latLng);
+        //markerOptions.title(currentLocation);
+        //markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        //mCurrLocationMarker = mMap.addMarker(markerOptions);
+        boolean pass=false;
+        boolean noRecord=false;
+        boolean sameRecord=false;
+        DecimalFormat df3 = new DecimalFormat("#.###");
+        if(mLastLocation==null){
+            noRecord=true;
+        }
+        else if((df3.format(location.getLatitude()).equals(df3.format(mLastLocation.getLatitude())))&&(df3.format(location.getLongitude()).equals(df3.format((mLastLocation.getLongitude()))))){
+            sameRecord=true;
+        }
+            /*if(!noRecord) {
+                System.out.println("GPS: " + mLastLocation.getLatitude() + "," + mLastLocation.getLongitude() + "  " + location.getLatitude() + "," + location.getLongitude());
             }*/
+        pass=noRecord||!sameRecord;
+        //System.out.println("move cam: "+pass);
+        if(pass) {
+            //move map camera
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            //insert new record to DB
+            //method 1
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            //sqldb.insertLocationData(latLng, timestamp.getTime());
+        }
+
+        //draw location path
+        //show friends' location
+        if((!(noRecord))&&(!sameRecord)){
+            //draw line
+            if(GPSPolyline==null){
+                GPSPolyline=new ArrayList<Polyline>();
+            }
+            String url = "https://roads.googleapis.com/v1/snapToRoads?path=" + mLastLocation.getLatitude() + "," + mLastLocation.getLongitude() + "|" + location.getLatitude() + "," + location.getLongitude() + "&interpolate=true&key=AIzaSyDl9jmXdHxOZglKI6uZ_Kci5w-mdvMGRmE&travelMode=walking";
+            System.out.println("get snapToRoad URL(GPS): " + url);
+            ArrayList<LatLng> snappedPath = new ArrayList<LatLng>();
+            LatLng gpsFrom=new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
+            LatLng gpsTo=new LatLng(location.getLatitude(),location.getLongitude());
+            snappedPath = extractJson(GET(url), gpsFrom, gpsTo);
+            System.out.println("snappedPath: " + snappedPath);
+            if(snappedPath!=null) {
+                if (snappedPath.get(0) != gpsFrom) {
+                    snappedPath.add(0, gpsFrom);
+                }
+                if (snappedPath.get(snappedPath.size() - 1) != gpsTo) {
+                    snappedPath.add(gpsTo);
+                }
+                drawSnappedGPSRoute(snappedPath);
+            }
+
+            //update friend paths
+            if(showFriend) {
+                showFriendsLocation(location);
+            }
+        }
+        mLastLocation = location;
+/*
+
             if(GPSPoints==null){
                 GPSPoints = new ArrayList<LatLng>();
             }
@@ -1488,15 +1659,8 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                         drawSnappedGPSRoute(snappedPath);
                     }
                 }
-                /*
-                PolylineOptions options = new PolylineOptions();
-                options.addAll(GPSPoints);
-                options.width(10);
-                options.color(Color.BLUE);
-                GPSPolyline=mMap.addPolyline(options);
-                System.out.println("GPS polyline plotted");*/
-            }
-        }
+            }*/
+/*        }
         else{
             stopUpdateGPS();
             if(GPSPolyline!=null) {
@@ -1506,19 +1670,17 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                 GPSPolyline=null;
             }
             GPSPoints.clear();
-        }
+        }*/
     }
 
 
     //-------------------------------AsyncTask Class & Function--------------------------------------------
 //class: GetDirectionTask
     private class GetDirectionTask extends AsyncTask<String, Void, String> {
-        private boolean getOvelappedPath;
-        private boolean showRouteInfo;
+        private String callMode;
 
-        GetDirectionTask(boolean getOvelappedPath, boolean showRouteInfo){
-            this.getOvelappedPath=getOvelappedPath;
-            this.showRouteInfo=showRouteInfo;
+        GetDirectionTask(String callMode){
+            this.callMode=callMode;
         }
 
         @Override
@@ -1541,7 +1703,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
             System.out.println("result: "+result);
             super.onPostExecute(result);
             //System.out.println("Result:"+result);
-            new ParserTask(getOvelappedPath, showRouteInfo).execute(result);
+            new ParserTask(callMode).execute(result);
         }
     }
 
@@ -1549,12 +1711,10 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
     //private class ParserTask extends AsyncTask<String, Integer, ArrayList<ExtractedJSON>> {
     //version: snap route
     private class ParserTask extends AsyncTask<String, Integer, ArrayList<ExtractedJSON>> {
-        private boolean getOvelappedPath;
-        private boolean showRouteInfo;
+        private String callMode;
 
-        ParserTask(boolean getOvelappedPath, boolean showRouteInfo){
-            this.getOvelappedPath=getOvelappedPath;
-            this.showRouteInfo=showRouteInfo;
+        ParserTask(String callMode){
+            this.callMode=callMode;
         }
 
         @Override
@@ -1586,17 +1746,17 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         //version: snap route
         protected void onPostExecute(ArrayList<ExtractedJSON> routes) {
             //drawDirection(routes);//by direction
-            getPaths(routes,getOvelappedPath,showRouteInfo);//by snapping route
+            getPaths(routes,callMode);//by snapping route
         }
     }
 
     //getPaths
-    private void getPaths(ArrayList<ExtractedJSON> routes,boolean getOvelappedPath,boolean showRouteInfo){
+    private void getPaths(ArrayList<ExtractedJSON> routes, String callMode){
         ArrayList<LatLng> pathsPoint = null;
         //ArrayList<ArrayList<LatLng>> allRoutes = new ArrayList<ArrayList<LatLng>>();
         System.out.println("routes: "+routes);
         //[routes] idx1:point 1 -> idx2:point 2 -> idx3:point2 -> idx4:point3
-        new GetSnappedRouteTask(routes,getOvelappedPath,showRouteInfo).execute();
+        new GetSnappedRouteTask(routes,callMode).execute();
     }
 /*
 //drawDirection
@@ -1662,10 +1822,9 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         private ArrayList<LatLng> intergratedPath;
         private ArrayList<ArrayList<LatLng>> intergratedPathList;
         private ArrayList<ArrayList<LatLng>> allRoutes;
-        private boolean getOvelappedPath;
-        private boolean showRouteInfo;
+        private String callMode;
 
-        public GetSnappedRouteTask(ArrayList<ExtractedJSON> routes, boolean getOvelappedPath,boolean showRouteInfo) {
+        public GetSnappedRouteTask(ArrayList<ExtractedJSON> routes, String callMode) {
             this.routes=routes;
             paths=new ArrayList<ArrayList<LatLng>>();
             intergratedPath = new ArrayList<LatLng>();
@@ -1673,8 +1832,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
             allRoutes = new ArrayList<ArrayList<LatLng>>();
             distanceList=new ArrayList<Integer>();
             durationList=new ArrayList<Integer>();
-            this.getOvelappedPath=getOvelappedPath;
-            this.showRouteInfo=showRouteInfo;
+            this.callMode=callMode;
         }
 
         @Override
@@ -1706,76 +1864,15 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
             distanceList.add(distance);
             durationList.add(duration);
 
-
-
-
-/*
-            //clear duplicate points (clear by slope)
-            System.out.println("Paths.size(): "+paths.size());
-            for(int i=0; i<paths.size()-1; i++){
-                for(int j=0; j<paths.get(i).size()-2; j++){
-                    if ((paths.get(i).get(j).longitude - paths.get(i).get(j + 1).longitude) / (paths.get(i).get(j).latitude - paths.get(i).get(j + 1).latitude) * (paths.get(i).get(j + 1).longitude - paths.get(i).get(j + 2).longitude) / (paths.get(i).get(j + 1).latitude - paths.get(i).get(j + 2).latitude) < -0.9) {
-                        paths.get(i).subList(0, j + 1).clear();
-                        break;
-                    }
-                }
-                for(int j=0; j<paths.get(i).size()-2; j++){
-                    if ((paths.get(i).get(j).longitude - paths.get(i).get(j + 1).longitude) / (paths.get(i).get(j).latitude - paths.get(i).get(j + 1).latitude) * (paths.get(i).get(j + 1).longitude - paths.get(i).get(j + 2).longitude) / (paths.get(i).get(j + 1).latitude - paths.get(i).get(j + 2).latitude) < -0.9) {
-                        paths.get(i).subList(j + 2,paths.get(i).size()).clear();
-                        break;
-                    }
-                }
-            }*/
-/*
-            //clear duplicate points (clear 1st-n points)
-            for(int i=0; i<paths.size()-1; i++){
-                if(i==0){
-                    paths.get(i).subList(0,1).clear();
-                    paths.get(i).subList(paths.get(i).size()-1-1,paths.get(i).size()).clear();
-                    System.out.println("cleared");
-                }
-                else if(i==paths.size()-1){
-                    //paths.get(i).subList(0,1).clear();
-                    paths.get(i).subList(paths.get(i).size()-1-1,paths.get(i).size()).clear();
-                    System.out.println("cleared");
-                }
-                else{
-                    paths.get(i).subList(0,1).clear();
-                    //paths.get(i).subList(paths.get(i).size()-1-1,paths.get(i).size()).clear();
-                    System.out.println("cleared");
-                }
-            }*/
-
-            /*
-            //clear duplicate points (conditional clearing)
-            for(int i=0; i<paths.size()-1; i++){
-                for(int j=0; j<paths.get(i).size(); j++){
-                    for(int k=0; k<paths.get(i+1).size(); k++){
-                        DecimalFormat df = new DecimalFormat("#.####");
-                        df.setRoundingMode(RoundingMode.DOWN);
-                        if((df.format(paths.get(i).get(j).latitude).equals(df.format(paths.get(i+1).get(k).latitude)))&&
-                        (df.format(paths.get(i).get(j).longitude).equals(df.format(paths.get(i+1).get(k).longitude)))){
-                            System.out.println("cleared after"+j+"/"+paths.get(i).size()+" & before "+k+"/"+paths.get(i+1).size());
-                            paths.get(i).subList(j+1,paths.get(i).size()).clear();
-                            paths.get(i+1).subList(0,k).clear();
-                            break;
-                        }
-                    }
-                }
-            }*/
-
             return null;
         }
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(Void param) {
-            drawSnappedRoute(showRouteInfo);
-            if(getOvelappedPath) {
-                getOverlappedPolyine(allRoutes, sqldb.getWalkingPathLatLngHistory());
-            }
+            drawSnappedRoute(callMode);
         }
 
-        private void drawSnappedRoute(boolean showRouteInfo){
+        private void drawSnappedRoute(String callMode){
             //test without merge paths, may need to uncomment
             /*
             //merge paths
@@ -1791,8 +1888,27 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
             options.color(Color.RED);
             polyline=mMap.addPolyline(options);
             System.out.println("GetSnappedRouteTask added polyline");
+            if(callMode=="fd"){
+                if(showFriend){
+                    frinedsPolylines.add(polyline);
+                    polyline=null;
+                }
+                else{
+                    polyline.remove();
+                    hideFriendsLocation();
+                }
+            }
+
 
             //Toast.makeText(getApplicationContext(), "showRouteInfo: "+showRouteInfo, Toast.LENGTH_SHORT).show();
+            boolean showRouteInfo=false;
+            if(callMode=="search"){
+                showRouteInfo=true;
+            }
+            if(callMode=="fd"){
+                showRouteInfo=false;
+            }
+            //getOverlappedPolyine(allRoutes, sqldb.getWalkingPathLatLngHistory());
             if(showRouteInfo) {
                 //Add suggested paths info
                 //numOfSuggestedPaths=0;
@@ -1868,7 +1984,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                 mLayout.setPanelHeight(itemHeight + dragBarHeight);
                 mLayout.setShadowHeight(shadowHeight);
                 mLayout.setPanelState(PanelState.COLLAPSED);
-                buttonPanelViewParams.setMargins(10,0,10,15+itemHeight + dragBarHeight);
+                buttonPanelViewParams.setMargins(buttonPanelLeftMargin,buttonPanelTopMargin,buttonPanelRightMargin,buttonPanelBottomMargin+itemHeight + dragBarHeight);
                 buttonPanelView.setLayoutParams(buttonPanelViewParams);
 
                 //solving AsyncTask problem in typing focus: delete marker -> reomve polyline -> add back marker -> add back polyline
@@ -1880,7 +1996,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                     mLayout.setPanelHeight(0);
                     mLayout.setShadowHeight(0);
                     mLayout.setPanelState(PanelState.COLLAPSED);
-                    buttonPanelViewParams.setMargins(10,0,10,15);
+                    buttonPanelViewParams.setMargins(buttonPanelLeftMargin,buttonPanelTopMargin,buttonPanelRightMargin,buttonPanelBottomMargin);
                     buttonPanelView.setLayoutParams(buttonPanelViewParams);
                 }
             }
@@ -2049,43 +2165,5 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         inputStream.close();
         return result;
 
-    }
-
-    private void showFriendsLocation(LatLng point, Bitmap icon){
-        //get Location name
-        String _Location="null";
-        double longitude = point.longitude;
-        double latitude = point.latitude;
-        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
-        try {
-            List<Address> listAddresses = geocoder.getFromLocation(latitude, longitude, 1);
-            if(null!=listAddresses&&listAddresses.size()>0){
-                _Location = listAddresses.get(0).getAddressLine(0);
-            }
-            System.out.println(_Location);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("exception");
-        }
-        //add marker
-        View marker = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.custom_marker_layout, null);
-
-        CircleImageView markerImage = (CircleImageView) marker.findViewById(R.id.user_dp);
-        //markerImage.setImageResource(R.drawable.walk);
-        TextView txt_name = (TextView)marker.findViewById(R.id.name);
-        //txt_name.setText(_name);
-
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        ((Activity) this).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        marker.setLayoutParams(new ViewGroup.LayoutParams(52, ViewGroup.LayoutParams.WRAP_CONTENT));
-        marker.measure(displayMetrics.widthPixels, displayMetrics.heightPixels);
-        marker.layout(0, 0, displayMetrics.widthPixels, displayMetrics.heightPixels);
-        marker.buildDrawingCache();
-        Bitmap bitmap = Bitmap.createBitmap(marker.getMeasuredWidth(), marker.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        marker.draw(canvas);
-
-        MarkerOptions markerOption = new MarkerOptions().position(new LatLng(point.latitude, point.longitude)).title(_Location).icon(BitmapDescriptorFactory.fromBitmap(bitmap));
-        mMap.addMarker(markerOption);
     }
 }

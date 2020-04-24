@@ -112,7 +112,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:fabCustomSize="@dimen/androidFabSize"
-                            android:src="@drawable/fds"
+                            android:src="@drawable/fds_off"
                             android:onClick="buttonOnClick"
                             app:backgroundTint="#ffffff"
                             android:layout_marginBottom="10dp"/>
@@ -121,7 +121,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:fabCustomSize="@dimen/androidFabSize"
-                            android:src="@drawable/gps"
+                            android:src="@drawable/gps_disabled"
                             android:onClick="buttonOnClick"
                             app:backgroundTint="#ffffff"
                             android:layout_marginBottom="10dp"/>
