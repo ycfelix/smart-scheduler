@@ -49,7 +49,12 @@ def register():
 		# query_result = redirect(url_for('api.sql_post', input_json=query_json))
 		# return type(query_result)
 		try:
+<<<<<<< Updated upstream
 			cnxn = getCnxn('Smart Scheduler')
+=======
+			cnxn = getCnxn('Smart Scheduler') # for deployment
+			# cnxn = getCnxn('TestData') # for testing
+>>>>>>> Stashed changes
 			cursor = cnxn.cursor()
 
 		except pyodbc.Error as pex:
@@ -110,7 +115,12 @@ def login():
 	    return jsonify({'error': 'Password is not specified'})
 	else:
 		try:
+<<<<<<< Updated upstream
 			cnxn = getCnxn('Smart Scheduler')
+=======
+			cnxn = getCnxn('Smart Scheduler') # for deployment
+			# cnxn = getCnxn('TestData') # for testing
+>>>>>>> Stashed changes
 			cursor = cnxn.cursor()
 
 		except pyodbc.Error as pex:
