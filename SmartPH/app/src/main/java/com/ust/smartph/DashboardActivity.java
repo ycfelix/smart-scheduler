@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,13 +25,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpResponse;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.ust.customchecklist.DataModel;
 import com.ust.friend.DeleteItemListener;
 import com.ust.friend.Friend;
@@ -41,6 +46,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -93,7 +99,7 @@ public class DashboardActivity extends AppCompatActivity {
         friendList.setLayoutManager(new LinearLayoutManager(this));
         adapter=new FriendAdapter(this,friends);
         friendList.setAdapter(adapter);
-        SharedPreferences pref = getSharedPreferences("email", Context.MODE_PRIVATE);
+        SharedPreferences pref = getSharedPreferences(Utils.EMAIL_PWD, Context.MODE_PRIVATE);
         String email = pref.getString("email", "");
         System.out.println("UID: "+MD5(email));
         System.out.println("email: "+email);
@@ -106,6 +112,38 @@ public class DashboardActivity extends AppCompatActivity {
         });
         lastLogin.setText(Calendar.getInstance().getTime().toString());
         getFriendFromServer(email);
+
+        // test distance matrix API
+        final JSONObject distMatrix = new JSONObject();
+        try {
+            distMatrix.put("user_id", "test@testEmail.com");
+            distMatrix.put("num_user", "1");
+//            System.out.println(distMatrix.getString("user_id"));
+//            System.out.println(distMatrix.getString("num_user"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+//        String data = "{"+
+//                "\"user_id\"" + "\"" + "test@testEmail.com" + "\","+
+//                "\"num_user\"" + "\"" + "3" + "\""+
+//                "}";
+//        submit(data);
+
+        Utils.connectServer(distMatrix,
+                "http://13.70.2.33/api/distance_matrix/" + DistMatrix.CALENDAR.getTyp(),
+                Request.Method.POST, getApplicationContext(), new VolleyCallback() {
+                    @Override
+                    public void onSuccess(JSONObject result) {
+                        System.out.println("It works!");
+                        System.out.println(result);
+                    }
+
+                    @Override
+                    public void onFailure() {
+                        System.out.println("It doesn't work...");
+                    }
+                });
     }
 
     private void getFriendFromServer(String myEmail){
@@ -350,6 +388,10 @@ public class DashboardActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+//        Intent startMain = new Intent(Intent.ACTION_MAIN);
+//        startMain.addCategory(Intent.CATEGORY_HOME);
+//        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        startActivity(startMain);
         finish();
     }
 }

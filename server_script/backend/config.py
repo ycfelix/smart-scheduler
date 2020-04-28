@@ -18,8 +18,13 @@ with open('/etc/server_config.json') as config_file:
 class Config:
 	SECRET_KEY = config.get('FYPSERVER_SECRET_KEY')
 	JSON_SORT_KEYS = False
-	DEBUG = True
 	FYPDB_SERVER = config.get('FYPDB_SERVER')
 	FYPDB_USERNAME = config.get('FYPDB_USERNAME')
 	FYPDB_PWD = config.get('FYPDB_PWD')
 	FYPDB_DRIVER = config.get('FYPDB_DRIVER')
+	# MAIL_SERVER = 'smtp.googlemail.com'
+	# MAIL_PORT = 587
+	# MAIL_USE_TLS = True
+	# MAIL_USERNAME = os.environ.get('MAIL_USER')
+	# MAIL_PASSWORD = os.environ.get('MAIL_PWD')
+
