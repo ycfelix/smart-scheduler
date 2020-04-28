@@ -115,6 +115,7 @@ public class LoginActivity extends AppCompatActivity {
             try {
                 accInfo.put("email", email);
                 accInfo.put("hashed_pwd", hashed_pwd);
+//                accInfo.put("hashed_pwd", phash(pass));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

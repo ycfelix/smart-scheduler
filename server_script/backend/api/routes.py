@@ -9,10 +9,10 @@ api = Blueprint('api', __name__)
 bad_request_code = 400
 # send string request suggestion
 # receive -> call function -> give back to them
+api = Blueprint('api', __name__)
 
 @api.route('/api/sql_db', methods=['POST'])
 def sql_post():
-	return_code = 200
 	json = getJSON()
 	return_dict = {}
 	# print('type of json = ' + str(type(json)))

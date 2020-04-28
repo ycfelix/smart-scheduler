@@ -305,4 +305,3 @@ def get_calendar_similar_user(user_id,n):
         abort(500, {'error_msg': 'Please check your user_id and num_user in your JSON string', 'system_msg': str(e)})
     except KeyError as ke:
         abort(500, {'error_msg': 'Please check your user_id in your JSON string', 'system_msg': str(ke)})
-

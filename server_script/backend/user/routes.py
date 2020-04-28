@@ -58,7 +58,6 @@ def register():
 			cnxn = getCnxn('Smart Scheduler') # for deployment
 			# cnxn = getCnxn('TestData') # for testing
 			cursor = cnxn.cursor()
-
 			cmd = "select Email, HashedPwd from dbo.Accounts where Email='%s'" % json['email'] # for deployment
 			# cmd = "select Email, HashedPwd from TestAccounts where Email='%s'" % json['email'] # for testing
 			check = getCursor(cursor, cmd).fetchall()
