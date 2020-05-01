@@ -46,7 +46,7 @@ public class SQLDB {
 
     // Connect to your database.
     // Replace server name, username, and password with your credentials
-    SQLDB(Context context){
+    public SQLDB(Context context){
         this.context=context;
         walkingPathLatLngHistory=new ArrayList<ArrayList<LatLng>>();
         walkingPathDurationHistory=new ArrayList<Integer>();

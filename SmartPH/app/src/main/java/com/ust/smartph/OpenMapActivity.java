@@ -1,44 +1,29 @@
 package com.ust.smartph;
 
-import com.ust.map.SQLDB;
-import com.ust.map.ExtractedJSON;
-import com.ust.map.HttpConnection;
-import com.ust.map.MyLocationService;
-import com.ust.map.PathJSONParser;
-import com.ust.map.PlaceAutoSuggestAdapter;
-import com.ust.map.SuggestedPath;
-import com.ust.map.SuggestedPathAdapter;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
-import androidx.fragment.app.FragmentActivity;
-
+import android.Manifest;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.location.LocationManager;
-import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -51,25 +36,34 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.directions.route.AbstractRouting;
-import com.directions.route.Route;
-import com.directions.route.RouteException;
-import com.directions.route.Routing;
-import com.directions.route.RoutingListener;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.location.places.PlaceBuffer;
-import com.google.android.gms.location.places.Places;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelSlideListener;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState;
+import com.ust.map.ExtractedJSON;
+import com.ust.map.HttpConnection;
+import com.ust.map.MyLocationService;
+import com.ust.map.PathJSONParser;
+import com.ust.map.PlaceAutoSuggestAdapter;
+import com.ust.map.SQLDB;
+import com.ust.map.SuggestedPath;
+import com.ust.map.SuggestedPathAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -80,45 +74,17 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
-import java.math.RoundingMode;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import android.os.Build;
-
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.location.LocationServices;
-
-import android.location.Location;
-import android.Manifest;
-import android.content.pm.PackageManager;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.slidingpanelayout.widget.SlidingPaneLayout;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.location.places.Place;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-
-import android.view.View.OnClickListener;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelSlideListener;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState;
-
+import androidx.fragment.app.FragmentActivity;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
@@ -1403,7 +1369,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
     public void onConnected(Bundle bundle) {
         System.out.println("connected");
         //GPS
-        mLocationRequest = new LocationRequest();
+        mLocationRequest = LocationRequest.create();
         mLocationRequest.setInterval(60*1000);
         mLocationRequest.setFastestInterval(15*1000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);

@@ -140,13 +140,13 @@
                             android:layout_width="@dimen/clansFabSize"
                             android:layout_height="@dimen/clansFabSize"
                             android:src="@drawable/heatmap_range4"
-                            android:id="@+id/showHeatmap16-"
+                            android:id="@+id/showHeatmap16_"
                             android:onClick="buttonOnClick"
                             fab:fab_colorNormal="#ffffff"
                             fab:fab_colorPressed="#ffffff"
                             fab:fab_colorRipple="#ffffff"/>
                         <com.github.clans.fab.FloatingActionButton
-                            android:id="@+id/showHeatmap11-15"
+                            android:id="@+id/showHeatmap11_15"
                             android:onClick="buttonOnClick"
                             android:layout_width="@dimen/clansFabSize"
                             android:layout_height="@dimen/clansFabSize"
@@ -155,7 +155,7 @@
                             fab:fab_colorPressed="#ffffff"
                             fab:fab_colorRipple="#ffffff"/>
                         <com.github.clans.fab.FloatingActionButton
-                            android:id="@+id/showHeatmap6-10"
+                            android:id="@+id/showHeatmap6_10"
                             android:onClick="buttonOnClick"
                             android:layout_width="@dimen/clansFabSize"
                             android:layout_height="@dimen/clansFabSize"
@@ -164,7 +164,7 @@
                             fab:fab_colorPressed="#ffffff"
                             fab:fab_colorRipple="#ffffff"/>
                         <com.github.clans.fab.FloatingActionButton
-                            android:id="@+id/showHeatmap1-5"
+                            android:id="@+id/showHeatmap1_5"
                             android:onClick="buttonOnClick"
                             android:layout_width="@dimen/clansFabSize"
                             android:layout_height="@dimen/clansFabSize"

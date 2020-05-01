@@ -44,7 +44,7 @@
             android:paddingLeft="16dp"
             android:orientation="horizontal">
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/bankcardId"
                 android:layout_width="160dp"
                 android:layout_height="190dp"
@@ -88,9 +88,9 @@
                         android:textColor="@android:color/darker_gray" />
 
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="160dp"
                 android:layout_height="190dp"
                 android:layout_gravity="center"
@@ -134,10 +134,10 @@
                         android:textColor="@android:color/darker_gray" />
 
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="160dp"
                 android:layout_height="190dp"
                 android:layout_margin="10dp"
@@ -180,9 +180,9 @@
                         android:textColor="@android:color/darker_gray" />
 
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="160dp"
                 android:layout_height="190dp"
                 android:layout_gravity="center"
@@ -226,9 +226,9 @@
                         android:textColor="@android:color/darker_gray" />
 
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="160dp"
                 android:layout_height="150dp"
                 android:layout_margin="10dp"
@@ -272,9 +272,9 @@
                         android:textColor="@android:color/darker_gray" />
 
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="160dp"
                 android:layout_height="150dp"
                 android:layout_gravity="center"
@@ -319,7 +319,7 @@
                         android:textColor="@android:color/darker_gray" />
 
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
         </GridLayout>
     </LinearLayout>
 </ScrollView>
