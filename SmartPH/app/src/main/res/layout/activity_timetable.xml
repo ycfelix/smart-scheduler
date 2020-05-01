@@ -34,12 +34,12 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content">
 
-    <android.support.v4.view.ViewPager
+    <androidx.core.view.ViewPager
         android:id="@+id/swipe_timetable"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
-    </android.support.v4.view.ViewPager>
+    </androidx.core.view.ViewPager>
         <com.github.clans.fab.FloatingActionMenu
             android:id="@+id/fab_timetable_menu"
             android:layout_width="wrap_content"

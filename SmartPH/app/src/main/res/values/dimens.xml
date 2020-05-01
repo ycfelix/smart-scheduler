@@ -16,7 +16,8 @@
 
     <!-- Margin -->
     <dimen name="imageView_icon_margin">16dp</dimen>
-
+    <dimen name="androidFabSize">36dp</dimen>
+    <dimen name="clansFabSize">36dp</dimen>
     <!-- Elevation -->
 
 
