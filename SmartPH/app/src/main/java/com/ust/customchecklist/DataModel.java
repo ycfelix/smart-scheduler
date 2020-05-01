@@ -1,8 +1,8 @@
 package com.ust.customchecklist;
 
-import android.support.annotation.NonNull;
-
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
 
 public class DataModel {
 

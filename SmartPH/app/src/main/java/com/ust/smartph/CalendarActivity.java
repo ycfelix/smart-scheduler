@@ -115,7 +115,7 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
         Mapfuntion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //startActivity(new Intent(view.getContext(), com.example.calendar.OpenMapActivity.class));
+                startActivity(new Intent(view.getContext(), com.example.calendar.OpenMapActivity.class));
             }
         });
         //Delete All Event
@@ -901,7 +901,7 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
                             System.out.println(result);
                             for(int i = 0; i < result.length();i++){
                                 try{
-                                    SaveEvent(result.getJSONObject(i).getString("Event")+"--"+userId,
+                                    SaveEvent(result.getJSONObject(i).getString("Event"),
                                             result.getJSONObject(i).getString("Time"),
                                             result.getJSONObject(i).getString("Date"),
                                             result.getJSONObject(i).getString("EventMonth"),
@@ -983,9 +983,9 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
         String numOfUser = Integer.toString(num);
         data.put("user_id",userid);
         data.put("num_user",numOfUser);
-        String url = "http://13.70.2.33:5000/api/distance_matrix/3";
+        String url = "http://13.70.2.33/api/distance_matrix/3";
         RequestQueue queue = Volley.newRequestQueue(this);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(data),
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -1010,11 +1010,6 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
         );
         queue.add(request);
         return userlist;
-    }
-    private ArrayList<Events> getEventByuserId(String userId){
-        ArrayList<Events> userEventList = new ArrayList<>();
-
-        return userEventList;
     }
 
 
