@@ -21,7 +21,7 @@
             android:layout_height="fill_parent"
             android:firstDayOfWeek="1" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/EventsRV2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -77,24 +77,25 @@
         fab:menu_showShadow="true">
 
         <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/addEvent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            fab:fab_label="Add event"
-            fab:fab_size="mini" />
-
-        <com.github.clans.fab.FloatingActionButton
             android:id="@+id/MapFunction"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            fab:fab_label="Map"
+            fab:fab_label="open map"
             fab:fab_size="mini" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/DeleteAllEvent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            fab:fab_label="DeleteAllEvent"
+            fab:fab_label="delete all event"
+            fab:fab_size="mini" />
+
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/addEvent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_label="Add event"
             fab:fab_size="mini" />
 
         <com.github.clans.fab.FloatingActionButton

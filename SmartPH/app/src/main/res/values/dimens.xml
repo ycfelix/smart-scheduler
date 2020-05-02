@@ -19,5 +19,7 @@
 
     <!-- Elevation -->
 
-
+    <!-- Mapp button -->
+    <dimen name="clansFabSize">55dp</dimen>
+    <dimen name="androidFabSize">55dp</dimen>
 </resources>

@@ -7,21 +7,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,9 +27,7 @@ import com.android.volley.toolbox.HttpResponse;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.ust.customchecklist.DataModel;
+import com.google.android.material.navigation.NavigationView;
 import com.ust.friend.DeleteItemListener;
 import com.ust.friend.Friend;
 import com.ust.friend.FriendAdapter;
@@ -53,10 +44,14 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import com.ust.utility.Utils.*;
 
 public class DashboardActivity extends AppCompatActivity {
 
@@ -131,7 +126,7 @@ public class DashboardActivity extends AppCompatActivity {
 //        submit(data);
 
         Utils.connectServer(distMatrix,
-                "http://13.70.2.33/api/distance_matrix/" + DistMatrix.CALENDAR.getTyp(),
+                "http://13.70.2.33/api/distance_matrix/" + Utils.DistMatrix.CALENDAR.getTyp(),
                 Request.Method.POST, getApplicationContext(), new VolleyCallback() {
                     @Override
                     public void onSuccess(JSONObject result) {
@@ -355,7 +350,7 @@ public class DashboardActivity extends AppCompatActivity {
 
     @OnClick(R.id.friend_menu)
     void setMenuClick(View arg) {
-        drawer.openDrawer(Gravity.START);
+        drawer.openDrawer(GravityCompat.START);
     }
 
 
