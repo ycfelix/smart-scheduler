@@ -57,7 +57,6 @@
             android:textColorHint="#6e6e6e" />
 
         <Button
-            android:id="@+id/login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -68,7 +67,6 @@
 
 
         <TextView
-            android:id="@+id/signup_now"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -80,7 +78,6 @@
             android:textColor="#FFF" />
 
         <TextView
-            android:id="@+id/forget_passsword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -92,7 +89,6 @@
             android:textColor="#FFF" />
 
         <TextView
-            android:id="@+id/About_us"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"

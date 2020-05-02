@@ -2,9 +2,6 @@ package com.ust.appusagechart;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.SpannableString;
 import android.text.format.DateUtils;
 import android.text.style.ForegroundColorSpan;
@@ -26,6 +23,9 @@ import com.ust.smartph.R;
 
 import java.util.ArrayList;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

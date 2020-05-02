@@ -2,8 +2,9 @@ package com.ust.timetable;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+
+import androidx.fragment.app.Fragment;
 
 public class BaseTimetable extends Fragment {
 

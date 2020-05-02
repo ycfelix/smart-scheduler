@@ -4,44 +4,32 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
-import com.ust.smartph.ChecklistHomeActivity;
 import com.ust.smartph.R;
-import com.ust.timetable.HashGenerator;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Locale;
 
 public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.ViewHolder> {
     Context context;
     ArrayList<DataModel> data;
     private static final String PREF_NAME="checklist";
 
-    public ChecklistAdapter(@NonNull Context context,ArrayList<DataModel> data) {
+    public ChecklistAdapter(@NonNull Context context, ArrayList<DataModel> data) {
         this.context=context;
         this.data=data;
     }

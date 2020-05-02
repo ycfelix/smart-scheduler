@@ -25,7 +25,7 @@
             android:background="@android:color/transparent" />
     </RelativeLayout>
 
-    <android.support.design.widget.TabLayout
+    <com.google.android.material.tabs.TabLayout
         android:id="@+id/timetable_tab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -34,12 +34,12 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content">
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/swipe_timetable"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
-    </android.support.v4.view.ViewPager>
+    </androidx.viewpager.widget.ViewPager>
         <com.github.clans.fab.FloatingActionMenu
             android:id="@+id/fab_timetable_menu"
             android:layout_width="wrap_content"

@@ -3,7 +3,6 @@ package com.ust.customchecklist;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -14,6 +13,7 @@ import android.widget.Toast;
 
 import com.ust.smartph.R;
 
+import androidx.annotation.NonNull;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -45,7 +45,7 @@ public class EditDialog extends Dialog {
 
     private DataModel checklist;
 
-    public EditDialog(@NonNull Context context,RequestType type) {
+    public EditDialog(@NonNull Context context, RequestType type) {
         super(context);
         this.request=type;
         this.context=context;
