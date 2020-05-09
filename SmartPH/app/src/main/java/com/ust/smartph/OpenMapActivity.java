@@ -161,6 +161,8 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
     private static int buttonPanelBottomMargin;
     private FloatingActionButton gpsButton;
     private FloatingActionButton fdsButton;
+    private com.github.clans.fab.FloatingActionMenu currentPreferedMode;
+    private com.github.clans.fab.FloatingActionButton alternativePreferedMode;
     private static boolean showFriend;
     private boolean onGPS;
     private static ArrayList<Polyline> frinedsPolylines;
@@ -203,6 +205,9 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         dragView = findViewById(R.id.dragView);
         gpsButton = findViewById(R.id.gps);
         fdsButton = findViewById(R.id.show_friends);
+        currentPreferedMode = findViewById(R.id.current_prefered_mode);
+        currentPreferedMode.setIconAnimated(false);
+        alternativePreferedMode = findViewById(R.id.alternative_prefered_mode);
         listView = findViewById(R.id.suggestedPaths);
         alternativeSuggestedPathList= new ArrayList<>();
         frinedsPolylines = new ArrayList<>();
@@ -569,6 +574,29 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         }
         switch(view.getId())
         {
+            case R.id.alternative_prefered_mode:
+                System.out.println("mode clicked");
+                if(preferedMode.equals("walking")){
+                    System.out.println("from walking mode");
+                    preferedMode="driving";
+                    currentPreferedMode.getMenuIconView().setImageResource(R.drawable.drive_button);
+                    alternativePreferedMode.setImageResource(R.drawable.walk_button);
+                }
+                else if(preferedMode.equals("driving")){
+                    System.out.println("from driving mode");
+                    preferedMode="walking";
+                    currentPreferedMode.getMenuIconView().setImageResource(R.drawable.walk_button);
+                    alternativePreferedMode.setImageResource(R.drawable.drive_button);
+                }
+                //refresh route
+                if(polyline!=null) {
+                    polyline.remove();
+                    String url = getMapsApiDirectionsUrl(preferedMode,pointFrom,pointTo);
+                    GetDirectionTask getDirectionTask = new GetDirectionTask("search");
+                    getDirectionTask.execute(url);
+                }
+                break;
+
             case R.id.show_friends:
                 if(checkLocationEnabled()||showFriend) {
                     showFriend = !showFriend;
