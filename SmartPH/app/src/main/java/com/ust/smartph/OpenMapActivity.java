@@ -187,10 +187,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         //MapFragment mapFragment = (MapFragment) getFragmentManager() .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         System.out.println("creating sqldb");
-        SharedPreferences sp = getSharedPreferences(Utils.EMAIL_PWD, Context.MODE_PRIVATE);
-        String emailStr = sp.getString("email", null);
-        //String passStr = sp.getString("hashed_pwd", null);
-        System.out.println("email: "+emailStr);
+        String emailStr = getIntent().getExtras().getString("emailStr");
         sqldb = new SQLDB(getApplicationContext(), emailStr);
     }
 

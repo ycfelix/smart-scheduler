@@ -116,7 +116,13 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
         Mapfuntion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(view.getContext(), OpenMapActivity.class));
+                SharedPreferences sp = getSharedPreferences(Utils.EMAIL_PWD, Context.MODE_PRIVATE);
+                String emailStr = sp.getString("email", null);
+                //String passStr = sp.getString("hashed_pwd", null);
+                System.out.println("my email: "+emailStr);
+                Intent mapIntent = new Intent(view.getContext(), OpenMapActivity.class);
+                mapIntent.putExtra("emailStr", emailStr);
+                startActivity(mapIntent);
             }
         });
         //Delete All Event

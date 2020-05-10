@@ -40,7 +40,7 @@ public class SQLDB {
     private ArrayList<Integer> drivingPathDateTimeHistory;
     private ArrayList<ArrayList<LatLng>> drivingPathLatLngHistory;
     private ArrayList<Integer> drivingPathDurationHistory;
-    private int userId;
+    private String userId;
     private Context context;
     private ArrayList<Double> lat;
     private ArrayList<Double> lng;
@@ -57,7 +57,7 @@ public class SQLDB {
         walkingPathDurationHistory=new ArrayList<Integer>();
         drivingPathLatLngHistory=new ArrayList<ArrayList<LatLng>>();
         drivingPathDurationHistory=new ArrayList<Integer>();
-        userId=0;
+        userId="0";
         getUserId();
         System.out.println("started http");
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -384,7 +384,8 @@ public class SQLDB {
     public void getUserId(){
         HashMap<String, String> data=new HashMap<>();
 
-        String sqlCommand="select UserId from Accounts where Email="+userEmail;
+        String sqlCommand="select UserId from Accounts where Email="+"'"+userEmail+"'";
+        System.out.println("sql: "+sqlCommand);
         data.put("db_name","Smart Scheduler");
         data.put("sql_cmd",sqlCommand);
 
@@ -395,20 +396,15 @@ public class SQLDB {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
+                            System.out.println("response: "+response);
                             //parse JSON
                             JSONArray result= response.getJSONArray("result");
-                            System.out.print("result: "+ result);
+                            //System.out.print("user id result: "+ result);
 
-                            //JSONObject currentRecord = ((JSONObject) result.get(i));
-                            //System.out.println("currentRecord: " + currentRecord);
-                            //lat.add(currentRecord.getDouble("lat"));
-                            //lng.add(currentRecord.getDouble("lng"));
-                            //walkingPathDateTimeHistory.add(currentRecord.getInt("dateTime"));
-                            //System.out.println("lat: " + lat);
-                            //System.out.println("lng: " + lng);
-                            //System.out.println("walkingPathDateTimeHistory: " + walkingPathDateTimeHistory);
+                            JSONObject currentRecord = ((JSONObject) result.get(0));
+                            //System.out.print("currentRecord result: "+currentRecord);
 
-                            //userId=;
+                            userId=currentRecord.getString("UserId");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -427,7 +423,7 @@ public class SQLDB {
     public void insertLocationData(LatLng point, double dateTime){
         String url = "http://13.70.2.33/api/sql_db";
         //do a select first, then
-        String query = "INSERT INTO user_location_history VALUES ("+userId+","+ point.latitude+","+point.longitude+","+dateTime+");";
+        String query = "INSERT INTO user_location_history VALUES ("+"'"+userId+"'"+","+ point.latitude+","+point.longitude+","+dateTime+");";
         List<String> commands= Arrays.asList(query);
         for(int i=0;i<commands.size();i++){
             HashMap<String, String> data=new HashMap<>();
