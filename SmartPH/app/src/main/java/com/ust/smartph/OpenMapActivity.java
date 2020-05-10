@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -65,6 +66,7 @@ import com.ust.map.PlaceAutoSuggestAdapter;
 import com.ust.map.SQLDB;
 import com.ust.map.SuggestedPath;
 import com.ust.map.SuggestedPathAdapter;
+import com.ust.utility.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -185,7 +187,11 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         //MapFragment mapFragment = (MapFragment) getFragmentManager() .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         System.out.println("creating sqldb");
-        sqldb = new SQLDB(getApplicationContext());
+        SharedPreferences sp = getSharedPreferences(Utils.EMAIL_PWD, Context.MODE_PRIVATE);
+        String emailStr = sp.getString("email", null);
+        //String passStr = sp.getString("hashed_pwd", null);
+        System.out.println("email: "+emailStr);
+        sqldb = new SQLDB(getApplicationContext(), emailStr);
     }
 
 //onMapReday
@@ -234,7 +240,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                     if(null!=listAddresses&&listAddresses.size()>0){
                         _Location = listAddresses.get(0).getAddressLine(0);
                     }
-                    System.out.println(_Location);
+                    System.out.println("location name: "+_Location);
                 } catch (IOException e) {
                     e.printStackTrace();
                     System.out.println("exception");
@@ -1829,8 +1835,8 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                     i += 2;
                 }
 
-                distance = currentRoute.getDuration();
-                duration = currentRoute.getDistance();
+                distance = currentRoute.getDistance();
+                duration = currentRoute.getDuration();
 
                 if(paths!=null) {
                     for (int i = 0; i < paths.size(); i++) {
@@ -1950,6 +1956,13 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                     }
                     durationInfo += minsPart;
                     preferedDuration.setText(durationInfo);
+
+
+                    System.out.println("distance: "+preferedSuggestedPath.getDistance());
+                    System.out.println("kmPart: "+kmPart);
+                    System.out.println("duration: "+preferedSuggestedPath.getDuration());
+                    System.out.println("hours: "+hours);
+                    System.out.println("mins: "+mins);
                 }
 
                 System.out.println("in drawSnappedRoute");
