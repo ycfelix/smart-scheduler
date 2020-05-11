@@ -117,6 +117,7 @@ public class TimetableItemActivity extends AppCompatActivity {
                     String monwedData=gson.toJson(monWed);
                     System.out.println(monwedData);
                     String thrsunData=gson.toJson(thrSun);
+                    System.out.println(thrsunData);
                     TimetableLoader.setSchedule(PREF_MON_WED,monwedData);
                     TimetableLoader.setSchedule(PREF_THR_SUN,thrsunData);
                     adapter.notifyDataSetChanged();

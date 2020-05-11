@@ -24,6 +24,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ust.smartph.R;
 import com.ust.smartph.TimetableItemActivity;
+import com.ust.utility.Utils;
 
 import org.json.JSONObject;
 
@@ -200,8 +201,7 @@ public class TimetableHomeAdapter extends RecyclerView.Adapter<TimetableHomeAdap
     }
 
     private String getToken(String timetableName){
-        String android_id = Secure.getString(context.getContentResolver(),
-                Secure.ANDROID_ID);
+        String android_id = context.getSharedPreferences(Utils.EMAIL_PWD, Context.MODE_PRIVATE).getString("email","");
         return HashGenerator.toHashCode(android_id)+HashGenerator.toHashCode(timetableName);
     }
 

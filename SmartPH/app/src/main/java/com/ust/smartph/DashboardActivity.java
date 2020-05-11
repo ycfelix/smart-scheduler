@@ -89,7 +89,7 @@ public class DashboardActivity extends AppCompatActivity {
         friendList.setLayoutManager(new LinearLayoutManager(this));
         adapter=new FriendAdapter(this,friends);
         friendList.setAdapter(adapter);
-        SharedPreferences pref = getSharedPreferences("email", Context.MODE_PRIVATE);
+        SharedPreferences pref = getSharedPreferences(Utils.EMAIL_PWD, Context.MODE_PRIVATE);
         String email = pref.getString("email", "");
         System.out.println("UID: "+MD5(email));
         System.out.println("email: "+email);
@@ -146,8 +146,11 @@ public class DashboardActivity extends AppCompatActivity {
         AlertDialog.Builder dialog=new AlertDialog.Builder(this);
         dialog.setMessage("Are you sure to sign-out?");
         dialog.setPositiveButton("Confirm", (dialog12, which) -> {
-            SharedPreferences pref=PreferenceManager.getDefaultSharedPreferences(DashboardActivity.this);
-            pref.edit().putString("email",null).putString("hashed_pwd",null).apply();
+            SharedPreferences pref=getSharedPreferences(Utils.EMAIL_PWD, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor=pref.edit();
+            editor.putString("email",null);
+            editor.putString("hashed_pwd",null);
+            editor.commit();
             startActivity(new Intent(DashboardActivity.this,LoginActivity.class));
             dialog12.dismiss();
             DashboardActivity.this.finish();
