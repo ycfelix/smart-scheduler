@@ -453,7 +453,7 @@ public class SQLDB {
 
     public void getLocationHistory(){   //return true: have updated, return false: no updates
         HashMap<String, String> data=new HashMap<>();
-        String sqlCommand="SELECT * FROM dbo.user_location_history WHERE (userId="+userId+")";
+        String sqlCommand="SELECT * FROM dbo.user_location_history WHERE (userId="+"'"+userId+"'"+")";
         data.put("db_name","Smart Scheduler");
         data.put("sql_cmd",sqlCommand);
 
@@ -479,11 +479,11 @@ public class SQLDB {
                                 for (int i = 0; i < result.length(); i++) {
                                     JSONObject currentRecord = ((JSONObject) result.get(i));
                                     System.out.println("currentRecord: " + currentRecord);
-                                    lat.add(currentRecord.getDouble("lat"));
-                                    lng.add(currentRecord.getDouble("lng"));
-                                    walkingPathDateTimeHistory.add(currentRecord.getInt("dateTime"));
-                                    System.out.println("lat: " + lat);
-                                    System.out.println("lng: " + lng);
+                                    lat.add(currentRecord.getDouble("Lat"));
+                                    lng.add(currentRecord.getDouble("Lng"));
+                                    walkingPathDateTimeHistory.add(currentRecord.getInt("DateTime"));
+                                    System.out.println("Lat: " + lat);
+                                    System.out.println("Lng: " + lng);
                                     System.out.println("walkingPathDateTimeHistory: " + walkingPathDateTimeHistory);
                                 }
 

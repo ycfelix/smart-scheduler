@@ -1736,8 +1736,13 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         ArrayList<LatLng> pathsPoint = null;
         //ArrayList<ArrayList<LatLng>> allRoutes = new ArrayList<ArrayList<LatLng>>();
         System.out.println("routes: "+routes);
-        //[routes] idx1:point 1 -> idx2:point 2 -> idx3:point2 -> idx4:point3
-        new GetSnappedRouteTask(routes,callMode).execute();
+        if((routes!=null)&&(routes.size()!=0)){
+            //[routes] idx1:point 1 -> idx2:point 2 -> idx3:point2 -> idx4:point3
+            new GetSnappedRouteTask(routes,callMode).execute();
+        }
+        else{
+            Toast.makeText(mContext, "no information of the route", Toast.LENGTH_SHORT).show();
+        }
     }
 /*
 //drawDirection
@@ -1820,31 +1825,32 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         protected Void doInBackground(Void... param) {
             String url;
             ExtractedJSON currentRoute=null;
-            if(routes!=null){
+            if ((routes != null) && (routes.size() != 0)) {
                 currentRoute = routes.get(0);
-            }
-            //System.out.println("Start: "+currentRoute.getSteps().size());
-            if(currentRoute!=null) {
-                for (int i = 0; i < currentRoute.getSteps().size(); ) {
-                    url = "https://roads.googleapis.com/v1/snapToRoads?path=" + currentRoute.getSteps().get(i).latitude + "," + currentRoute.getSteps().get(i).longitude + "|" + currentRoute.getSteps().get(i + 1).latitude + "," + currentRoute.getSteps().get(i + 1).longitude + "&interpolate=true&key=AIzaSyDl9jmXdHxOZglKI6uZ_Kci5w-mdvMGRmE&travelMode=walking";
-                    System.out.println("get snapToRoad URL: " + url);
-                    paths.add(extractJson(GET(url), new LatLng(currentRoute.getSteps().get(i).latitude, currentRoute.getSteps().get(i).longitude), new LatLng(currentRoute.getSteps().get(i + 1).latitude, currentRoute.getSteps().get(i + 1).longitude)));
-                    i += 2;
-                }
 
-                distance = currentRoute.getDistance();
-                duration = currentRoute.getDuration();
-
-                if(paths!=null) {
-                    for (int i = 0; i < paths.size(); i++) {
-                        intergratedPath.addAll(paths.get(i));
+                //System.out.println("Start: "+currentRoute.getSteps().size());
+                if (currentRoute != null) {
+                    for (int i = 0; i < currentRoute.getSteps().size(); ) {
+                        url = "https://roads.googleapis.com/v1/snapToRoads?path=" + currentRoute.getSteps().get(i).latitude + "," + currentRoute.getSteps().get(i).longitude + "|" + currentRoute.getSteps().get(i + 1).latitude + "," + currentRoute.getSteps().get(i + 1).longitude + "&interpolate=true&key=AIzaSyDl9jmXdHxOZglKI6uZ_Kci5w-mdvMGRmE&travelMode=walking";
+                        System.out.println("get snapToRoad URL: " + url);
+                        paths.add(extractJson(GET(url), new LatLng(currentRoute.getSteps().get(i).latitude, currentRoute.getSteps().get(i).longitude), new LatLng(currentRoute.getSteps().get(i + 1).latitude, currentRoute.getSteps().get(i + 1).longitude)));
+                        i += 2;
                     }
-                }
 
-                //System.out.println("intergratedPath: "+intergratedPath);
-                allRoutes.add(intergratedPath);
-                distanceList.add(distance);
-                durationList.add(duration);
+                    distance = currentRoute.getDistance();
+                    duration = currentRoute.getDuration();
+
+                    if (paths != null) {
+                        for (int i = 0; i < paths.size(); i++) {
+                            intergratedPath.addAll(paths.get(i));
+                        }
+                    }
+
+                    //System.out.println("intergratedPath: "+intergratedPath);
+                    allRoutes.add(intergratedPath);
+                    distanceList.add(distance);
+                    durationList.add(duration);
+                }
             }
             return null;
         }
