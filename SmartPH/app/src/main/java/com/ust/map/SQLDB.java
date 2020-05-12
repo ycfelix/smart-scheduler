@@ -492,43 +492,38 @@ public class SQLDB {
                                 }
                             }
                             //need to solve!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                            ArrayList<Double> temLat = new ArrayList<>();
+                            ArrayList<Double> temLng = new ArrayList<>();
+                            ArrayList<Integer> temWalkingPathDateTimeHistory = new ArrayList<>();
                             if(needToUpdate) {
                                 lastLocationHistoryJSON = result.toString();
                                 System.out.println("this is the result:" + result);
                                 for (int i = 0; i < result.length(); i++) {
                                     JSONObject currentRecord = ((JSONObject) result.get(i));
                                     System.out.println("currentRecord: " + currentRecord);
-                                    lat.add(currentRecord.getDouble("Lat"));
-                                    lng.add(currentRecord.getDouble("Lng"));
-                                    walkingPathDateTimeHistory.add(currentRecord.getInt("DateTime"));
-                                    System.out.println("Lat: " + lat);
-                                    System.out.println("Lng: " + lng);
-                                    System.out.println("walkingPathDateTimeHistory: " + walkingPathDateTimeHistory);
+                                    temLat.add(currentRecord.getDouble("Lat"));
+                                    temLng.add(currentRecord.getDouble("Lng"));
+                                    temWalkingPathDateTimeHistory.add(currentRecord.getInt("DateTime"));
                                 }
-                                ArrayList<Integer> newWalkingPathDateTimeHistory=new ArrayList<>(walkingPathDateTimeHistory);
-                                Collections.sort(newWalkingPathDateTimeHistory);
-                                ArrayList<Double> newLat = new ArrayList<>();
-                                ArrayList<Double> newLng = new ArrayList<>();
-                                for(int i=0; i<newWalkingPathDateTimeHistory.size(); i++){
-                                    int oldIdx=walkingPathDateTimeHistory.indexOf(newWalkingPathDateTimeHistory.get(i));
-                                    newLat.add(lat.get(oldIdx));
-                                    newLng.add(lng.get(oldIdx));
-                                }
-                                System.out.println("newLat: "+newLat);
-                                System.out.println("newLng: "+newLng);
-                                System.out.println("newWalkingPathDateTimeHistory: "+newWalkingPathDateTimeHistory);
-                                lat.clear();
-                                lat= new ArrayList<>(newLat);
-                                newLat.clear();
-                                lng.clear();
-                                lng=new ArrayList<>(newLng);
-                                newLng.clear();
+                                System.out.println("temWalkingPathDateTimeHistory: "+temWalkingPathDateTimeHistory);
+                                System.out.println("temLat: "+temLat);
+                                System.out.println("temLng: "+temLng);
+
                                 walkingPathDateTimeHistory.clear();
-                                walkingPathDateTimeHistory=new ArrayList<>(newWalkingPathDateTimeHistory);
-                                newWalkingPathDateTimeHistory.clear();
+                                for(int i=0; i<temWalkingPathDateTimeHistory.size(); i++){
+                                    walkingPathDateTimeHistory.add(temWalkingPathDateTimeHistory.get(i));
+                                }
+                                Collections.sort(temWalkingPathDateTimeHistory);
+                                lat.clear();
+                                lng.clear();
+                                for(int i=0; i<temWalkingPathDateTimeHistory.size(); i++){
+                                    int oldIdx=walkingPathDateTimeHistory.indexOf(temWalkingPathDateTimeHistory.get(i));
+                                    lat.add(temLat.get(oldIdx));
+                                    lng.add(temLng.get(oldIdx));
+                                }
+                                System.out.println("walkingPathDateTimeHistory: "+walkingPathDateTimeHistory);
                                 System.out.println("lat: "+lat);
                                 System.out.println("lng: "+lng);
-                                System.out.println("walkingPathDateTimeHistory: "+walkingPathDateTimeHistory);
 
                                 //get path info using google api
                                 boolean addOriginEnd = false;
@@ -558,9 +553,9 @@ public class SQLDB {
         queue.add(request);
     }
 
-    public void getUserFriendEmailListByUserID(){
+    public void getUserFriendEmailListByUserEmail(){
         HashMap<String, String> data=new HashMap<>();
-        String sqlCommand="SELECT * FROM dbo.user_friend WHERE (user_id="+"'"+userId+"'"+")";
+        String sqlCommand="SELECT * FROM dbo.user_friend WHERE (user_email="+"'"+userEmail+"'"+")";
         System.out.println("getUserFriendEmailListByUserID query: "+sqlCommand);
         data.put("db_name","Smart Scheduler");
         data.put("sql_cmd",sqlCommand);
@@ -574,7 +569,7 @@ public class SQLDB {
                         try {
                             //parse JSON
                             JSONArray result= response.getJSONArray("result");
-                            System.out.println("getUserFriendEmailListByUserID result: "+result);
+                            System.out.println("getUserFriendEmailListByUserEmail result: "+result);
                             boolean needToUpdate=true;
                             if(lastFriendEmailListResultJSON!=null){
                                 if(lastFriendEmailListResultJSON.equals(result.toString())){
@@ -594,8 +589,8 @@ public class SQLDB {
                                 }
                                 Collections.addAll(fdEmailList, fdEmailArray);
                             }
-
-                            getUserFriendIDListByfdEmail();
+                            getfdLocationByfdEmail();
+                            //getUserFriendIDListByfdEmail();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -610,7 +605,7 @@ public class SQLDB {
         );
         queue.add(request);
     }
-
+/*
     public void getUserFriendIDListByfdEmail(){
         HashMap<String, String> data=new HashMap<>();
         String sqlCommand="SELECT * FROM dbo.Accounts WHERE ";
@@ -667,19 +662,19 @@ public class SQLDB {
         queue.add(request);
 
 
-    }
+    }*/
 
-    public void getfdLocationByfdID(){   //return true: have updated, return false: no updates
+    public void getfdLocationByfdEmail(){   //return true: have updated, return false: no updates
         HashMap<String, String> data=new HashMap<>();
         String sqlCommand="SELECT * FROM dbo.user_current_location WHERE (Online=1) AND (";
-        for(int i=0; i<fdIDList.size(); i++){
+        for(int i=0; i<fdEmailList.size(); i++){
             if(i!=0){
                 sqlCommand+="OR";
             }
-            sqlCommand+="(userID="+"'"+fdIDList.get(i)+"'"+")";;
+            sqlCommand+="(user_email="+"'"+fdEmailList.get(i)+"'"+")";;
         }
         sqlCommand+=")";
-        System.out.println("getfdLocationByfdID query: "+sqlCommand);
+        System.out.println("getfdLocationByfdEmail query: "+sqlCommand);
 
         data.put("db_name","Smart Scheduler");
         data.put("sql_cmd",sqlCommand);
@@ -693,7 +688,7 @@ public class SQLDB {
                         try {
                             //parse JSON
                             JSONArray result= response.getJSONArray("result");
-                            System.out.println("getfdLocationByfdID result: "+result);
+                            System.out.println("getfdLocationByfdEmail result: "+result);
                             boolean needToUpdate=true;
                             if(lastFriendLocationResultJSON!=null){
                                 if(lastFriendLocationResultJSON.equals(result.toString())){

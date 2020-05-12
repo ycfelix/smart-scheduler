@@ -171,6 +171,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
     private static ArrayList<Marker> friendsMarkers;
     private ArrayList<LatLng> friendLocations;
     private int updateRequest;
+    private LatLng lastGPSPathStopAt;
 
 
 
@@ -684,12 +685,17 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                     range4HeatmapPolylineShown=false;
                 }
                 else{
-                    showHeatmap(allPathIdx);
-                    allHeatmapPolylineShown=true;
-                    range1HeatmapPolylineShown=false;
-                    range2HeatmapPolylineShown=false;
-                    range3HeatmapPolylineShown=false;
-                    range4HeatmapPolylineShown=false;
+                    if((allPathIdx!=null)&&(allPathIdx.size()>1)) {
+                        showHeatmap(allPathIdx);
+                        allHeatmapPolylineShown = true;
+                        range1HeatmapPolylineShown = false;
+                        range2HeatmapPolylineShown = false;
+                        range3HeatmapPolylineShown = false;
+                        range4HeatmapPolylineShown = false;
+                    }
+                    else{
+                        Toast.makeText(getApplicationContext(), "loading data, try 1 minute later/ no history", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 break;
 
@@ -700,12 +706,17 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                     range1HeatmapPolylineShown=false;*/
                 }
                 else{
-                    showHeatmap(range1PathIdx);
-                    range1HeatmapPolylineShown=true;
-                    if(range2HeatmapPolylineShown
-                            &&range3HeatmapPolylineShown
-                            &&range4HeatmapPolylineShown){
-                        allHeatmapPolylineShown=true;
+                    if((range1PathIdx!=null)&&(range1PathIdx.size()>1)) {
+                        showHeatmap(range1PathIdx);
+                        range1HeatmapPolylineShown = true;
+                        if (range2HeatmapPolylineShown
+                                && range3HeatmapPolylineShown
+                                && range4HeatmapPolylineShown) {
+                            allHeatmapPolylineShown = true;
+                        }
+                    }
+                    else{
+                        Toast.makeText(getApplicationContext(), "loading data, try 1 minute later/ no history", Toast.LENGTH_SHORT).show();
                     }
                 }
                 break;
@@ -717,12 +728,17 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                     range2HeatmapPolylineShown=false;*/
                 }
                 else{
-                    showHeatmap(range2PathIdx);
-                    range2HeatmapPolylineShown=true;
-                    if(range1HeatmapPolylineShown
-                            &&range3HeatmapPolylineShown
-                            &&range4HeatmapPolylineShown){
-                        allHeatmapPolylineShown=true;
+                    if((range2PathIdx!=null)&&(range2PathIdx.size()>1)) {
+                        showHeatmap(range2PathIdx);
+                        range2HeatmapPolylineShown = true;
+                        if (range1HeatmapPolylineShown
+                                && range3HeatmapPolylineShown
+                                && range4HeatmapPolylineShown) {
+                            allHeatmapPolylineShown = true;
+                        }
+                    }
+                    else{
+                        Toast.makeText(getApplicationContext(), "loading data, try 1 minute later/ no history", Toast.LENGTH_SHORT).show();
                     }
                 }
                 break;
@@ -734,12 +750,17 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                     range3HeatmapPolylineShown=false;*/
                 }
                 else{
-                    showHeatmap(range3PathIdx);
-                    range3HeatmapPolylineShown=true;
-                    if(range1HeatmapPolylineShown
-                            &&range2HeatmapPolylineShown
-                            &&range4HeatmapPolylineShown){
-                        allHeatmapPolylineShown=true;
+                    if((range3PathIdx!=null)&&(range3PathIdx.size()>1)) {
+                        showHeatmap(range3PathIdx);
+                        range3HeatmapPolylineShown = true;
+                        if (range1HeatmapPolylineShown
+                                && range2HeatmapPolylineShown
+                                && range4HeatmapPolylineShown) {
+                            allHeatmapPolylineShown = true;
+                        }
+                    }
+                    else{
+                        Toast.makeText(getApplicationContext(), "loading data, try 1 minute later/ no history", Toast.LENGTH_SHORT).show();
                     }
                 }
                 break;
@@ -751,12 +772,17 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                     range4HeatmapPolylineShown=false;*/
                 }
                 else{
-                    showHeatmap(range4PathIdx);
-                    range4HeatmapPolylineShown=true;
-                    if(range1HeatmapPolylineShown
-                            &&range2HeatmapPolylineShown
-                            &&range3HeatmapPolylineShown){
-                        allHeatmapPolylineShown=true;
+                    if((range4PathIdx!=null)&&(range4PathIdx.size()>1)) {
+                        showHeatmap(range4PathIdx);
+                        range4HeatmapPolylineShown = true;
+                        if (range1HeatmapPolylineShown
+                                && range2HeatmapPolylineShown
+                                && range3HeatmapPolylineShown) {
+                            allHeatmapPolylineShown = true;
+                        }
+                    }
+                    else{
+                        Toast.makeText(getApplicationContext(), "loading data, try 1 minute later/ no history", Toast.LENGTH_SHORT).show();
                     }
                 }
                 break;
@@ -1432,7 +1458,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
     }
 
     private void getFriendsLocation() {
-        sqldb.getUserFriendEmailListByUserID();
+        sqldb.getUserFriendEmailListByUserEmail();
     }
 
     private void showFriendsLocation(Location location){
@@ -1448,6 +1474,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
             for(int i=0; i<sqldb.fdLat.size(); i++){
                 friendLocations.add(new LatLng(sqldb.fdLat.get(i),sqldb.fdLng.get(i)));
             }
+            System.out.println("need to update fd locations: "+friendLocations);
         }
 
         for(int i=0; i<friendLocations.size(); i++){
@@ -1639,7 +1666,8 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         if(mLastLocation==null){
             noRecord=true;
         }
-        else if((df3.format(location.getLatitude()).equals(df3.format(mLastLocation.getLatitude())))&&(df3.format(location.getLongitude()).equals(df3.format((mLastLocation.getLongitude()))))){
+        //else if((df3.format(location.getLatitude()).equals(df3.format(mLastLocation.getLatitude())))&&(df3.format(location.getLongitude()).equals(df3.format((mLastLocation.getLongitude()))))){
+        else if((location.getLatitude()==mLastLocation.getLatitude())&&(location.getLongitude()==(mLastLocation.getLongitude()))){
             sameRecord=true;
         }
         pass=noRecord||!sameRecord;
@@ -1648,6 +1676,11 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
             //move map camera
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         }
+/*
+        //to plot back the missing route between the previous and new one which they are not sticked together
+        if((df3.format(location.getLatitude()).equals(df3.format(lastGPSPathStopAt.latitude)))&&(df3.format(location.getLongitude()).equals(df3.format((lastGPSPathStopAt.longitude))))) {
+
+        }*/
 
         //draw location path
         //show friends' location
@@ -1670,6 +1703,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                     snappedPath.add(gpsTo);
                 }
                 drawSnappedGPSRoute(snappedPath);
+                lastGPSPathStopAt=snappedPath.get(snappedPath.size()-1);
             }
         }
         //update friend paths
@@ -2120,6 +2154,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
 
     private void drawSnappedGPSRoute(ArrayList<LatLng> path){
         //draw route
+        System.out.println("drawSnappedGPSRoute received points: "+path);
         PolylineOptions options = new PolylineOptions();
         options.addAll(path);
         options.width(10);
