@@ -169,6 +169,8 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
     private boolean onGPS;
     private static ArrayList<Polyline> frinedsPolylines;
     private static ArrayList<Marker> friendsMarkers;
+    private ArrayList<LatLng> friendLocations;
+    private int updateRequest;
 
 
 
@@ -203,6 +205,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         mMap = googleMap;
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(22.3352301,114.2662848), DEFAULT_ZOOM));
 
+        updateRequest=0;
         showFriend=false;
         onGPS=false;
         dragView = findViewById(R.id.dragView);
@@ -215,6 +218,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         alternativeSuggestedPathList= new ArrayList<>();
         frinedsPolylines = new ArrayList<>();
         friendsMarkers = new ArrayList<>();
+        friendLocations = new ArrayList<>();
 
 
         checkGPSPermission(); //need to uncomment
@@ -562,19 +566,25 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         //group the same color path by storing th index
         int currentDuration;
         System.out.println("sqldb.getWalkingPathLatLngHistory().size(): "+sqldb.getWalkingPathLatLngHistory().size());
+        System.out.println("sqldb.getWalkingPathLatLngHistory(): "+sqldb.getWalkingPathLatLngHistory());
+        System.out.println("sqldb.getWalkingPathDurationHistory().size(): "+sqldb.getWalkingPathDurationHistory().size());
+        System.out.println("sqldb.getWalkingPathDurationHistory(): "+sqldb.getWalkingPathDurationHistory());
         for(int i=0; i<sqldb.getWalkingPathLatLngHistory().size(); i++) {
-            currentDuration = sqldb.getWalkingPathDurationHistory().get(i);
-            //duration ragnes for test: 5, 10, 15, >15
-            if (currentDuration <= TIME_RANGE1) {
-                range1PathIdx.add(i);
-            } else if (currentDuration <= TIME_RANGE2) {
-                range2PathIdx.add(i);
-            } else if (currentDuration <= TIME_RANGE3) {
-                range3PathIdx.add(i);
-            } else {
-                range4PathIdx.add(i);
-            }
+            //for (int j=0; j<sqldb.getWalkingPathLatLngHistory().get(i).size(); j++) {
+                currentDuration = sqldb.getWalkingPathDurationHistory().get(i);
+                //duration ragnes for test: 5, 10, 15, >15
+                if (currentDuration <= TIME_RANGE1) {
+                    range1PathIdx.add(i);
+                } else if (currentDuration <= TIME_RANGE2) {
+                    range2PathIdx.add(i);
+                } else if (currentDuration <= TIME_RANGE3) {
+                    range3PathIdx.add(i);
+                } else {
+                    range4PathIdx.add(i);
+                }
+            //}
         }
+        System.out.println("range1PathIdx: "+range1PathIdx);
         switch(view.getId())
         {
             case R.id.alternative_prefered_mode:
@@ -608,7 +618,9 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                         fdsButton.setImageResource(R.drawable.fds_on);
                         //instant show
                         if (mLastLocation != null) {
-                            showFriendsLocation(mLastLocation);
+                            getFriendsLocation();
+                            updateRequest+=1;
+                            //showFriendsLocation(mLastLocation);
                         }
                         //onGPSUpdate show
                         //if GPS is not turned on
@@ -664,7 +676,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                 }
                 System.out.println("Size of allPathIdx: "+allPathIdx.size());
                 if(allHeatmapPolylineShown){
-                    showHeatmap(allPathIdx, true);
+                    cleanHeatmap();
                     allHeatmapPolylineShown=false;
                     range1HeatmapPolylineShown=false;
                     range2HeatmapPolylineShown=false;
@@ -672,7 +684,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                     range4HeatmapPolylineShown=false;
                 }
                 else{
-                    showHeatmap(allPathIdx, false);
+                    showHeatmap(allPathIdx);
                     allHeatmapPolylineShown=true;
                     range1HeatmapPolylineShown=false;
                     range2HeatmapPolylineShown=false;
@@ -688,7 +700,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                     range1HeatmapPolylineShown=false;*/
                 }
                 else{
-                    showHeatmap(range1PathIdx, false);
+                    showHeatmap(range1PathIdx);
                     range1HeatmapPolylineShown=true;
                     if(range2HeatmapPolylineShown
                             &&range3HeatmapPolylineShown
@@ -705,7 +717,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                     range2HeatmapPolylineShown=false;*/
                 }
                 else{
-                    showHeatmap(range2PathIdx, false);
+                    showHeatmap(range2PathIdx);
                     range2HeatmapPolylineShown=true;
                     if(range1HeatmapPolylineShown
                             &&range3HeatmapPolylineShown
@@ -722,7 +734,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                     range3HeatmapPolylineShown=false;*/
                 }
                 else{
-                    showHeatmap(range3PathIdx, false);
+                    showHeatmap(range3PathIdx);
                     range3HeatmapPolylineShown=true;
                     if(range1HeatmapPolylineShown
                             &&range2HeatmapPolylineShown
@@ -739,7 +751,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                     range4HeatmapPolylineShown=false;*/
                 }
                 else{
-                    showHeatmap(range4PathIdx, false);
+                    showHeatmap(range4PathIdx);
                     range4HeatmapPolylineShown=true;
                     if(range1HeatmapPolylineShown
                             &&range2HeatmapPolylineShown
@@ -754,63 +766,63 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         }
     }
 
-    private void showHeatmap(ArrayList<Integer> pathIdx, boolean cleanHeatmap){
-        if(cleanHeatmap){
-            for(int i=0; i<heatmapPolyline.size(); i++){
-                for(int j=0; j<heatmapPolyline.get(i).size(); j++){
-                    heatmapPolyline.get(i).get(j).remove();
-                }
-                heatmapPolyline.get(i).clear();
+    private void cleanHeatmap(){
+        for(int i=0; i<heatmapPolyline.size(); i++){
+            for(int j=0; j<heatmapPolyline.get(i).size(); j++){
+                heatmapPolyline.get(i).get(j).remove();
             }
-            heatmapPolyline.clear();
-            //heatmapPolyline = new ArrayList<ArrayList<Polyline>>();
-            heatmapPolylineTag.clear();
-            //heatmapPolylineTag = new ArrayList<Integer>();
+            heatmapPolyline.get(i).clear();
+        }
+        heatmapPolyline.clear();
+        //heatmapPolyline = new ArrayList<ArrayList<Polyline>>();
+        heatmapPolylineTag.clear();
+        //heatmapPolylineTag = new ArrayList<Integer>();
+        //allHeatmapPolylineShown=!allHeatmapPolylineShown;
+
+    }
+
+    private void showHeatmap(ArrayList<Integer> pathIdx){
+        System.out.println("road point size: "+pathIdx.size());
+        int currentDuration;
+        //ArrayList currentPolyline = new ArrayList<Polyline>();
+        for(int i=0; i<pathIdx.size(); i++){
+            currentDuration=sqldb.getWalkingPathDurationHistory().get(pathIdx.get(i));
+            int currentColor;
+            //duration ragnes for test: 5, 10, 15, >15
+            if(currentDuration<=TIME_RANGE1){
+                currentColor=heatmapColor1;
+            }
+            else if(currentDuration<=TIME_RANGE2){
+                currentColor=heatmapColor2;
+            }
+            else if(currentDuration<=TIME_RANGE3){
+                currentColor=heatmapColor3;
+            }
+            else{
+                currentColor=heatmapColor4;
+            }
+            PolylineOptions options = new PolylineOptions().width(10).color(currentColor).geodesic(true);
+            options.addAll(sqldb.getWalkingPathLatLngHistory().get(pathIdx.get(i)));
+            //currentPolyline.add(mMap.addPolyline(options));
+
+            if((heatmapPolylineTag.isEmpty())||(!heatmapPolylineTag.contains(currentColor))){
+                //new branch
+                System.out.println("new branch");
+                heatmapPolylineTag.add(currentColor);
+                heatmapPolyline.add(new ArrayList<>());
+                heatmapPolyline.get(heatmapPolyline.size()-1).add(mMap.addPolyline(options));
+            }
+            else {
+                System.out.println("exsisting branch");
+                heatmapPolyline.get(heatmapPolylineTag.indexOf(currentColor)).add(mMap.addPolyline(options));
+            }
+        }
+        if(sqldb.getWalkingPathLatLngHistory().size()!=0) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sqldb.getWalkingPathLatLngHistory().get(0).get(0), DEFAULT_ZOOM));
             //allHeatmapPolylineShown=!allHeatmapPolylineShown;
         }
         else{
-            System.out.println("road point size: "+pathIdx.size());
-            int currentDuration;
-            //ArrayList currentPolyline = new ArrayList<Polyline>();
-            for(int i=0; i<pathIdx.size(); i++){
-                currentDuration=sqldb.getWalkingPathDurationHistory().get(pathIdx.get(i));
-                int currentColor;
-                //duration ragnes for test: 5, 10, 15, >15
-                if(currentDuration<=TIME_RANGE1){
-                    currentColor=heatmapColor1;
-                }
-                else if(currentDuration<=TIME_RANGE2){
-                    currentColor=heatmapColor2;
-                }
-                else if(currentDuration<=TIME_RANGE3){
-                    currentColor=heatmapColor3;
-                }
-                else{
-                    currentColor=heatmapColor4;
-                }
-                PolylineOptions options = new PolylineOptions().width(10).color(currentColor).geodesic(true);
-                options.addAll(sqldb.getWalkingPathLatLngHistory().get(pathIdx.get(i)));
-                //currentPolyline.add(mMap.addPolyline(options));
-
-                if((heatmapPolylineTag.isEmpty())||(!heatmapPolylineTag.contains(currentColor))){
-                    //new branch
-                    System.out.println("new branch");
-                    heatmapPolylineTag.add(currentColor);
-                    heatmapPolyline.add(new ArrayList<>());
-                    heatmapPolyline.get(heatmapPolyline.size()-1).add(mMap.addPolyline(options));
-                }
-                else {
-                    System.out.println("exsisting branch");
-                    heatmapPolyline.get(heatmapPolylineTag.indexOf(currentColor)).add(mMap.addPolyline(options));
-                }
-            }
-            if(sqldb.getWalkingPathLatLngHistory().size()!=0) {
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sqldb.getWalkingPathLatLngHistory().get(0).get(0), DEFAULT_ZOOM));
-                //allHeatmapPolylineShown=!allHeatmapPolylineShown;
-            }
-            else{
-                Toast.makeText(getApplicationContext(), "loading data, try 1 minute later/ no history", Toast.LENGTH_SHORT).show();
-            }
+            Toast.makeText(getApplicationContext(), "loading data, try 1 minute later/ no history", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -1419,6 +1431,10 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
+    private void getFriendsLocation() {
+        sqldb.getUserFriendEmailListByUserID();
+    }
+
     private void showFriendsLocation(Location location){
         //clear all past data
         hideFriendsLocation();
@@ -1426,10 +1442,13 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         //LatLng myLocation=new LatLng(22.324017, 114.168779);
         LatLng myLocation=new LatLng(location.getLatitude(), location.getLongitude());
 
-        ArrayList<LatLng> friendLocations = new ArrayList<>();
-        friendLocations.add(new LatLng(22.320097, 114.168508));
-        friendLocations.add(new LatLng(22.319640, 114.169935));
-        friendLocations.add(new LatLng(22.321863, 114.167542));
+        //whether need to update
+        if(sqldb.fdLatLngUpdated){
+            friendLocations.clear();
+            for(int i=0; i<sqldb.fdLat.size(); i++){
+                friendLocations.add(new LatLng(sqldb.fdLat.get(i),sqldb.fdLng.get(i)));
+            }
+        }
 
         for(int i=0; i<friendLocations.size(); i++){
             //check fd button status
@@ -1573,6 +1592,14 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
     //onLocationChanged
     @Override
     public void onLocationChanged(Location location) {
+        if(sqldb.fdLocationGot){
+            if(updateRequest==1){
+                showFriendsLocation(location);
+            }
+            sqldb.fdLocationGot=false;
+            updateRequest-=1;
+        }
+
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
         }
@@ -1648,7 +1675,9 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         //update friend paths
         if(!sameRecord){
             if(showFriend) {
-                showFriendsLocation(location);
+                getFriendsLocation();
+                updateRequest+=1;
+                //showFriendsLocation(location);
             }
         }
         mLastLocation = location;
@@ -1832,7 +1861,7 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                 if (currentRoute != null) {
                     for (int i = 0; i < currentRoute.getSteps().size(); ) {
                         url = "https://roads.googleapis.com/v1/snapToRoads?path=" + currentRoute.getSteps().get(i).latitude + "," + currentRoute.getSteps().get(i).longitude + "|" + currentRoute.getSteps().get(i + 1).latitude + "," + currentRoute.getSteps().get(i + 1).longitude + "&interpolate=true&key=AIzaSyDl9jmXdHxOZglKI6uZ_Kci5w-mdvMGRmE&travelMode=walking";
-                        System.out.println("get snapToRoad URL: " + url);
+                        System.out.println(i+" get snapToRoad URL: " + url);
                         paths.add(extractJson(GET(url), new LatLng(currentRoute.getSteps().get(i).latitude, currentRoute.getSteps().get(i).longitude), new LatLng(currentRoute.getSteps().get(i + 1).latitude, currentRoute.getSteps().get(i + 1).longitude)));
                         i += 2;
                     }
@@ -1842,7 +1871,12 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
 
                     if (paths != null) {
                         for (int i = 0; i < paths.size(); i++) {
-                            intergratedPath.addAll(paths.get(i));
+                            if(paths.get(i)!=null) {
+                                intergratedPath.addAll(paths.get(i));
+                            }
+                            else{
+                                System.out.println(i+" url got nothing");
+                            }
                         }
                     }
 
