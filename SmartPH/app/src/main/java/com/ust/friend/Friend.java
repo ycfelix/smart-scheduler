@@ -7,7 +7,7 @@ public class Friend {
     private boolean isOnline;
     private String email;
 
-
+    public Friend(){}
     public Friend(String name,String userID, boolean isOnline,String email){
         this.name=name;
         this.userID=userID;

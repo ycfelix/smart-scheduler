@@ -60,11 +60,8 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         int position = viewHolder.getAdapterPosition();
-        if (position < 0 || position > friends.size()) {
-            //wrong position
-            return;
-        }
         Friend friend = friends.get(position);
+        System.out.println("adding fd size "+friends.size()+" position:"+position );
         viewHolder.online.setText("Online : " + friend.isOnline());
         viewHolder.userID.setText("User ID: " + friend.getUserID());
         viewHolder.name.setText("Name: " + friend.getName());

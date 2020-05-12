@@ -86,14 +86,14 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dashboard_friend);
         ButterKnife.bind(this);
-        friendList.setLayoutManager(new LinearLayoutManager(this));
-        adapter=new FriendAdapter(this,friends);
-        friendList.setAdapter(adapter);
         SharedPreferences pref = getSharedPreferences(Utils.EMAIL_PWD, Context.MODE_PRIVATE);
         String email = pref.getString("email", "");
         System.out.println("UID: "+MD5(email));
         System.out.println("email: "+email);
         name.setText("UID: "+MD5(email));
+        friendList.setLayoutManager(new LinearLayoutManager(this));
+        adapter=new FriendAdapter(this,friends);
+        friendList.setAdapter(adapter);
         adapter.setDeleteItemListener(new DeleteItemListener() {
             @Override
             public void onDeleteItem() {
@@ -123,7 +123,6 @@ public class DashboardActivity extends AppCompatActivity {
                                 return;
                             }
                             addToFriendlist(result);
-                            adapter.notifyItemInserted(friends.size()-1);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -168,17 +167,16 @@ public class DashboardActivity extends AppCompatActivity {
             Arrays.stream(csv).forEach(e-> {
                 String name=preferences.getString(e,"");
                 if(!TextUtils.isEmpty(name)){
-                    dataModels.add(new Friend(name,MD5(e),false,e));
+                    friends.add(new Friend(name,MD5(e),false,e));
                 }
                 else{
-                    dataModels.add(new Friend("new friend",MD5(e),false,e));
+                    friends.add(new Friend("friend_"+MD5(e),MD5(e),false,e));
                 }
             });
 
         }
-        int size=friends.size();
-        friends.addAll(dataModels);
-        adapter.notifyItemRangeInserted(size,friends.size()-1);
+        friends.forEach(e-> System.out.println(e.getName()));
+        adapter.notifyDataSetChanged();
     }
 
     @OnClick(R.id.friend_add)
@@ -195,7 +193,7 @@ public class DashboardActivity extends AppCompatActivity {
                             Toast.makeText(DashboardActivity.this,"wrong input!",Toast.LENGTH_SHORT).show();
                         }
                         else{
-                            SharedPreferences pref = getSharedPreferences("email", Context.MODE_PRIVATE);
+                            SharedPreferences pref = getSharedPreferences(Utils.EMAIL_PWD, Context.MODE_PRIVATE);
                             String email = pref.getString("email", "");
                             findFriendFromDB(email,editText.getText().toString());
                             dialog.dismiss();
@@ -267,6 +265,7 @@ public class DashboardActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         if(add){
+                            System.out.println("adding frid!"+fdID+fdEmail);
                             Friend fd=new Friend("new friend",fdID,false,fdEmail);
                             friends.add(fd);
                             adapter.notifyItemInserted(friends.size()-1);
@@ -300,6 +299,7 @@ public class DashboardActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        System.out.println("inserted frd!");
                         System.out.println(response);
                     }
                 },
@@ -317,6 +317,7 @@ public class DashboardActivity extends AppCompatActivity {
     @OnClick(R.id.friend_menu)
     void setMenuClick(View arg) {
         drawer.openDrawer(GravityCompat.START);
+        adapter.notifyDataSetChanged();
     }
 
 
