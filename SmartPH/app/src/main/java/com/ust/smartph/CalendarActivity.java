@@ -934,7 +934,7 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
                             System.out.println(result);
                             for(int i = 0; i < result.length();i++){
                                 try{
-                                    SaveEvent(result.getJSONObject(i).getString("Event"),
+                                    SaveEvent(result.getJSONObject(i).getString("Event")+"--"+userId,
                                             result.getJSONObject(i).getString("Time"),
                                             result.getJSONObject(i).getString("Date"),
                                             result.getJSONObject(i).getString("EventMonth"),
