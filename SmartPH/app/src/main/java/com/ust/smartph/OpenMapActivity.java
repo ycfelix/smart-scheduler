@@ -282,8 +282,10 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                         //Direction
                         clearSuggestedPathList();
                         String url = getMapsApiDirectionsUrl(preferedMode,pointFrom,pointTo);
-                        GetDirectionTask getDirectionTask = new GetDirectionTask("search");
-                        getDirectionTask.execute(url);
+                        if(url!=null) {
+                            GetDirectionTask getDirectionTask = new GetDirectionTask("search");
+                            getDirectionTask.execute(url);
+                        }
                         //Direction
                         System.out.println("in onMapClick");
                         System.out.println("alternativeSuggestedPathList size: "+alternativeSuggestedPathList.size());
@@ -343,8 +345,10 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                                     System.out.println("polyline 1 start");
                                     clearSuggestedPathList();
                                     String url = getMapsApiDirectionsUrl(preferedMode,pointFrom,pointTo);
-                                    GetDirectionTask getDirectionTask = new GetDirectionTask("search");
-                                    getDirectionTask.execute(url);
+                                    if(url!=null) {
+                                        GetDirectionTask getDirectionTask = new GetDirectionTask("search");
+                                        getDirectionTask.execute(url);
+                                    }
                                     System.out.println("polyline 1 end");
                                     System.out.println("in onNotFocustvFrom");
                                     System.out.println("alternativeSuggestedPathList size: "+alternativeSuggestedPathList.size());
@@ -413,8 +417,10 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                                     System.out.println("polyline 2 start");
                                     clearSuggestedPathList();
                                     String url = getMapsApiDirectionsUrl(preferedMode,pointFrom,pointTo);
-                                    GetDirectionTask getDirectionTask = new GetDirectionTask("search");
-                                    getDirectionTask.execute(url);
+                                    if(url!=null) {
+                                        GetDirectionTask getDirectionTask = new GetDirectionTask("search");
+                                        getDirectionTask.execute(url);
+                                    }
                                     System.out.println("polyline 2 end");
                                     System.out.println("in onNotFocustvTo");
                                     System.out.println("alternativeSuggestedPathList size: "+alternativeSuggestedPathList.size());
@@ -606,8 +612,10 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                 if(polyline!=null) {
                     polyline.remove();
                     String url = getMapsApiDirectionsUrl(preferedMode,pointFrom,pointTo);
-                    GetDirectionTask getDirectionTask = new GetDirectionTask("search");
-                    getDirectionTask.execute(url);
+                    if(url!=null) {
+                        GetDirectionTask getDirectionTask = new GetDirectionTask("search");
+                        getDirectionTask.execute(url);
+                    }
                 }
                 break;
 
@@ -1412,19 +1420,22 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
 
     //getMapsApiDirectionsUrl
     private String getMapsApiDirectionsUrl(String preferedMode, LatLng ptF, LatLng ptT) {
-        String waypoints = "waypoints=optimize:true|"
-                + (ptF).latitude + "," + (ptF).longitude
-                + "|" + (ptT).latitude + ","
-                + (ptT).longitude;
-        String OriDest = "origin="+(ptF).latitude+","+(ptF).longitude+"&destination="+(ptT).latitude+","+(ptT).longitude;
-        String sensor = "sensor=true";
-        String mode = "mode="+preferedMode;
-        String params = OriDest+"&%20"+waypoints + "&" + sensor + "&" + mode + "&alternatives=true";
-        String output = "json";
-        String url = "https://maps.googleapis.com/maps/api/directions/"
-                + output + "?" + "key=AIzaSyDl9jmXdHxOZglKI6uZ_Kci5w-mdvMGRmE&callback=initialize&" + params;
-        System.out.println("get direction URL:"+url);
-        return url;
+        if((ptF!=null)&(ptT!=null)) {
+            String waypoints = "waypoints=optimize:true|"
+                    + (ptF).latitude + "," + (ptF).longitude
+                    + "|" + (ptT).latitude + ","
+                    + (ptT).longitude;
+            String OriDest = "origin=" + (ptF).latitude + "," + (ptF).longitude + "&destination=" + (ptT).latitude + "," + (ptT).longitude;
+            String sensor = "sensor=true";
+            String mode = "mode=" + preferedMode;
+            String params = OriDest + "&%20" + waypoints + "&" + sensor + "&" + mode + "&alternatives=true";
+            String output = "json";
+            String url = "https://maps.googleapis.com/maps/api/directions/"
+                    + output + "?" + "key=AIzaSyDl9jmXdHxOZglKI6uZ_Kci5w-mdvMGRmE&callback=initialize&" + params;
+            System.out.println("get direction URL:" + url);
+            return url;
+        }
+        return null;
     }
 
     //onRequestPermissionsResult
@@ -1484,8 +1495,10 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
                 drawFriendsMarkers(friendLocations.get(i), null);
                 //draw polylines
                 String url = getMapsApiDirectionsUrl(preferedMode, myLocation, friendLocations.get(i));
-                GetDirectionTask getDirectionTask = new GetDirectionTask("fd");
-                getDirectionTask.execute(url);
+                if(url!=null) {
+                    GetDirectionTask getDirectionTask = new GetDirectionTask("fd");
+                    getDirectionTask.execute(url);
+                }
             }
             else{
                 break;
