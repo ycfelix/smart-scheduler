@@ -1,8 +1,12 @@
 package com.ust.map;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.StrictMode;
+
+import com.ust.utility.Utils;
+import android.content.SharedPreferences;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -43,16 +47,19 @@ public class SQLDB {
     private ArrayList<Double> lng;
     private String strLatlngList = "";
     private String lastLocationHistoryJSON;
+    private String userEmail;
 
     // Connect to your database.
     // Replace server name, username, and password with your credentials
-    public SQLDB(Context context){
+    public SQLDB(Context context, String userEmail){
         this.context=context;
+        this.userEmail=userEmail;
         walkingPathLatLngHistory=new ArrayList<ArrayList<LatLng>>();
         walkingPathDurationHistory=new ArrayList<Integer>();
         drivingPathLatLngHistory=new ArrayList<ArrayList<LatLng>>();
         drivingPathDurationHistory=new ArrayList<Integer>();
-        userId=1000;
+        userId=0;
+        getUserId();
         System.out.println("started http");
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -373,6 +380,49 @@ public class SQLDB {
                 + output + "?" + "key=AIzaSyDl9jmXdHxOZglKI6uZ_Kci5w-mdvMGRmE&callback=initialize&" + params;
         //System.out.println("OUTPUT:"+url);
         return url;
+    }
+
+    public void getUserId(){
+        HashMap<String, String> data=new HashMap<>();
+
+        String sqlCommand="select UserId from Accounts where Email="+userEmail;
+        data.put("db_name","Smart Scheduler");
+        data.put("sql_cmd",sqlCommand);
+
+        String url = "http://13.70.2.33/api/sql_db";
+        RequestQueue queue = Volley.newRequestQueue(context);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            //parse JSON
+                            JSONArray result= response.getJSONArray("result");
+                            System.out.print("result: "+ result);
+
+                            //JSONObject currentRecord = ((JSONObject) result.get(i));
+                            //System.out.println("currentRecord: " + currentRecord);
+                            //lat.add(currentRecord.getDouble("lat"));
+                            //lng.add(currentRecord.getDouble("lng"));
+                            //walkingPathDateTimeHistory.add(currentRecord.getInt("dateTime"));
+                            //System.out.println("lat: " + lat);
+                            //System.out.println("lng: " + lng);
+                            //System.out.println("walkingPathDateTimeHistory: " + walkingPathDateTimeHistory);
+
+                            //userId=;
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println(error.toString());
+                    }
+                }
+        );
+        queue.add(request);
     }
 
     public void insertLocationData(LatLng point, double dateTime){

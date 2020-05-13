@@ -2,6 +2,9 @@ package com.ust.smartph;
 import android.app.TimePickerDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+    //import android.support.v7.app.AppCompatActivity;
+    //import android.support.v7.widget.LinearLayoutManager;
+    //import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +31,10 @@ import android.widget.ImageView;
 
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -63,10 +70,6 @@ import com.ust.utility.Utils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class CalendarActivity extends AppCompatActivity implements EventRecyclerAdapter.OnRecyclerListerner{
     private static final String TAG = "Position: ";
@@ -116,7 +119,7 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
         Mapfuntion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(view.getContext(), OpenMapActivity.class));
+                startActivity(new Intent(view.getContext(), com.ust.smartph.OpenMapActivity.class));
             }
         });
         //Delete All Event
