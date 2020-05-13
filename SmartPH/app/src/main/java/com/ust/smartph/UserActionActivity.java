@@ -11,6 +11,7 @@ import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.view.View;
+import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -41,6 +42,9 @@ public class UserActionActivity extends AppCompatActivity {
 
     @BindView(R.id.action_grid)
     GridLayout grid;
+
+    @BindView(R.id.find_user)
+    Button findUser;
 
     Unbinder unbinder;
 

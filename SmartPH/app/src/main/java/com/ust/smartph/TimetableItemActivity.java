@@ -44,7 +44,6 @@ public class TimetableItemActivity extends AppCompatActivity {
     @BindView(R.id.swipe_timetable)
     ViewPager pager;
 
-
     TimetablePagerAdapter adapter;
 
     @BindView(R.id.fab_timetable_menu)
@@ -55,6 +54,9 @@ public class TimetableItemActivity extends AppCompatActivity {
 
     @BindView(R.id.add_fab)
     FloatingActionButton addBtn;
+
+    @BindView(R.id.suggest_fab)
+    FloatingActionButton suggestBtn;
 
     ArrayList<Schedule> monWed;
 

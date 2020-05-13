@@ -72,6 +72,9 @@ public class ChecklistHomeActivity extends AppCompatActivity {
     @BindView(R.id.checklist_add_fab)
     FloatingActionButton addBtn;
 
+    @BindView(R.id.checklist_suggest)
+    FloatingActionButton suggestBtn;
+
     @BindView(R.id.checklist_fab_menu)
     FloatingActionMenu menu;
 

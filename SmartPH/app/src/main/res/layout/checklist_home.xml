@@ -74,6 +74,15 @@
             fab:menu_shadowYOffset="3dp"
             fab:menu_showShadow="true">
             <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/checklist_suggest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_label="suggest event"
+                app:fab_colorNormal="#556270"
+                app:fab_colorPressed="#6b7b8d"
+                fab:fab_size="mini" />
+
+            <com.github.clans.fab.FloatingActionButton
                 android:id="@+id/checklist_debug_fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
