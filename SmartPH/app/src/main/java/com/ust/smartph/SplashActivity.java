@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.ust.utility.Utils;
 
 import org.json.JSONException;
@@ -62,11 +63,6 @@ public class SplashActivity extends AppCompatActivity {
             loginText.setText(getString(R.string.loginText));
             try{
                 if (emailStr == null || passStr == null) {
-//                        AlertDialog.Builder builder = new AlertDialog.Builder(SplashActivity.this);
-//                        builder.setTitle("Need login")
-//                                .setMessage("No login info found. Please login first.")
-//                                .show();
-//                        Toast.makeText(SplashActivity.this, "Please log in first", Toast.LENGTH_LONG).show();
                     Message msg = mHandler.obtainMessage(0, "You need to login first");
                     msg.sendToTarget();
                     startActivity(loginIntent);
@@ -74,7 +70,7 @@ public class SplashActivity extends AppCompatActivity {
                     accInfo.put("email", emailStr);
                     accInfo.put("hashed_pwd", passStr);
                     Utils.connectServer(accInfo, getString(R.string.login_api),
-                            timeOut, SplashActivity.this,
+                            timeOut, Request.Method.POST, SplashActivity.this,
                         new VolleyCallback() {
                         @Override
                         public void onSuccess(JSONObject result) {

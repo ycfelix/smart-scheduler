@@ -1,4 +1,4 @@
-# app run
+# run.py
 from backend import create_app
 
 app = create_app()
