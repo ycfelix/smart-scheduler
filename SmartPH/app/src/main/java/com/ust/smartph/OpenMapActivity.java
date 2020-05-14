@@ -1199,7 +1199,9 @@ public class OpenMapActivity extends FragmentActivity implements OnMapReadyCallb
         View v = activity.getCurrentFocus();
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         assert imm != null && v != null;
-        imm.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        if(v!=null) {
+            imm.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 
     //showKeyboard
