@@ -154,19 +154,16 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
     }
 
     private void getShareList(String itemName, ArrayList<Share> shares, JSONArray arr) throws JSONException {
-        if(arr.length()==0){
-            return;
-        }
-        ArrayList<Share> dataModels = new ArrayList<>();
+
         for (int i = 0; i < arr.length(); i++) {
             JSONObject row = arr.getJSONObject(i);
             String token=row.getString("token");
             if(shares.stream().anyMatch(e->e.getCode().equals(token))){
                 continue;
             }
-            dataModels.add(new Share(row.getString("token"), itemName));
+            System.out.println("get share list "+itemName+" "+token);
+            shares.add(new Share(row.getString("token"), itemName));
         }
-        shares.addAll(dataModels);
     }
 
 
