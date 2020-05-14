@@ -1028,7 +1028,7 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
                             System.out.println("result:"+result);
                             //this is the string data you received
                             for(int i = 0; i < result.length();i++){
-                                userlist.add(result.getJSONObject(i).toString());
+                                userlist.add(result.getString(i));
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
