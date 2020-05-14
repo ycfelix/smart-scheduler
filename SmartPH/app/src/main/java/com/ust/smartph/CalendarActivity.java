@@ -83,6 +83,8 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
     RecyclerView recyclerView;
     List<ImageView> mActivityTypeViews;
     ArrayList<Events> brandsList = new ArrayList<>();
+    ArrayList<Events> storewhole = new ArrayList<>();
+    ArrayList<String> userList = new ArrayList<>();
     int alarmYear,alarmMonth,alarmDay,alarmHour,alarmMinute;
     int presentday,presentmonth,presentyear;
 
@@ -145,7 +147,11 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
                 final String date = eventDateFormate.format(suggestdate.getTime());
                 final String month = monthFormat.format(suggestdate.getTime());
                 final String year = yearFormat.format(suggestdate.getTime());
-
+               /* int num = 3;
+                ArrayList<String> userList = getSuggestEvent(num,suggesContext);*/
+               for(String userid : userList){
+                    getSuggestedEvent(userid, suggesContext);
+                }
                 go.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -153,81 +159,85 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
                         Spinner spinner = suggestView.findViewById(R.id.type);
                         //TextView brands = (TextView) findViewById(R.id.ActivityType);
                         final String activityType = String.valueOf(spinner.getSelectedItem());
-                        int num = 5;
-                        ArrayList<String> userList = getSuggestEvent(num);
+                        //System.out.println("UserId:"+userList);
+                        //System.out.println("StoreWhole:"+storewhole);
                         if (activityType.equals("Other")) {
 
-                            Events event1 = new Events("Visit","3:58 PM","2020-03-04","March",
-                                    "2020","Exercise");
-                            brandsList.add(event1);
+                            for(Events newevent : storewhole){
+                                if(newevent.getType().equals("Other")){
+                                    brandsList.add(newevent);
+                                }
+                            }
                         }
                         else if(activityType.equals("Work")){
-                            brandsList.add(new Events("Report","3:58 PM","2020-03-04","March",
-                                    "2020","Study"));
-                            brandsList.add(new Events("ArrangeMeeting","3:58 PM","2020-03-04","March",
-                                    "2020","Study"));
+                            for(Events newevent : storewhole){
+                                if(newevent.getType().equals("Work")){
+                                    brandsList.add(newevent);
+                                }
+                            }
                         }
                         else if(activityType.equals("Date")){
-                            brandsList.add(new Events("WithChildren","3:58 PM","2020-03-04","March",
-                                    "2020","Study"));
-                            brandsList.add(new Events("WithParent","3:58 PM","2020-03-04","March",
-                                    "2020","Study"));
-                            brandsList.add(new Events("WithLeo","3:58 PM","2020-03-04","March",
-                                    "2020","Study"));
+                            for(Events newevent : storewhole){
+                                if(newevent.getType().equals("Date")){
+                                    brandsList.add(newevent);
+                                }
+                            }
                         }
                         else if(activityType.equals("Sport")){
-                            brandsList.add(new Events("Basketball","3:58 PM","2020-03-04","March",
-                                    "2020","Exercise"));
-                            brandsList.add(new Events("Badminton","3:58 PM","2020-03-04","March",
-                                    "2020","Exercise"));
-                            brandsList.add(new Events("Running","3:58 PM","2020-03-04","March",
-                                    "2020","Exercise"));
-                            brandsList.add(new Events("Swimming","3:58 PM","2020-03-04","March",
-                                    "2020","Exercise"));
-                            brandsList.add(new Events("Yoga","3:58 PM","2020-03-04","March",
-                                    "2020","Exercise"));
+
+                           for(Events newevent : storewhole){
+                               if(newevent.getType().equals("Sport")){
+                                   brandsList.add(newevent);
+                               }
+                           }
                         }
                         else if(activityType.equals("Reading")){
-                            brandsList.add(new Events("Novel","3:58 PM","2020-03-04","March",
-                                    "2020","Exercise"));
-                            brandsList.add(new Events("DramaBook","3:58 PM","2020-03-04","March",
-                                    "2020","Exercise"));
+                            for(Events newevent : storewhole){
+                                if(newevent.getType().equals("Reading")){
+                                    brandsList.add(newevent);
+                                }
+                            }
                         }
                         else if(activityType.equals("Travel")){
-                            brandsList.add(new Events("HKUST","3:58 PM","2020-03-04","March",
-                                    "2020","Exercise"));
-                            brandsList.add(new Events("Thailand","3:58 PM","2020-03-04","March",
-                                    "2020","Exercise"));
+                            for(Events newevent : storewhole){
+                                if(newevent.getType().equals("Travel")){
+                                    brandsList.add(newevent);
+                                }
+                            }
                         }
                         else if(activityType.equals("Volunteer")){
-                            brandsList.add(new Events("SPCA","3:58 PM","2020-03-04","March",
-                                    "2020","Exercise"));
-                            brandsList.add(new Events("YMCA","3:58 PM","2020-03-04","March",
-                                    "2020","Exercise"));
+                            for(Events newevent : storewhole){
+                                if(newevent.getType().equals("Volunteer")){
+                                    brandsList.add(newevent);
+                                }
+                            }
                         }
                         else if(activityType.equals("Study")){
-                            brandsList.add(new Events("Math","3:58 PM","2020-03-04","March",
-                                    "2020","Study"));
-                            brandsList.add(new Events("English","3:58 PM","2020-03-04","March",
-                                    "2020","Study"));
+                            for(Events newevent : storewhole){
+                                if(newevent.getType().equals("Study")){
+                                    brandsList.add(newevent);
+                                }
+                            }
                         }
                         else if(activityType.equals("Shopping")){
-                            brandsList.add(new Events("BuySuit","3:58 PM","2020-03-04","March",
-                                    "2020","Exercise"));
-                            brandsList.add(new Events("BuyShoes","3:58 PM","2020-03-04","March",
-                                    "2020","Exercise"));
+                            for(Events newevent : storewhole){
+                                if(newevent.getType().equals("Shopping")){
+                                    brandsList.add(newevent);
+                                }
+                            }
                         }
                         else if(activityType.equals("Chill")){
-                            brandsList.add(new Events("MomBirthday","3:58 PM","2020-03-04","March",
-                                    "2020","Exercise"));
-                            brandsList.add(new Events("DadBirthday","3:58 PM","2020-03-04","March",
-                                    "2020","Exercise"));
+                            for(Events newevent : storewhole){
+                                if(newevent.getType().equals("Chill")){
+                                    brandsList.add(newevent);
+                                }
+                            }
                         }
                         else {
                             Toast.makeText(getApplicationContext(), "Please select a type", Toast.LENGTH_LONG).show();
                         }
                         LayoutInflater inflater = (LayoutInflater) suggesContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        ViewAdapter adapter = new ViewAdapter(brandsList,inflater);
+                        ViewAdapter adapter = new ViewAdapter(brandsList, inflater);
                         selection.setAdapter(adapter);
                         selection.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
@@ -577,6 +587,7 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
     private void initializelayout(){
         Date currentTime = Calendar.getInstance().getTime();
         System.out.println(currentTime);
+        userList = getSuggestEvent(3,this);
         simpleCalendarView = (CalendarView) findViewById(R.id.simpleCalendarView);
         ImportCalendar = findViewById(R.id.importcalendar);
         ExportCalendar = findViewById(R.id.exportcalendar);
@@ -605,6 +616,7 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
                 , liarray,this);
         recyclerView.setAdapter(eventRecyclerAdapter);
         eventRecyclerAdapter.notifyDataSetChanged();
+
     }
     @Override
     public void onRecyclerClick(int position) {
@@ -827,7 +839,52 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
     }
 
 
-
+    //Get suggested event
+    private  void getSuggestedEvent(String userId, Context context){
+        ArrayList<Events> suggestEventList = new ArrayList<>();
+        HashMap<String,String> data=new HashMap<>();
+        String sqlCommand= String.format(Locale.US,"Select * from dbo.Calendardata WHERE user_id = '%s' ", userId);
+        data.put("db_name","Smart Scheduler");
+        data.put("sql_cmd",sqlCommand);
+        String url = "http://13.70.2.33/api/sql_db";
+        RequestQueue queue = Volley.newRequestQueue(context);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray result= response.getJSONArray("result");
+                            if(result != null && result.length() > 0){
+                                System.out.println("Eventlist:"+result);
+                                for(int i = 0; i < result.length();i++){
+                                    try{
+                                        storewhole.add(new Events(result.getJSONObject(i).getString("Event"),
+                                                result.getJSONObject(i).getString("Time"),
+                                                result.getJSONObject(i).getString("Date"),
+                                                result.getJSONObject(i).getString("EventMonth"),
+                                                result.getJSONObject(i).getString("EventYear"),
+                                                result.getJSONObject(i).getString("Type")));}
+                                    catch (JSONException e){
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                            //this is the string data you received
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println(error.toString());
+                    }
+                }
+        );
+        queue.add(request);
+        //return suggestEventList;
+    }
     //Import and export event part
     private List<String> fromjsontoSQL(String json){
         Gson gson = new Gson();
@@ -1008,7 +1065,7 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
         );
         queue.add(request);
     }
-    private ArrayList<String> getSuggestEvent(int num){
+    private ArrayList<String> getSuggestEvent(int num,Context context){
         HashMap<String,String> data=new HashMap<>();
         ArrayList<String> userlist = new ArrayList<>();
         SharedPreferences sp = getSharedPreferences(Utils.EMAIL_PWD, Context.MODE_PRIVATE);
@@ -1018,7 +1075,7 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
         data.put("user_id",userid);
         data.put("num_user",numOfUser);
         String url = "http://13.70.2.33/api/distance_matrix/3";
-        RequestQueue queue = Volley.newRequestQueue(this);
+        RequestQueue queue = Volley.newRequestQueue(context);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
                 new Response.Listener<JSONObject>() {
                     @Override
