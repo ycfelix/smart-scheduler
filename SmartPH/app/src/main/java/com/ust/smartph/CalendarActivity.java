@@ -160,39 +160,71 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
                         ArrayList<String> userList = getSuggestEvent(num);
                         if (activityType.equals("Other")) {
 
-                            Events event1 = new Events("Basketball","3:58 PM","2020-03-04","March",
+                            Events event1 = new Events("Visit","3:58 PM","2020-03-04","March",
                                     "2020","Exercise");
                             brandsList.add(event1);
                         }
                         else if(activityType.equals("Work")){
+                            brandsList.add(new Events("Report","3:58 PM","2020-03-04","March",
+                                    "2020","Study"));
+                            brandsList.add(new Events("ArrangeMeeting","3:58 PM","2020-03-04","March",
+                                    "2020","Study"));
+                        }
+                        else if(activityType.equals("Date")){
+                            brandsList.add(new Events("WithChildren","3:58 PM","2020-03-04","March",
+                                    "2020","Study"));
+                            brandsList.add(new Events("WithParent","3:58 PM","2020-03-04","March",
+                                    "2020","Study"));
+                            brandsList.add(new Events("WithLeo","3:58 PM","2020-03-04","March",
+                                    "2020","Study"));
+                        }
+                        else if(activityType.equals("Sport")){
+                            brandsList.add(new Events("Basketball","3:58 PM","2020-03-04","March",
+                                    "2020","Exercise"));
+                            brandsList.add(new Events("Badminton","3:58 PM","2020-03-04","March",
+                                    "2020","Exercise"));
+                            brandsList.add(new Events("Running","3:58 PM","2020-03-04","March",
+                                    "2020","Exercise"));
+                            brandsList.add(new Events("Swimming","3:58 PM","2020-03-04","March",
+                                    "2020","Exercise"));
+                            brandsList.add(new Events("Yoga","3:58 PM","2020-03-04","March",
+                                    "2020","Exercise"));
+                        }
+                        else if(activityType.equals("Reading")){
+                            brandsList.add(new Events("Novel","3:58 PM","2020-03-04","March",
+                                    "2020","Exercise"));
+                            brandsList.add(new Events("DramaBook","3:58 PM","2020-03-04","March",
+                                    "2020","Exercise"));
+                        }
+                        else if(activityType.equals("Travel")){
+                            brandsList.add(new Events("HKUST","3:58 PM","2020-03-04","March",
+                                    "2020","Exercise"));
+                            brandsList.add(new Events("Thailand","3:58 PM","2020-03-04","March",
+                                    "2020","Exercise"));
+                        }
+                        else if(activityType.equals("Volunteer")){
+                            brandsList.add(new Events("SPCA","3:58 PM","2020-03-04","March",
+                                    "2020","Exercise"));
+                            brandsList.add(new Events("YMCA","3:58 PM","2020-03-04","March",
+                                    "2020","Exercise"));
+                        }
+                        else if(activityType.equals("Study")){
                             brandsList.add(new Events("Math","3:58 PM","2020-03-04","March",
                                     "2020","Study"));
                             brandsList.add(new Events("English","3:58 PM","2020-03-04","March",
                                     "2020","Study"));
                         }
-                        else if(activityType.equals("Date")){
-                            /* brandsList.add("With mom");*/
-                        }
-                        else if(activityType.equals("Sport")){
-                            /*brandsList.add("Visit company");*/
-                        }
-                        else if(activityType.equals("Reading")){
-
-                        }
-                        else if(activityType.equals("Travel")){
-
-                        }
-                        else if(activityType.equals("Volunteer")){
-
-                        }
-                        else if(activityType.equals("Study")){
-
-                        }
                         else if(activityType.equals("Shopping")){
-
+                            brandsList.add(new Events("BuySuit","3:58 PM","2020-03-04","March",
+                                    "2020","Exercise"));
+                            brandsList.add(new Events("BuyShoes","3:58 PM","2020-03-04","March",
+                                    "2020","Exercise"));
                         }
                         else if(activityType.equals("Chill")){
-
+                            brandsList.add(new Events("MomBirthday","3:58 PM","2020-03-04","March",
+                                    "2020","Exercise"));
+                            brandsList.add(new Events("DadBirthday","3:58 PM","2020-03-04","March",
+                                    "2020","Exercise"));
                         }
                         else {
                             Toast.makeText(getApplicationContext(), "Please select a type", Toast.LENGTH_LONG).show();
@@ -905,7 +937,7 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
                             System.out.println(result);
                             for(int i = 0; i < result.length();i++){
                                 try{
-                                    SaveEvent(result.getJSONObject(i).getString("Event"),
+                                    SaveEvent(result.getJSONObject(i).getString("Event")+"--"+userId,
                                             result.getJSONObject(i).getString("Time"),
                                             result.getJSONObject(i).getString("Date"),
                                             result.getJSONObject(i).getString("EventMonth"),
@@ -984,6 +1016,7 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
         ArrayList<String> userlist = new ArrayList<>();
         SharedPreferences sp = getSharedPreferences(Utils.EMAIL_PWD, Context.MODE_PRIVATE);
         String userid = sp.getString("email", null);
+        System.out.println(userid);
         String numOfUser = Integer.toString(num);
         data.put("user_id",userid);
         data.put("num_user",numOfUser);
@@ -995,10 +1028,10 @@ public class CalendarActivity extends AppCompatActivity implements EventRecycler
                     public void onResponse(JSONObject response) {
                         try {
                             JSONArray result= response.getJSONArray("result");
-                            System.out.println(result);
+                            System.out.println("result:"+result);
                             //this is the string data you received
                             for(int i = 0; i < result.length();i++){
-                                userlist.add(result.getJSONObject(i).toString());
+                                userlist.add(result.getString(i));
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
