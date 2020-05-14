@@ -1,5 +1,6 @@
 package com.ust.smartph;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -10,6 +11,7 @@ import android.view.View;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.tlaabs.timetableview.Schedule;
+import com.github.tlaabs.timetableview.Time;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -20,11 +22,14 @@ import com.ust.timetable.RequestType;
 import com.ust.timetable.ThrSunFragment;
 import com.ust.timetable.TimetablePagerAdapter;
 import com.ust.timetable.TimetableLoader;
+import com.ust.utility.CollabFilter;
+import com.ust.utility.OnReceiveListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -101,6 +106,28 @@ public class TimetableItemActivity extends AppCompatActivity {
         timetableTab.getTabAt(0).setText("Mon-Wed");
         timetableTab.getTabAt(1).setText("Thr-Sun");
     }
+
+    @OnClick(R.id.suggest_fab)
+    public void findFriends(View v) {
+        CollabFilter filter = new CollabFilter(this, new OnReceiveListener() {
+            @Override
+            public void onReceive(String userID) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(TimetableItemActivity.this);
+                builder.setTitle("Collaborative filter")
+                        .setMessage("Suggested friend id:"+userID);
+                builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+            }
+        });
+        filter.filtering();
+    }
+
+
 
     @OnClick(R.id.add_fab)
     void addSchedule(View v) {

@@ -2,14 +2,17 @@ package com.ust.smartph;
 
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
@@ -20,6 +23,8 @@ import android.widget.Toast;
 
 
 import com.ust.customactiondetection.DataModel;
+import com.ust.utility.CollabFilter;
+import com.ust.utility.OnReceiveListener;
 
 import org.jetbrains.annotations.NotNull;
 import org.sensingkit.sensingkitlib.SKException;
@@ -36,6 +41,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 public class UserActionActivity extends AppCompatActivity {
@@ -62,9 +68,9 @@ public class UserActionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_action_home);
         unbinder = ButterKnife.bind(this);
-        sensingSensors=new ArrayList<>();
-        readings=new HashMap<>();
-        sensorModels=new ArrayList<>();
+        sensingSensors = new ArrayList<>();
+        readings = new HashMap<>();
+        sensorModels = new ArrayList<>();
         try {
             requestPermission();
             initializeSensors();
@@ -73,19 +79,40 @@ public class UserActionActivity extends AppCompatActivity {
         }
     }
 
+    @OnClick(R.id.find_user)
+    public void findFriends(View v) {
+        CollabFilter filter = new CollabFilter(this, new OnReceiveListener() {
+            @Override
+            public void onReceive(String userID) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(UserActionActivity.this);
+                builder.setTitle("Collaborative filter")
+                        .setMessage("Suggested friend id:"+userID);
+                builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+            }
+        });
+        filter.filtering();
+    }
+
+
     private void initGridItems(String[] csv) {
         //hardcoded from the doc
-        String action=csv[2];
-        String value=csv[3];
+        String action = csv[2];
+        String value = csv[3];
         for (int i = 0; i < grid.getChildCount(); i++) {
             final CardView cardView = (CardView) grid.getChildAt(i);
             LinearLayout layout = (LinearLayout) cardView.getChildAt(0);
             TextView tv = (TextView) layout.getChildAt(1);
             ProgressBar progressBar = (ProgressBar) layout.getChildAt(2);
             TextView percent = (TextView) layout.getChildAt(3);
-            if(tv.getText().toString().toLowerCase().equals(action.toLowerCase())){
+            if (tv.getText().toString().toLowerCase().equals(action.toLowerCase())) {
                 progressBar.setProgress(Integer.parseInt(value));
-                percent.setText(String.format("%s %%",value));
+                percent.setText(String.format("%s %%", value));
             }
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -95,6 +122,7 @@ public class UserActionActivity extends AppCompatActivity {
             });
         }
     }
+
     @NotNull
     private DataModel getDataModel(SKSensorModuleType type) throws Exception {
         try {
@@ -112,9 +140,9 @@ public class UserActionActivity extends AppCompatActivity {
             public void onDataReceived(final SKSensorModuleType moduleType, final SKSensorData sensorData) {
                 String csv = sensorData.getDataInCSV();
                 //the first string doesn't seem to be any useful
-                readings.put(moduleType,csv);
+                readings.put(moduleType, csv);
                 result.setSensorNumber(csv.substring(csv.indexOf(",") + 1));
-                if(moduleType==SKSensorModuleType.ACTIVITY){
+                if (moduleType == SKSensorModuleType.ACTIVITY) {
                     initGridItems(csv.split(","));
                     grid.invalidate();
                 }

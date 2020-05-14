@@ -3,6 +3,7 @@ package com.ust.timetable;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.provider.Settings.Secure;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -224,6 +225,8 @@ public class TimetableHomeAdapter extends RecyclerView.Adapter<TimetableHomeAdap
 
     private List<String> formatJsonToSQL(String json,String token,String timetableName,boolean isShareAll){
         Gson gson = new Gson();
+        SharedPreferences sp =context.getSharedPreferences(Utils.EMAIL_PWD, Context.MODE_PRIVATE);
+        String userID = Utils.MD5(sp.getString("email", null),Utils.ID_LEN);
         ArrayList<Schedule> schedules=gson.fromJson(json,new TypeToken<ArrayList<Schedule>>(){}.getType());
         List<String> commands=new ArrayList<>();
         for(Schedule schedule:schedules) {
@@ -237,9 +240,9 @@ public class TimetableHomeAdapter extends RecyclerView.Adapter<TimetableHomeAdap
             String professor_name = schedule.getProfessorName();
             commands.add(String.format(Locale.US,
                             "insert into dbo.user_schedule(class_place,class_title,day_of_week,start_hour," +
-                            "start_min,end_hour,end_min,professor_name,token,table_name,public_share) values('%s', '%s'," +
-                            "%d, %d, %d, %d, %d,'%s','%s','%s',%d)", class_place, class_title, day, start_hr, start_min, end_hr, end_min, professor_name,
-                    token, timetableName,isShareAll?1:0)
+                            "start_min,end_hour,end_min,professor_name,token,table_name,public_share,user_id) values('%s', '%s'," +
+                            "%d, %d, %d, %d, %d,'%s','%s','%s',%d,'%s')", class_place, class_title, day, start_hr, start_min, end_hr, end_min, professor_name,
+                    token, timetableName,isShareAll?1:0,userID)
             );
         }
         return commands;

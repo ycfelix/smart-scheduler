@@ -1,18 +1,16 @@
 package com.ust.appusagechart;
 
-import android.annotation.TargetApi;
 import android.app.usage.UsageEvents;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
-import android.os.Build;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.ust.appusagechart.AppInfo.*;
+import static com.ust.appusagechart.AppInfo.bootTime;
 
 public class AppUsageInfo {
     final public static int DAY = 0;
@@ -24,7 +22,6 @@ public class AppUsageInfo {
     private ArrayList<AppInfo> AppInfoList;
     private List<UsageStats> result;
     private long totalTime;
-    private int totalTimes;
     private int style;
 
     public AppUsageInfo(Context context, int style) {
@@ -38,24 +35,19 @@ public class AppUsageInfo {
         }
     }
 
-    //将次数和时间为0的应用信息过滤掉
     private void setShowList() {
         this.ShowList = new ArrayList<>();
 
         totalTime = 0;
 
         for (int i = 0; i < AppInfoList.size(); i++) {
-            if (AppInfoList.get(i).getUsedTimebyDay() > 0) { //&& AppInfoList.get(i).getTimes() > 0) {
-                //dont add those without name
+            if (AppInfoList.get(i).getUsedTimebyDay() > 0) {
                 if(AppInfoList.get(i).getLabel()==null||AppInfoList.get(i).getLabel().isEmpty()) continue;
 
                 this.ShowList.add(AppInfoList.get(i));
                 totalTime += AppInfoList.get(i).getUsedTimebyDay();
-                totalTimes += AppInfoList.get(i).getTimes();
             }
         }
-
-        //将显示列表中的应用按显示顺序排序
         for (int i = 0; i < this.ShowList.size() - 1; i++) {
             for (int j = 0; j < this.ShowList.size() - i - 1; j++) {
                 if (this.ShowList.get(j).getUsedTimebyDay() < this.ShowList.get(j + 1).getUsedTimebyDay()) {
@@ -67,9 +59,6 @@ public class AppUsageInfo {
         }
     }
 
-
-    //统计当天的应用使用时间
-    @TargetApi(Build.VERSION_CODES.O)
     private void setUsageStatsList(Context context) throws NoSuchFieldException {
         UsageStatsManager m = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
         this.AppInfoList = new ArrayList<>();
@@ -101,26 +90,18 @@ public class AppUsageInfo {
         }
     }
 
-    /**
-     * 根据UsageEvents来对当天的操作次数和开机后运行时间来进行精确计算
-     */
     private ArrayList<AppInfo> getAccurateDailyStatsList(Context context, List<UsageStats> result, UsageStatsManager m, long begintime, long now) {
-        //针对每个packageName建立一个  使用信息
         HashMap<String, AppInfo> mapData = new HashMap<>();
-        //得到包名
         for (UsageStats stats : result) {
             if (stats.getLastTimeUsed() > begintime && stats.getTotalTimeInForeground() > 0) {
                 if (mapData.get(stats.getPackageName()) == null) {
                     AppInfo information = new AppInfo(stats, context);
-                    //重置总运行时间  开机操作次数
                     information.setTimes(0);
                     information.setUsedTimebyDay(0);
                     mapData.put(stats.getPackageName(), information);
                 }
             }
         }
-
-        //这个是相对比较精确的
         long bootTime = AppInfo.bootTime();
         UsageEvents events = m.queryEvents(bootTime, now);
 
@@ -133,9 +114,6 @@ public class AppUsageInfo {
             if (information == null) {
                 continue;
             }
-
-            //这里在同时计算开机后的操作次数和运行时间，所以如果获取到的时间戳是昨天的话就得过滤掉 continue
-
             if (e.getEventType() == UsageEvents.Event.MOVE_TO_FOREGROUND) {
                 information.timesPlusPlus();
                 if (e.getTimeStamp() < begintime){
@@ -147,33 +125,23 @@ public class AppUsageInfo {
                     continue;
                 }
                 information.setTimeStampMoveToBackGround(e.getTimeStamp());
-                //当前应用是在昨天进入的前台，0点后转入了后台，所以会先得到MOVE_TO_BACKGROUND 的timeStamp
                 if (information.getTimeStampMoveToForeground() < 0) {
-                    //从今天开始计算即可
                     information.setTimeStampMoveToForeground(begintime);
                 }
             }
             information.calculateRunningTime();
         }
 
-//        //再计算一次当前应用的运行时间，因为当前应用，最后得不到MOVE_TO_BACKGROUND 的timeStamp
-//        AppInfo information = mapData.get(context.getPackageName());
-//        information.setTimeStampMoveToBackGround(now);
-//        information.calculateRunningTime();
-
         return new ArrayList<>(mapData.values());
     }
 
-    /**
-     * 根据UsageEvents 精确计算APP开机的启动(activity打开的)次数
-     */
+
     private void calculateLaunchTimesAfterBootOn(Context context, List<AppInfo> AppInfoList) {
 
         UsageStatsManager m = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
         if (m == null || AppInfoList == null || AppInfoList.size() < 1) {
             return;
         }
-        //针对每个packageName建立一个  使用信息
         HashMap<String, AppInfo> mapData = new HashMap<>();
 
         UsageEvents events = m.queryEvents(bootTime(), System.currentTimeMillis());
@@ -201,18 +169,15 @@ public class AppUsageInfo {
         Calendar calendar = Calendar.getInstance();
         long begintime;
         if (style == WEEK) {
-            //int weekDay = calendar.get(Calendar.DAY_OF_WEEK);
             calendar.add(Calendar.DATE, -7);
             begintime = calendar.getTimeInMillis();
         } else if (style == MONTH) {
-            //int mounthDay = calendar.get(Calendar.DAY_OF_MONTH);
             calendar.add(Calendar.DATE, -30);
             begintime = calendar.getTimeInMillis();
         } else if (style == YEAR) {
             calendar.add(Calendar.YEAR, -1);
             begintime = calendar.getTimeInMillis();
         } else {
-            //剩下的输入均显示当天的数据
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
             int minute = calendar.get(Calendar.MINUTE);
             int second = calendar.get(Calendar.SECOND);
@@ -255,10 +220,6 @@ public class AppUsageInfo {
 
     public long getTotalTime() {
         return totalTime;
-    }
-
-    public int getTotalTimes() {
-        return totalTimes;
     }
 
     public ArrayList<AppInfo> getShowList() {
