@@ -214,11 +214,12 @@ public class SQLDB {
         @Override
         protected void onPostExecute(String result) {
             try {
-                System.out.print("HttpAsyncTask result: "+result);
-                JSONObject json = new JSONObject(result);
-                String warningMessage="";
-                //warningMessage= json.getString("warningMessage");
-                //System.out.println("warningMessage: "+warningMessage);
+                if(!((result==null)||(result==""))) {
+                    System.out.print("HttpAsyncTask result: " + result);
+                    JSONObject json = new JSONObject(result);
+                    String warningMessage = "";
+                    //warningMessage= json.getString("warningMessage");
+                    //System.out.println("warningMessage: "+warningMessage);
                 /*
                 if(warningMessage.equals("Input path is too sparse. You should provide a path where consecutive currentPathHistory are closer to each other. Refer to the 'path' parameter in Google Roads API documentation.")){
                     System.out.println("entered warningMessage branch");
@@ -231,14 +232,14 @@ public class SQLDB {
                     getSnappedPoint(pointList,originStart,originEnd);
                 }*/
 
-                JSONArray pointList = json.getJSONArray("snappedPoints");
-                System.out.println("pointList: "+pointList);
-                //walking version
-                getSnappedPoint(pointList,originStart,originEnd);
+                    JSONArray pointList = json.getJSONArray("snappedPoints");
+                    System.out.println("pointList: " + pointList);
+                    //walking version
+                    getSnappedPoint(pointList, originStart, originEnd);
 
-                //driving version
-                //driving version
-
+                    //driving version
+                    //driving version
+                }
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
