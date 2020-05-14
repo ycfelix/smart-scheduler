@@ -194,6 +194,7 @@ public class TimetableHomeActivity extends Activity {
             }
         });
         editor.commit();
+        timetables.clear();
         adapter.notifyDataSetChanged();
     }
 

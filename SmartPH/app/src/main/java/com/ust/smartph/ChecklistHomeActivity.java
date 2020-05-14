@@ -156,6 +156,7 @@ public class ChecklistHomeActivity extends AppCompatActivity {
             }
         });
         editor.commit();
+        data.clear();
         adapter.notifyDataSetChanged();
     }
 

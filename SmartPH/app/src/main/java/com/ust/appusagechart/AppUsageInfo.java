@@ -66,21 +66,25 @@ public class AppUsageInfo {
             Calendar calendar = Calendar.getInstance();
             long now = calendar.getTimeInMillis();
             long begintime = getBeginTime();
-            if (style == DAY) {
-                this.result = m.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, begintime, now);
-                AppInfoList = getAccurateDailyStatsList(context, result, m, begintime, now);
-            }
-            else {
-                if (style == WEEK)
+            switch (style){
+                case DAY:
+                    this.result = m.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, begintime, now);
+                    AppInfoList = getAccurateDailyStatsList(context, result, m, begintime, now);
+                    break;
+                case WEEK:
                     this.result = m.queryUsageStats(UsageStatsManager.INTERVAL_WEEKLY, begintime, now);
-                else if (style == MONTH)
+                    break;
+                case MONTH:
                     this.result = m.queryUsageStats(UsageStatsManager.INTERVAL_MONTHLY, begintime, now);
-                else if (style == YEAR)
+                    break;
+                case YEAR:
                     this.result = m.queryUsageStats(UsageStatsManager.INTERVAL_YEARLY, begintime, now);
-                else {
+                    break;
+                default:
                     this.result = m.queryUsageStats(UsageStatsManager.INTERVAL_BEST, begintime, now);
-                }
-
+                    break;
+            }
+            if(style!=DAY){
                 List<UsageStats> Mergeresult = MergeList(this.result);
                 for (UsageStats usageStats : Mergeresult) {
                     this.AppInfoList.add(new AppInfo(usageStats, context));
