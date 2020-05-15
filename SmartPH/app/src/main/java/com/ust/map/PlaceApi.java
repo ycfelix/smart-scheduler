@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class PlaceApi {
 
     public ArrayList<String> autoComplete(String input){
-        ArrayList<String> arrayList=new ArrayList();
+        ArrayList<String> arrayList=new ArrayList<>();
         HttpURLConnection connection=null;
         StringBuilder jsonResult=new StringBuilder();
         try {

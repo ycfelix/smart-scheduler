@@ -59,7 +59,6 @@
         <activity android:name=".AppUsageHomeActivity" />
         <activity android:name=".CalendarActivity" />
         <activity android:name=".ChecklistHomeActivity" />
-        <activity android:name=".CustomActionDetectionActivity" />
         <activity android:name=".CustomFocusModeActivity" />
         <activity android:name=".DashboardActivity" />
         <activity android:name=".LoginActivity" />
