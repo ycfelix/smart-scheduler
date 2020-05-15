@@ -85,11 +85,11 @@
             fab:menu_shadowYOffset="3dp"
             fab:menu_showShadow="true">
             <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/match_fab"
+                android:id="@+id/suggest_fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/baseline_assignment_white_36dp"
-                app:fab_label="match with friend"
+                app:fab_label="suggested events"
                 app:fab_colorNormal="#556270"
                 app:fab_colorPressed="#6b7b8d"
                 fab:fab_size="mini" />

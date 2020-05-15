@@ -57,7 +57,6 @@ public class ThrSunFragment extends BaseTimetable {
                     public void onEditResult(@Nullable Schedule schedule, RequestType type) {
                         if(type==RequestType.DELETE){
                             timetable.remove(idx);
-                            timetable.getAllSchedulesInStickers().remove(idx);
                         }
                         else{
                             if(schedule!=null){
@@ -77,6 +76,7 @@ public class ThrSunFragment extends BaseTimetable {
                             s.setEndTime(sc.getEndTime());
                             toSave.add(s);
                         }
+                        System.out.println(gson.toJson(toSave));
                         saveByPreference(PREF_THR_SUN,gson.toJson(toSave));
                     }
                 });

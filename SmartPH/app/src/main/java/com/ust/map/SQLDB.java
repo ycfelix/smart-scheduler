@@ -4,6 +4,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.StrictMode;
 
+import com.ust.utility.Utils;
+import android.content.SharedPreferences;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -25,6 +28,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,28 +41,46 @@ public class SQLDB {
     private ArrayList<Integer> drivingPathDateTimeHistory;
     private ArrayList<ArrayList<LatLng>> drivingPathLatLngHistory;
     private ArrayList<Integer> drivingPathDurationHistory;
-    private int userId;
+    private String userId;
+    private ArrayList<String> fdEmailList;
+    private ArrayList<String> fdIDList;
     private Context context;
     private ArrayList<Double> lat;
     private ArrayList<Double> lng;
+    public ArrayList<Double> fdLat;
+    public ArrayList<Double> fdLng;
     private String strLatlngList = "";
     private String lastLocationHistoryJSON;
+    private String lastFriendEmailListResultJSON;
+    private String lastFriendIDListResultJSON;
+    private String lastFriendLocationResultJSON;
+    private String userEmail;
+    public boolean fdLocationGot;
+    public boolean fdLatLngUpdated;
 
     // Connect to your database.
     // Replace server name, username, and password with your credentials
-    public SQLDB(Context context){
+    public SQLDB(Context context, String userEmail){
         this.context=context;
+        this.userEmail=userEmail;
         walkingPathLatLngHistory=new ArrayList<ArrayList<LatLng>>();
         walkingPathDurationHistory=new ArrayList<Integer>();
         drivingPathLatLngHistory=new ArrayList<ArrayList<LatLng>>();
         drivingPathDurationHistory=new ArrayList<Integer>();
-        userId=1000;
+        userId="0";
+        getUserId();
+        fdEmailList = new ArrayList<>();
+        fdIDList = new ArrayList<>();
+        fdLocationGot=false;
+        fdLatLngUpdated=false;
         System.out.println("started http");
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         //selectFromDatabase();
         lat = new ArrayList<Double>();
         lng = new ArrayList<Double>();
+        fdLat = new ArrayList<>();
+        fdLng = new ArrayList<>();
         walkingPathDateTimeHistory = new ArrayList<Integer>();
         getLocationHistory();
 
@@ -192,10 +214,12 @@ public class SQLDB {
         @Override
         protected void onPostExecute(String result) {
             try {
-                JSONObject json = new JSONObject(result);
-                String warningMessage="";
-                warningMessage= json.getString("warningMessage");
-                System.out.println("warningMessage: "+warningMessage);
+                if(!((result==null)||(result==""))) {
+                    System.out.print("HttpAsyncTask result: " + result);
+                    JSONObject json = new JSONObject(result);
+                    String warningMessage = "";
+                    //warningMessage= json.getString("warningMessage");
+                    //System.out.println("warningMessage: "+warningMessage);
                 /*
                 if(warningMessage.equals("Input path is too sparse. You should provide a path where consecutive currentPathHistory are closer to each other. Refer to the 'path' parameter in Google Roads API documentation.")){
                     System.out.println("entered warningMessage branch");
@@ -208,13 +232,14 @@ public class SQLDB {
                     getSnappedPoint(pointList,originStart,originEnd);
                 }*/
 
-                JSONArray pointList = json.getJSONArray("snappedPoints");
-                //walking version
-                getSnappedPoint(pointList,originStart,originEnd);
+                    JSONArray pointList = json.getJSONArray("snappedPoints");
+                    System.out.println("pointList: " + pointList);
+                    //walking version
+                    getSnappedPoint(pointList, originStart, originEnd);
 
-                //driving version
-                //driving version
-
+                    //driving version
+                    //driving version
+                }
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -375,10 +400,49 @@ public class SQLDB {
         return url;
     }
 
+    public void getUserId(){
+        HashMap<String, String> data=new HashMap<>();
+
+        String sqlCommand="select UserId from Accounts where Email="+"'"+userEmail+"'";
+        System.out.println("sql: "+sqlCommand);
+        data.put("db_name","Smart Scheduler");
+        data.put("sql_cmd",sqlCommand);
+
+        String url = "http://13.70.2.33/api/sql_db";
+        RequestQueue queue = Volley.newRequestQueue(context);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            System.out.println("response: "+response);
+                            //parse JSON
+                            JSONArray result= response.getJSONArray("result");
+                            //System.out.print("user id result: "+ result);
+
+                            JSONObject currentRecord = ((JSONObject) result.get(0));
+                            //System.out.print("currentRecord result: "+currentRecord);
+
+                            userId=currentRecord.getString("UserId");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println(error.toString());
+                    }
+                }
+        );
+        queue.add(request);
+    }
+
     public void insertLocationData(LatLng point, double dateTime){
         String url = "http://13.70.2.33/api/sql_db";
         //do a select first, then
-        String query = "INSERT INTO user_location_history VALUES ("+userId+","+ point.latitude+","+point.longitude+","+dateTime+");";
+        String query = "INSERT INTO user_location_history VALUES ("+"'"+userId+"'"+","+ point.latitude+","+point.longitude+","+dateTime+");";
         List<String> commands= Arrays.asList(query);
         for(int i=0;i<commands.size();i++){
             HashMap<String, String> data=new HashMap<>();
@@ -408,7 +472,7 @@ public class SQLDB {
 
     public void getLocationHistory(){   //return true: have updated, return false: no updates
         HashMap<String, String> data=new HashMap<>();
-        String sqlCommand="SELECT * FROM dbo.user_location_history WHERE (userId="+userId+")";
+        String sqlCommand="SELECT * FROM dbo.user_location_history WHERE (userId="+"'"+userId+"'"+")";
         data.put("db_name","Smart Scheduler");
         data.put("sql_cmd",sqlCommand);
 
@@ -421,26 +485,46 @@ public class SQLDB {
                         try {
                             //parse JSON
                             JSONArray result= response.getJSONArray("result");
+                            System.out.println("getLocationHistory result: "+result);
                             boolean needToUpdate=true;
                             if(lastLocationHistoryJSON!=null){
                                 if(lastLocationHistoryJSON.equals(result.toString())){
                                     needToUpdate=false;
                                 }
                             }
-
+                            //need to solve!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                            ArrayList<Double> temLat = new ArrayList<>();
+                            ArrayList<Double> temLng = new ArrayList<>();
+                            ArrayList<Integer> temWalkingPathDateTimeHistory = new ArrayList<>();
                             if(needToUpdate) {
                                 lastLocationHistoryJSON = result.toString();
                                 System.out.println("this is the result:" + result);
                                 for (int i = 0; i < result.length(); i++) {
                                     JSONObject currentRecord = ((JSONObject) result.get(i));
                                     System.out.println("currentRecord: " + currentRecord);
-                                    lat.add(currentRecord.getDouble("lat"));
-                                    lng.add(currentRecord.getDouble("lng"));
-                                    walkingPathDateTimeHistory.add(currentRecord.getInt("dateTime"));
-                                    System.out.println("lat: " + lat);
-                                    System.out.println("lng: " + lng);
-                                    System.out.println("walkingPathDateTimeHistory: " + walkingPathDateTimeHistory);
+                                    temLat.add(currentRecord.getDouble("Lat"));
+                                    temLng.add(currentRecord.getDouble("Lng"));
+                                    temWalkingPathDateTimeHistory.add(currentRecord.getInt("DateTime"));
                                 }
+                                System.out.println("temWalkingPathDateTimeHistory: "+temWalkingPathDateTimeHistory);
+                                System.out.println("temLat: "+temLat);
+                                System.out.println("temLng: "+temLng);
+
+                                walkingPathDateTimeHistory.clear();
+                                for(int i=0; i<temWalkingPathDateTimeHistory.size(); i++){
+                                    walkingPathDateTimeHistory.add(temWalkingPathDateTimeHistory.get(i));
+                                }
+                                Collections.sort(temWalkingPathDateTimeHistory);
+                                lat.clear();
+                                lng.clear();
+                                for(int i=0; i<temWalkingPathDateTimeHistory.size(); i++){
+                                    int oldIdx=walkingPathDateTimeHistory.indexOf(temWalkingPathDateTimeHistory.get(i));
+                                    lat.add(temLat.get(oldIdx));
+                                    lng.add(temLng.get(oldIdx));
+                                }
+                                System.out.println("walkingPathDateTimeHistory: "+walkingPathDateTimeHistory);
+                                System.out.println("lat: "+lat);
+                                System.out.println("lng: "+lng);
 
                                 //get path info using google api
                                 boolean addOriginEnd = false;
@@ -449,10 +533,182 @@ public class SQLDB {
                                     if (i == lat.size() - 2) {
                                         addOriginEnd = true;
                                     }
-                                    new HttpAsyncTask(new LatLng(lat.get(i), lng.get(i)), new LatLng(lat.get(i + 1), lng.get(i + 1)), addOriginEnd).execute("https://roads.googleapis.com/v1/snapToRoads?path=" + lat.get(i) + "," + lng.get(i) + "|" + lat.get(i + 1) + "," + lng.get(i + 1) + "&interpolate=true&key=AIzaSyDl9jmXdHxOZglKI6uZ_Kci5w-mdvMGRmE&travelMode=walking");
+                                    String url="https://roads.googleapis.com/v1/snapToRoads?path=" + lat.get(i) + "," + lng.get(i) + "|" + lat.get(i + 1) + "," + lng.get(i + 1) + "&interpolate=true&key=AIzaSyDl9jmXdHxOZglKI6uZ_Kci5w-mdvMGRmE&travelMode=walking";
+                                    System.out.println("onResponse url: "+url);
+                                    new HttpAsyncTask(new LatLng(lat.get(i), lng.get(i)), new LatLng(lat.get(i + 1), lng.get(i + 1)), addOriginEnd).execute(url);
                                     walkingPathDurationHistory.add(walkingPathDateTimeHistory.get(i + 1) - walkingPathDateTimeHistory.get(i));
                                 }
                             }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println(error.toString());
+                    }
+                }
+        );
+        queue.add(request);
+    }
+
+    public void getUserFriendEmailListByUserEmail(){
+        HashMap<String, String> data=new HashMap<>();
+        String sqlCommand="SELECT * FROM dbo.user_friend WHERE (user_email="+"'"+userEmail+"'"+")";
+        System.out.println("getUserFriendEmailListByUserID query: "+sqlCommand);
+        data.put("db_name","Smart Scheduler");
+        data.put("sql_cmd",sqlCommand);
+
+        String url = "http://13.70.2.33/api/sql_db";
+        RequestQueue queue = Volley.newRequestQueue(context);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            //parse JSON
+                            JSONArray result= response.getJSONArray("result");
+                            System.out.println("getUserFriendEmailListByUserEmail result: "+result);
+                            boolean needToUpdate=true;
+                            if(lastFriendEmailListResultJSON!=null){
+                                if(lastFriendEmailListResultJSON.equals(result.toString())){
+                                    needToUpdate=false;
+                                }
+                            }
+
+                            if(needToUpdate) {
+                                lastFriendEmailListResultJSON = result.toString();
+                                JSONObject currentRecord = ((JSONObject) result.get(0));
+                                //System.out.print("currentRecord result: "+currentRecord);
+
+                                String fdEmailStringList = currentRecord.getString("friend_list");
+                                String[] fdEmailArray = fdEmailStringList.split(",");
+                                if(fdEmailList!=null) {
+                                    fdEmailList.clear();
+                                }
+                                Collections.addAll(fdEmailList, fdEmailArray);
+                            }
+                            getfdLocationByfdEmail();
+                            //getUserFriendIDListByfdEmail();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println(error.toString());
+                    }
+                }
+        );
+        queue.add(request);
+    }
+/*
+    public void getUserFriendIDListByfdEmail(){
+        HashMap<String, String> data=new HashMap<>();
+        String sqlCommand="SELECT * FROM dbo.Accounts WHERE ";
+        for(int i=0; i<fdEmailList.size(); i++){
+            if(i!=0){
+                sqlCommand+="OR";
+            }
+            sqlCommand+="(Email="+"'"+fdEmailList.get(i)+"'"+")";
+        }
+        System.out.println("getUserFriendIDListByfdEmail query: "+sqlCommand);
+        data.put("db_name","Smart Scheduler");
+        data.put("sql_cmd",sqlCommand);
+
+        String url = "http://13.70.2.33/api/sql_db";
+        RequestQueue queue = Volley.newRequestQueue(context);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            //parse JSON
+                            JSONArray result= response.getJSONArray("result");
+                            System.out.println("getUserFriendIDListByfdEmail result: "+result);
+                            boolean needToUpdate=true;
+                            if(lastFriendIDListResultJSON!=null){
+                                if(lastFriendIDListResultJSON.equals(result.toString())){
+                                    needToUpdate=false;
+                                }
+                            }
+
+                            if(needToUpdate) {
+                                lastFriendIDListResultJSON = result.toString();
+                                System.out.println("lastFriendIDListResultJSON:" + lastFriendIDListResultJSON);
+                                for (int i = 0; i < result.length(); i++) {
+                                    JSONObject currentRecord = ((JSONObject) result.get(i));
+                                    fdIDList.add(currentRecord.getString("UserID"));
+                                }
+                                System.out.println("fdIDList:" + fdIDList);
+                            }
+
+                            getfdLocationByfdID();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println(error.toString());
+                    }
+                }
+        );
+        queue.add(request);
+
+
+    }*/
+
+    public void getfdLocationByfdEmail(){   //return true: have updated, return false: no updates
+        HashMap<String, String> data=new HashMap<>();
+        String sqlCommand="SELECT * FROM dbo.user_current_location WHERE (Online=1) AND (";
+        for(int i=0; i<fdEmailList.size(); i++){
+            if(i!=0){
+                sqlCommand+="OR";
+            }
+            sqlCommand+="(user_email="+"'"+fdEmailList.get(i)+"'"+")";;
+        }
+        sqlCommand+=")";
+        System.out.println("getfdLocationByfdEmail query: "+sqlCommand);
+
+        data.put("db_name","Smart Scheduler");
+        data.put("sql_cmd",sqlCommand);
+
+        String url = "http://13.70.2.33/api/sql_db";
+        RequestQueue queue = Volley.newRequestQueue(context);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            //parse JSON
+                            JSONArray result= response.getJSONArray("result");
+                            System.out.println("getfdLocationByfdEmail result: "+result);
+                            boolean needToUpdate=true;
+                            if(lastFriendLocationResultJSON!=null){
+                                if(lastFriendLocationResultJSON.equals(result.toString())){
+                                    needToUpdate=false;
+                                }
+                            }
+
+                            if(needToUpdate) {
+                                lastFriendLocationResultJSON = result.toString();
+                                System.out.println("this is the result:" + result);
+                                for (int i = 0; i < result.length(); i++) {
+                                    JSONObject currentRecord = ((JSONObject) result.get(i));
+                                    System.out.println("currentRecord: " + currentRecord);
+                                    fdLat.add(currentRecord.getDouble("Lat"));
+                                    fdLng.add(currentRecord.getDouble("Lng"));
+                                }
+                                fdLatLngUpdated=true;
+                            }
+                            fdLocationGot=true;
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

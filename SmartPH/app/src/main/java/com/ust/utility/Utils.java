@@ -74,7 +74,7 @@ public final class Utils {
         RequestQueue queue = Volley.newRequestQueue(context);
 
         // Request a JSONObject response from the provided URL.
-        JsonObjectRequest accPostRequest = new JsonObjectRequest(REQUEST, api, jsonData,
+        JsonObjectRequest accPostRequest = new JsonObjectRequest(Request.Method.POST, api, jsonData,
                 (JSONObject response) -> {
                     try {
                         Log.d(TAG, "Volley success");

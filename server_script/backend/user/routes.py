@@ -6,35 +6,6 @@ import pyodbc
 user = Blueprint('user', __name__)
 bad_request_code = 400
 
-# @user.route('/api/user/logout', methods=['POST'])
-# def logout():
-# 	pass
-	# json = getJSON()
-	# if not "email" in json:
-	# 	return jsonify({'error': 'No email'})
-	# elif "email" == "":
-	#     return jsonify({'error': 'Email is not specified'})
-	# else:
-	# 	try:
-	# 		cnxn = getCnxn('Smart Scheduler')
-	# 		cursor = cnxn.cursor()
-
-	# 	except pyodbc.Error as pex:
-	# 		return jsonify({'error': 500, 'error msg': str(pex)})
-
-	# 	else:
-	# 		# cmd = ""
-	# 		return_dict['result'] = 'To be constructed'
-	# 		return jsonify(return_dict)
-
-@user.route('/api/user/reset_password', methods=['GET', 'POST'])
-def reset_request():
-	pass
-
-@user.route('/api/user/reset_password/<token>', methods=['GET', 'POST'])
-def reset_password(token):
-	pass
-
 @user.route('/api/user/register', methods=['POST'])
 def register():
 	json = getJSON()

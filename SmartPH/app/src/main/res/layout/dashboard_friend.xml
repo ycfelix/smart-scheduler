@@ -26,27 +26,29 @@
             android:orientation="vertical">
 
             <include layout="@layout/nav_header_friend" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/friend_list"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <Button
-                android:id="@+id/signout"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_gravity="center"
-                android:text="Sign out"
-                android:background="@drawable/button"
-                android:textSize="16sp"
-                android:drawablePadding="16dp"
-                android:singleLine="true"
-                android:drawableStart="@drawable/baseline_undo_black_24dp"
-                android:textColor="@color/colorPrimaryDark"
-                style="@style/Widget.MaterialComponents.Button.TextButton"/>
+            <RelativeLayout
+                android:layout_height="match_parent"
+                android:layout_width="match_parent">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/friend_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
         </LinearLayout>
+
+        <Button
+            android:id="@+id/signout"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:background="@drawable/button"
+            android:drawableStart="@drawable/baseline_undo_black_24dp"
+            android:drawablePadding="16dp"
+            android:singleLine="true"
+            android:text="Sign out"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="16sp" />
 
 
     </com.google.android.material.navigation.NavigationView>
