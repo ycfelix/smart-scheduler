@@ -3,9 +3,6 @@ package com.ust.timetable;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import androidx.core.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +17,8 @@ import com.ust.smartph.R;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -58,7 +57,6 @@ public class ThrSunFragment extends BaseTimetable {
                     public void onEditResult(@Nullable Schedule schedule, RequestType type) {
                         if(type==RequestType.DELETE){
                             timetable.remove(idx);
-                            timetable.getAllSchedulesInStickers().remove(idx);
                         }
                         else{
                             if(schedule!=null){
@@ -78,6 +76,7 @@ public class ThrSunFragment extends BaseTimetable {
                             s.setEndTime(sc.getEndTime());
                             toSave.add(s);
                         }
+                        System.out.println(gson.toJson(toSave));
                         saveByPreference(PREF_THR_SUN,gson.toJson(toSave));
                     }
                 });

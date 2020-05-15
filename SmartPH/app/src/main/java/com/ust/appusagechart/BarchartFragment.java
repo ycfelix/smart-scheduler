@@ -50,29 +50,16 @@ public class BarchartFragment extends Fragment {
 
     private YAxis rightAxis;
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        ViewGroup root= (ViewGroup) inflater.inflate(R.layout.app_usage_barchart,container,false);
-        unbinder= ButterKnife.bind(this,root);
-        getActivity().setTitle("App Usage Bar Chart");
-        AppUsageInfo statisticsInfo = new AppUsageInfo(getActivity(),AppUsageInfo.DAY);
-        showList = statisticsInfo.getShowList();
+    public void setChart(){
         chart.getDescription().setEnabled(false);
         chart.getDescription().setEnabled(false);
-
-        // if more than 60 entries are displayed in the chart, no values will be
-        // drawn
         chart.setMaxVisibleValueCount(60);
-
-        // scaling can now only be done on x- and y-axis separately
         chart.setPinchZoom(false);
-
         chart.setDrawBarShadow(false);
         chart.setDrawGridBackground(false);
         chart.setDoubleTapToZoomEnabled(false);
-
-
+    }
+    public void setxAxis(){
         xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
@@ -92,7 +79,8 @@ public class BarchartFragment extends Fragment {
             }
         });
 
-
+    }
+    void setLeftAxis(){
         ValueFormatter custom=new ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
@@ -104,7 +92,16 @@ public class BarchartFragment extends Fragment {
         leftAxis.setValueFormatter(custom);
         leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
         leftAxis.setSpaceTop(15f);
-        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+        leftAxis.setAxisMinimum(0f);
+    }
+
+    void setRightAxis(){
+        ValueFormatter custom=new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return (int) value + " min";
+            }
+        };
 
         rightAxis = chart.getAxisRight();
         rightAxis.setDrawGridLines(false);
@@ -112,10 +109,23 @@ public class BarchartFragment extends Fragment {
         rightAxis.setValueFormatter(custom);
         rightAxis.setSpaceTop(15f);
         rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+    }
 
-        // add a nice and smooth animation
+
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        ViewGroup root= (ViewGroup) inflater.inflate(R.layout.app_usage_barchart,container,false);
+        unbinder= ButterKnife.bind(this,root);
+        getActivity().setTitle("App Usage Bar Chart");
+        AppUsageInfo statisticsInfo = new AppUsageInfo(getActivity(),AppUsageInfo.DAY);
+        showList = statisticsInfo.getShowList();
+        setChart();
+        setxAxis();
+        setLeftAxis();
+        setRightAxis();
         chart.animateY(1500);
-
         Legend l = chart.getLegend();
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
@@ -161,25 +171,19 @@ public class BarchartFragment extends Fragment {
     private void setDataBarChart() {
 
         ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
-        if(showList.size() < 6) {
-            for (int i = 0; i < showList.size(); i++) {
-                float value = (float)(1.0 * showList.get(i).getUsedTimebyDay() / 1000 / 60);
-                yVals1.add(new BarEntry(i, value));
-            }
+        for (int i = 0; i < Math.min(showList.size(),6); i++) {
+            float value = (float)(1.0 * showList.get(i).getUsedTimebyDay() / 1000 / 60);
+            yVals1.add(new BarEntry(i, value));
         }
-        else {
-            for(int i = 0;i < 6;i++) {
-                float value = (float)(1.0 * showList.get(i).getUsedTimebyDay() / 1000 / 60 );
-                yVals1.add(new BarEntry(i, value));
-            }
+        if(showList.size()>=6){
             long otherTime = 0;
             for(int i=6;i<showList.size();i++) {
                 otherTime += showList.get(i).getUsedTimebyDay();
             }
             yVals1.add(new BarEntry(6,(float)(1.0 * otherTime / 1000 / 60)));
+            yVals1.add(new BarEntry(6,(float)(1.0 * otherTime / 1000 / 60)));
         }
         BarDataSet set1;
-
         if (chart.getData() != null &&
                 chart.getData().getDataSetCount() > 0) {
             set1 = (BarDataSet) chart.getData().getDataSetByIndex(0);
@@ -188,15 +192,12 @@ public class BarchartFragment extends Fragment {
             chart.notifyDataSetChanged();
         } else {
             set1 = new BarDataSet(yVals1, "Different APPs");
-            //set1.setColors(ColorTemplate.MATERIAL_COLORS);
             set1.setGradientColors(generateColor(ColorTemplate.JOYFUL_COLORS));
             ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
             dataSets.add(set1);
-
             BarData data = new BarData(dataSets);
             data.setValueTextSize(10f);
             data.setBarWidth(0.9f);
-
             chart.setData(data);
         }
         chart.invalidate();

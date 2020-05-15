@@ -3,11 +3,8 @@ package com.ust.timetable;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.provider.Settings.Secure;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +25,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ust.smartph.R;
 import com.ust.smartph.TimetableItemActivity;
+import com.ust.utility.Utils;
 
 import org.json.JSONObject;
 
@@ -36,6 +34,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class TimetableHomeAdapter extends RecyclerView.Adapter<TimetableHomeAdapter.TimetableViewHolder> {
 
@@ -199,8 +202,7 @@ public class TimetableHomeAdapter extends RecyclerView.Adapter<TimetableHomeAdap
     }
 
     private String getToken(String timetableName){
-        String android_id = Secure.getString(context.getContentResolver(),
-                Secure.ANDROID_ID);
+        String android_id = context.getSharedPreferences(Utils.EMAIL_PWD, Context.MODE_PRIVATE).getString("email","");
         return HashGenerator.toHashCode(android_id)+HashGenerator.toHashCode(timetableName);
     }
 
@@ -223,6 +225,8 @@ public class TimetableHomeAdapter extends RecyclerView.Adapter<TimetableHomeAdap
 
     private List<String> formatJsonToSQL(String json,String token,String timetableName,boolean isShareAll){
         Gson gson = new Gson();
+        SharedPreferences sp =context.getSharedPreferences(Utils.EMAIL_PWD, Context.MODE_PRIVATE);
+        String userID = Utils.MD5(sp.getString("email", null),Utils.ID_LEN);
         ArrayList<Schedule> schedules=gson.fromJson(json,new TypeToken<ArrayList<Schedule>>(){}.getType());
         List<String> commands=new ArrayList<>();
         for(Schedule schedule:schedules) {
@@ -236,9 +240,9 @@ public class TimetableHomeAdapter extends RecyclerView.Adapter<TimetableHomeAdap
             String professor_name = schedule.getProfessorName();
             commands.add(String.format(Locale.US,
                             "insert into dbo.user_schedule(class_place,class_title,day_of_week,start_hour," +
-                            "start_min,end_hour,end_min,professor_name,token,table_name,public_share) values('%s', '%s'," +
-                            "%d, %d, %d, %d, %d,'%s','%s','%s',%d)", class_place, class_title, day, start_hr, start_min, end_hr, end_min, professor_name,
-                    token, timetableName,isShareAll?1:0)
+                            "start_min,end_hour,end_min,professor_name,token,table_name,public_share,user_id) values('%s', '%s'," +
+                            "%d, %d, %d, %d, %d,'%s','%s','%s',%d,'%s')", class_place, class_title, day, start_hr, start_min, end_hr, end_min, professor_name,
+                    token, timetableName,isShareAll?1:0,userID)
             );
         }
         return commands;

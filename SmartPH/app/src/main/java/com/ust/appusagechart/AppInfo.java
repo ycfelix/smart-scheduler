@@ -14,11 +14,9 @@ public class AppInfo {
     private UsageStats usageStats;
     private String packageName;
     private String label;
-    private long UsedTimebyDay;  //milliseconds
+    private long UsedTimebyDay;
     private Context context;
     private int times;
-    private long appBeginTime;
-    private long appEndTime;
     private Bitmap appIcon;
     private Drawable drawableIcon;
     private long lastUsedTime;
@@ -60,8 +58,6 @@ public class AppInfo {
             this.label = (String) packageManager.getApplicationLabel(applicationInfo);
             this.UsedTimebyDay = usageStats.getTotalTimeInForeground();
             this.times = (Integer) usageStats.getClass().getDeclaredField("mLaunchCount").get(usageStats);
-            this.appBeginTime=usageStats.getFirstTimeStamp();
-            this.appEndTime=usageStats.getLastTimeStamp();
             if (this.UsedTimebyDay > 0) {
                 this.drawableIcon=applicationInfo.loadIcon(packageManager);
                 this.appIcon=drawableToBitmap(this.drawableIcon);
@@ -76,18 +72,6 @@ public class AppInfo {
 
     public Drawable getDrawableIcon() {
         return drawableIcon;
-    }
-
-    public long getAppEndTime() {
-        return appEndTime;
-    }
-
-    public long getAppBeginTime() {
-        return appBeginTime;
-    }
-
-    public UsageStats getUsageStats() {
-        return usageStats;
     }
 
     public int getTimes() {
@@ -124,9 +108,6 @@ public class AppInfo {
 
 
     public void setTimeStampMoveToForeground(long timeStampMoveToForeground) {
-//        if (timeStampMoveToForeground > bootTime()){
-//            timesPlusPlus();
-//        }
         this.timeStampMoveToForeground = timeStampMoveToForeground;
     }
 
@@ -136,10 +117,6 @@ public class AppInfo {
 
     public void setTimeStampMoveToBackGround(long timeStampMoveToBackGround) {
         this.timeStampMoveToBackGround = timeStampMoveToBackGround;
-    }
-
-    public long getTimeStampMoveToBackGround() {
-        return timeStampMoveToBackGround;
     }
 
     public long getTimeStampMoveToForeground() {
@@ -159,9 +136,6 @@ public class AppInfo {
         }
 
     }
-
-
-    // 返回开机时间，单位微妙
     public static long bootTime() {
         return System.currentTimeMillis() - SystemClock.elapsedRealtime();
     }

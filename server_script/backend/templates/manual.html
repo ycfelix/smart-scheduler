@@ -16,21 +16,22 @@
 			1. Introduction:
 		</p>
 		<p>This API provides services for retrieving, processing and returning output of given simple SQL commands in JSON format.
-			<br>Supported SQL commands are <span class="code">SELECT, UPDATE, INSERT INTO, DELETE, <sup>(1)</sup>IF ... ELSE ... , CREATE, DROP, ALTER</span>
+			<br>Supported SQL commands are <span class="code">SELECT, UPDATE, INSERT INTO, DELETE, </span><sup>(1)</sup><span class="code">IF ... ELSE ... , CREATE, DROP, ALTER</span>
 			<br>Brief introduction of this site:
 			<ul>
 				<li><a href="http://13.70.2.33">http://13.70.2.33</a> is the index page of the server. A string "Smart Scheduler server" should appear if the server is running.</li>
 				<li><a href="http://13.70.2.33/help">http://13.70.2.33/help</a> is this manual page.</li>
 				<li><a href="http://13.70.2.33/api/sql_db">http://13.70.2.33/api/sql_db</a> is the link to send SQL command. If you click this link, a "Method Not Allowed" error should appear on the browser screen.</li>
+				<li><sup>(2)</sup><span class="code">http://13.70.2.33/api/distance_matrix/&lt;int:type&gt;</span> is the link to retrieve given number of most similar users' IDs with a user associated with a give user ID. For specifications of &lt;int:type&gt;, please see <span class="code">com.ust.utility.Utils.java</span>. </li>
 			</ul>
 			<br>For enquiry or report bug, please find John through WhatsApp.
 		</p>
 	</div>
-	<div id="usage">
+	<div id="usage_sql">
 		<p class="subsection">
-			2. Usage:
+			2. Usage of SQL API:
 		</p>
-		<p>You need to <span class="code">POST</span> a SQL command to this server in the following JSON format:
+		<p>You need to <span class="code">POST<sup>(3)</sup></span> a SQL command to this server in the following JSON format:
 			<pre>
 <code>{
 	"db_name": "your database name",
@@ -213,16 +214,51 @@
 			</pre>
 		</p>
 	</div>
+	<div id="usage_dist_matrix">
+		<p class="subsection">
+			<sup>(2)</sup>3. Usage of distance matrix API:
+		</p>
+		<p>You need to <span class="code">POST<sup>(3)</sup></span> distance matrix information with the following JSON object:
+			<pre>
+<code>{
+	"user_id": "the user ID of a user",
+	"num_user": "number of similar users you are looking for"
+}</code>
+			</pre>
+			It is possible that number of returned user IDs may be smaller than <span class="code">num_user</span>.
+			<p class="subsection">
+				3a. Example usage:
+			</p>
+			We can retrieve 2 most similar users with a user (user ID: 1) of type <span class="code">0</span> (MAP) by sending a JSON string below:
+			<pre>
+<code>{
+	"user_id": "1",
+	"num_user": "2"
+}</code>
+			</pre>
+			The returning JSON string will be:
+			<pre>
+<code>{
+  "type": "map",
+  "result": [
+    20
+  ]
+}</code>
+		</pre>
+		Please be reminded that result may be different as what you see here as number of records in the database table varies. Distance matrix with type <span class="code">0</span> usually spends more time to return user ID(s).
+	</div>
 	<div id="more_info">
 		<p class="subsection">
-			3. More on SQL usage
+			4. More on SQL usage
 		</p>
 		For more information on usage of above SQL commands, please consult <a href="https://www.w3schools.com/sql/default.asp">w3schools.com</a>.
 		<p class="subsection">
-			4. Change Log
+			5. Change Log
 		</p>
 		<footer>
 			<p>(1) Changed on 23/3/2020.</p>
+			<p>(2) Changed on 15/4/2020.</p>
+			<p>(3) Changed on 25/4/2020.</p>
 		</footer>
 	</div>
 </body>

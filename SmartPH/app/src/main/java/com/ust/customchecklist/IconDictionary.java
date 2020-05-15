@@ -3,6 +3,7 @@ package com.ust.customchecklist;
 import com.ust.smartph.R;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class IconDictionary {
 
@@ -22,6 +23,9 @@ public class IconDictionary {
         mapping.put(R.id.mail_icon,R.drawable.ic_mail_white_24dp);
         mapping.put(R.id.people_icon,R.drawable.ic_people_white_24dp);
         mapping.put(R.id.eat_icon,R.drawable.ic_restaurant_menu_white_24dp);
+        for(Map.Entry e:mapping.entrySet()){
+            System.out.println(e.getKey());
+        }
     }
 
     public static Integer getIcon(int key){

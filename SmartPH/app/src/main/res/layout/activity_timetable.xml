@@ -25,7 +25,7 @@
             android:background="@android:color/transparent" />
     </RelativeLayout>
 
-    <android.support.design.widget.TabLayout
+    <com.google.android.material.tabs.TabLayout
         android:id="@+id/timetable_tab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -34,12 +34,12 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content">
 
-    <androidx.core.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/swipe_timetable"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
-    </androidx.core.view.ViewPager>
+    </androidx.viewpager.widget.ViewPager>
         <com.github.clans.fab.FloatingActionMenu
             android:id="@+id/fab_timetable_menu"
             android:layout_width="wrap_content"
@@ -85,11 +85,11 @@
             fab:menu_shadowYOffset="3dp"
             fab:menu_showShadow="true">
             <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/match_fab"
+                android:id="@+id/suggest_fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/baseline_assignment_white_36dp"
-                app:fab_label="match with friend"
+                app:fab_label="suggested events"
                 app:fab_colorNormal="#556270"
                 app:fab_colorPressed="#6b7b8d"
                 fab:fab_size="mini" />

@@ -1,8 +1,8 @@
 package com.ust.timetable;
 
-import android.support.annotation.Nullable;
-
 import com.github.tlaabs.timetableview.Schedule;
+
+import androidx.annotation.Nullable;
 
 
 public interface EditDialogListener {

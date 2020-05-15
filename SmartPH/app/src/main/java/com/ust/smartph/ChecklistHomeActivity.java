@@ -1,5 +1,6 @@
 package com.ust.smartph;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,6 +31,9 @@ import com.ust.customchecklist.EditDialog;
 import com.ust.customchecklist.EditDialogListener;
 import com.ust.customchecklist.RequestType;
 import com.ust.timetable.HashGenerator;
+import com.ust.utility.CollabFilter;
+import com.ust.utility.OnReceiveListener;
+import com.ust.utility.Utils;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -70,6 +74,9 @@ public class ChecklistHomeActivity extends AppCompatActivity {
     @BindView(R.id.checklist_add_fab)
     FloatingActionButton addBtn;
 
+    @BindView(R.id.checklist_suggest)
+    FloatingActionButton suggestBtn;
+
     @BindView(R.id.checklist_fab_menu)
     FloatingActionMenu menu;
 
@@ -85,11 +92,41 @@ public class ChecklistHomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.checklist_home);
         unbinder= ButterKnife.bind(this);
+//        saveFakeData();
         loadDataFromPreference();
         checklist.setLayoutManager(new LinearLayoutManager(this));
         adapter=new ChecklistAdapter(this, data);
         checklist.setAdapter(adapter);
     }
+
+    @OnClick(R.id.checklist_suggest)
+    public void findFriends(View v) {
+        CollabFilter filter = new CollabFilter(this, new OnReceiveListener() {
+            @Override
+            public void onReceive(String userID) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(ChecklistHomeActivity.this);
+                builder.setTitle("Collaborative filter")
+                        .setMessage("Suggested friend id:"+userID);
+                builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+            }
+        });
+        filter.filtering();
+    }
+
+
+    void saveFakeData(){
+        SharedPreferences pref= PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor=pref.edit();
+        editor.putString(PREF_NAME,"[{\"checked\": false, \"detail\": \"Ready\", \"icon\": 2131296710, \"title\": \"exam\"}, {\"checked\": false, \"detail\": \"Ready\", \"icon\": 2131296477, \"title\": \"watch tv\"}, {\"checked\": false, \"detail\": \"Ready\", \"icon\": 2131296305, \"title\": \"find job\"}, {\"checked\": false, \"detail\": \"Ready\", \"icon\": 2131296296, \"title\": \"reading\"}, {\"checked\": false, \"detail\": \"Ready\", \"icon\": 2131296305, \"title\": \"feed pets\"}, {\"checked\": false, \"detail\": \"Ready\", \"icon\": 2131296644, \"title\": \"cleaning\"}, {\"checked\": false, \"detail\": \"Ready\", \"icon\": 2131296357, \"title\": \"eat out\"}, {\"checked\": false, \"detail\": \"Ready\", \"icon\": 2131296296, \"title\": \"programming\"}, {\"checked\": false, \"detail\": \"Ready\", \"icon\": 2131296305, \"title\": \"reading\"}, {\"checked\": false, \"detail\": \"Ready\", \"icon\": 2131296375, \"title\": \"exam\"}, {\"checked\": false, \"detail\": \"Ready\", \"icon\": 2131296710, \"title\": \"watch tv\"}, {\"checked\": false, \"detail\": \"Ready\", \"icon\": 2131296375, \"title\": \"work out\"}, {\"checked\": false, \"detail\": \"Ready\", \"icon\": 2131296477, \"title\": \"feed pets\"}, {\"checked\": false, \"detail\": \"Ready\", \"icon\": 2131296375, \"title\": \"feed pets\"}, {\"checked\": false, \"detail\": \"Ready\", \"icon\": 2131296305, \"title\": \"reading\"}, {\"checked\": false, \"detail\": \"Ready\", \"icon\": 2131296422, \"title\": \"work out\"}, {\"checked\": false, \"detail\": \"Ready\", \"icon\": 2131296477, \"title\": \"cleaning\"}, {\"checked\": false, \"detail\": \"Ready\", \"icon\": 2131296711, \"title\": \"watch tv\"}, {\"checked\": false, \"detail\": \"Ready\", \"icon\": 2131296710, \"title\": \"watch tv\"}, {\"checked\": false, \"detail\": \"Ready\", \"icon\": 2131296557, \"title\": \"take a walk\"}]");
+        editor.commit();
+    }
+
 
     @OnClick(R.id.checklist_add_fab)
     void addChecklist(View v){
@@ -119,6 +156,7 @@ public class ChecklistHomeActivity extends AppCompatActivity {
             }
         });
         editor.commit();
+        data.clear();
         adapter.notifyDataSetChanged();
     }
 
@@ -210,8 +248,7 @@ public class ChecklistHomeActivity extends AppCompatActivity {
 
 
     private String getToken(String timetableName){
-        String android_id = Settings.Secure.getString(getContentResolver(),
-                Settings.Secure.ANDROID_ID);
+        String android_id = getSharedPreferences(Utils.EMAIL_PWD, Context.MODE_PRIVATE).getString("email","");
         return HashGenerator.toHashCode(android_id)+HashGenerator.toHashCode(timetableName);
     }
 
@@ -300,6 +337,8 @@ public class ChecklistHomeActivity extends AppCompatActivity {
     private List<String> getSQLCommands(boolean isShareAll){
        String token=getToken(PREF_NAME);
        ArrayList<String> sql=new ArrayList<>();
+       SharedPreferences sp =getSharedPreferences(Utils.EMAIL_PWD, Context.MODE_PRIVATE);
+       String userID = Utils.MD5(sp.getString("email", null),Utils.ID_LEN);
        for(DataModel model:data){
            boolean checked=model.isChecked();
            String title=model.getTitle();
@@ -307,8 +346,8 @@ public class ChecklistHomeActivity extends AppCompatActivity {
            int icon=model.getIcon();
            sql.add(String.format(Locale.US,
                    "insert into dbo.user_checklist(checked,title,detail,icon,"+
-                           "token,public_share) values(%d,'%s', '%s',%d,'%s',%d)",checked?1:0,title,detail,icon,token,
-                   isShareAll?1:0));
+                           "token,public_share,user_id) values(%d,'%s', '%s',%d,'%s',%d,'%s')",checked?1:0,title,detail,icon,token,
+                   isShareAll?1:0,userID));
        }
        return sql;
     }
@@ -327,6 +366,7 @@ public class ChecklistHomeActivity extends AppCompatActivity {
         SharedPreferences pref= PreferenceManager.getDefaultSharedPreferences(this);
         String raw=pref.getString(PREF_NAME,"");
         if(!TextUtils.isEmpty(raw)){
+            System.out.println(raw);
             Gson gson=new Gson();
             this.data=gson.fromJson(raw,new TypeToken<ArrayList<DataModel>>(){}.getType());
         }

@@ -23,7 +23,6 @@
     <ImageView
         android:scaleX="1.5"
         android:scaleY="1.5"
-        android:id="@+id/clock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/clock_64"
@@ -46,7 +45,6 @@
         android:textSize="20sp" />
 
     <ImageView
-        android:id="@+id/theme"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"

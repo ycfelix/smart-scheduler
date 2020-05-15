@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
 
 import com.github.tlaabs.timetableview.Schedule;
 import com.github.tlaabs.timetableview.Time;
@@ -12,6 +11,8 @@ import com.github.tlaabs.timetableview.TimetableView;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+
+import androidx.annotation.Nullable;
 
 public class TimetableLoader extends Application {
 

@@ -96,6 +96,9 @@ public class EditDialog extends Dialog {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 schedule.setDay(position);
+                if(position>3){
+                    schedule.setDay(position-3);
+                }
                 ((TextView)daySpinner.getSelectedView()).
                         setText(parent.getItemAtPosition(position).toString());
             }
