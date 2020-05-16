@@ -168,6 +168,16 @@ public class BarchartFragment extends Fragment {
 
         return  root;
     }
+
+    private long getOtherTime(){
+        long otherTime = 0;
+        for(int i=6;i<showList.size();i++) {
+            AppInfo e=showList.get(i);
+            otherTime += e.getUsedTimebyDay();
+        }
+        return  otherTime;
+    }
+
     private void setBarData() {
 
         ArrayList<BarEntry> barEntries = new ArrayList<BarEntry>();
@@ -177,12 +187,7 @@ public class BarchartFragment extends Fragment {
             barEntries.add(new BarEntry(i, t));
         }
         if(showList.size()>=6){
-            long otherTime = 0;
-            for(int i=6;i<showList.size();i++) {
-                AppInfo e=showList.get(i);
-                otherTime += e.getUsedTimebyDay();
-            }
-            float t= (float) (1.0 * otherTime / 1000 / 60);
+            float t= (float) (1.0 * getOtherTime() / 1000 / 60);
             barEntries.add(new BarEntry(6,t));
             barEntries.add(new BarEntry(6,t));
         }

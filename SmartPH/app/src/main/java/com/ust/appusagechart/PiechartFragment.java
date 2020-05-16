@@ -22,6 +22,7 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.ust.smartph.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,7 +40,7 @@ public class PiechartFragment extends Fragment {
 
     private int style = AppUsageInfo.DAY;
 
-    private long totaltime;
+    private long tt;
 
 
 
@@ -76,34 +77,39 @@ public class PiechartFragment extends Fragment {
         return root;
     }
 
+    private long getOtherTime(ArrayList<AppInfo> showList ){
+        long otherTime = 0;
+        for(int i=6;i<showList.size();i++) {
+            AppInfo e=showList.get(i);
+            otherTime += e.getUsedTimebyDay();
+        }
+        return  otherTime;
+    }
+
     private void setChartPieData(int style) {
 
         AppUsageInfo statisticsInfo = new AppUsageInfo(getActivity(),style);
 
-        ArrayList<AppInfo> ShowList = statisticsInfo.getShowList();
+        ArrayList<AppInfo> showList = statisticsInfo.getShowList();
 
-        totaltime = statisticsInfo.getTotalTime();
+        tt = statisticsInfo.getTotalTime();
 
-        SpannableString sp = new SpannableString("total used time " + DateUtils.formatElapsedTime(totaltime / 1000));
+        SpannableString sp = new SpannableString("total used time " + DateUtils.formatElapsedTime(tt / 1000));
         sp.setSpan(new RelativeSizeSpan(1.35f), 0, sp.length(), 0);
         sp.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), 0, sp.length(), 0);
         usedTime.setText(sp);
 
         ArrayList<PieEntry> entries = new ArrayList<>();
 
-        for (int i = 0; i < Math.min(ShowList.size(),6); i++) {
-            float t = (float)ShowList.get(i).getUsedTimebyDay() / 1000;
-            if(t / totaltime * 1000 >= 0.01)
-                entries.add(new PieEntry(t, ShowList.get(i).getLabel()));
+        for (int i = 0; i < Math.min(showList.size(),6); i++) {
+            float t = (float)showList.get(i).getUsedTimebyDay() / 1000;
+            if(t / tt * 1000 >= 0.01)
+                entries.add(new PieEntry(t, showList.get(i).getLabel()));
         }
 
-        if(ShowList.size() >= 6) {
-            long t = 0;
-            for(int i=6;i<ShowList.size();i++) {
-                t += ShowList.get(i).getUsedTimebyDay() / 1000;
-            }
-            if(1.0 * t / totaltime * 1000 >= 0.01)
-                entries.add(new PieEntry((float)t, "other app"));
+        if(showList.size() >= 6) {
+            if(1.0 * getOtherTime(showList) / tt * 1000 >= 0.01)
+                entries.add(new PieEntry(getOtherTime(showList), "other app"));
         }
 
         entries.forEach(e-> System.out.println(e.getLabel()));
@@ -119,29 +125,17 @@ public class PiechartFragment extends Fragment {
         chart.invalidate();
     }
 
+
+
     private PieDataSet getDataSet(ArrayList<PieEntry> entries){
         PieDataSet dataSet = new PieDataSet(entries, "Results");
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
         ArrayList<Integer> colors = new ArrayList<Integer>();
-
-        for (int c : ColorTemplate.VORDIPLOM_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.JOYFUL_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.COLORFUL_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.LIBERTY_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.PASTEL_COLORS)
-            colors.add(c);
-
+        int[][] templates={ ColorTemplate.VORDIPLOM_COLORS,ColorTemplate.JOYFUL_COLORS,
+                ColorTemplate.COLORFUL_COLORS,ColorTemplate.LIBERTY_COLORS,ColorTemplate.PASTEL_COLORS};
+        Arrays.stream(templates).forEach(e-> Arrays.stream(e).forEach(colors::add));
         colors.add(ColorTemplate.getHoloBlue());
-
         dataSet.setColors(colors);
         dataSet.setValueLinePart1OffsetPercentage(80.f);
         dataSet.setValueLinePart1Length(0.2f);
