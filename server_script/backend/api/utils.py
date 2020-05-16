@@ -237,9 +237,9 @@ def get_timetable_similar_user(user_id, n):
         sorted_user = same_day.sort_values(by=["title_score"], ascending=False)
         return sorted_user.iloc[:n]['user_id'].tolist()
     except ValueError as e:
-        abort(500, {'error_msg': 'Please check your user_id and num_user in your JSON string', 'system error_msg': str(e)})
+        abort(500, {'error_msg': 'Please check your user_id and num_user in your JSON string', 'system_msg': str(e)})
     except KeyError as ke:
-        abort(500, {'error_msg': 'Please check your user_id in your JSON string', 'system error_msg': str(ke)})
+        abort(500, {'error_msg': 'Please check your user_id in your JSON string', 'system_msg': str(ke)})
 
 def get_checklist_similar_user(user_id, n):
     '''

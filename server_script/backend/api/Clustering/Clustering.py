@@ -1,22 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-
-# In[1]:
-
-
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -53,9 +34,14 @@ def importData():
     lngSet=[]
     for i in range(len(result)):
         currentRecord=result[i]
-        userIDSet.append(currentRecord['userId'])
-        latSet.append(currentRecord['lat'])
-        lngSet.append(currentRecord['lng'])
+        # print ("currentRecord = " + str(currentRecord))
+        # print ("type of currentRecourd = " + str(type(currentRecord).__name__))
+        # print ("currentRecord['UserID'] = " + str(currentRecord['UserID']))
+        # print ("currentRecord['Lat'] = " + str(currentRecord['Lat']))
+        # print ("currentRecord['Lng'] = " + str(currentRecord['Lng']))
+        userIDSet.append(currentRecord['UserID'])
+        latSet.append(currentRecord['Lat'])
+        lngSet.append(currentRecord['Lng'])
     # print("userIDSet:")
     # print(userIDSet)
     # print("latSet:")
