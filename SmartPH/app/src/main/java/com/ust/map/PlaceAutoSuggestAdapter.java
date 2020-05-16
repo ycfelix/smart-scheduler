@@ -4,18 +4,12 @@ import android.content.Context;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
-
 import java.util.ArrayList;
 
-//import com.example.android_auto_complete_location.models.PlaceApi;
-
 public class PlaceAutoSuggestAdapter extends ArrayAdapter implements Filterable {
-
     ArrayList<String> results;
-
     int resource;
     Context context;
-
     PlaceApi placeApi=new PlaceApi();
 
     public PlaceAutoSuggestAdapter(Context context, int resId){
@@ -43,7 +37,6 @@ public class PlaceAutoSuggestAdapter extends ArrayAdapter implements Filterable 
                 FilterResults filterResults=new FilterResults();
                 if(constraint!=null){
                     results=placeApi.autoComplete(constraint.toString());
-
                     filterResults.values=results;
                     filterResults.count=results.size();
                 }
@@ -63,5 +56,4 @@ public class PlaceAutoSuggestAdapter extends ArrayAdapter implements Filterable 
         };
         return filter;
     }
-
 }
