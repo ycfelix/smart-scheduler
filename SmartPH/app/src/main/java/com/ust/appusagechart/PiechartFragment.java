@@ -63,20 +63,20 @@ public class PiechartFragment extends Fragment {
         chart.setRotationAngle(0);
         chart.setRotationEnabled(true);
         chart.setHighlightPerTapEnabled(true);
-        setData(this.style);
+        setChartPieData(this.style);
         chart.animateY(1400, Easing.EaseInOutQuad);
-        Legend l = chart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-        l.setOrientation(Legend.LegendOrientation.VERTICAL);
-        l.setDrawInside(false);
-        l.setEnabled(false);
-        l.setTextColor(Color.BLACK);
+        Legend chartLegend = chart.getLegend();
+        chartLegend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        chartLegend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        chartLegend.setOrientation(Legend.LegendOrientation.VERTICAL);
+        chartLegend.setDrawInside(false);
+        chartLegend.setEnabled(false);
+        chartLegend.setTextColor(Color.BLACK);
 
         return root;
     }
 
-    private void setData(int style) {
+    private void setChartPieData(int style) {
 
         AppUsageInfo statisticsInfo = new AppUsageInfo(getActivity(),style);
 
@@ -92,27 +92,37 @@ public class PiechartFragment extends Fragment {
         ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
 
         for (int i = 0; i < Math.min(ShowList.size(),6); i++) {
-            float apptime = (float)ShowList.get(i).getUsedTimebyDay() / 1000;
-            if(apptime / totaltime * 1000 >= 0.01)
-                entries.add(new PieEntry(apptime, ShowList.get(i).getLabel()));
+            float t = (float)ShowList.get(i).getUsedTimebyDay() / 1000;
+            if(t / totaltime * 1000 >= 0.01)
+                entries.add(new PieEntry(t, ShowList.get(i).getLabel()));
         }
 
         if(ShowList.size() >= 6) {
-            long otherTime = 0;
+            long t = 0;
             for(int i=6;i<ShowList.size();i++) {
-                otherTime += ShowList.get(i).getUsedTimebyDay() / 1000;
+                t += ShowList.get(i).getUsedTimebyDay() / 1000;
             }
-            if(1.0 * otherTime / totaltime * 1000 >= 0.01)
-                entries.add(new PieEntry((float)otherTime, "other app"));
+            if(1.0 * t / totaltime * 1000 >= 0.01)
+                entries.add(new PieEntry((float)t, "other app"));
         }
 
         entries.forEach(e-> System.out.println(e.getLabel()));
+
+
+        PieData data = new PieData(getDataSet(entries));
+        data.setValueFormatter(new PercentFormatter());
+        data.setValueTextSize(11f);
+        data.setValueTextColor(Color.BLACK);
+        chart.setData(data);
+        chart.highlightValues(null);
+        chart.setEntryLabelColor(Color.BLACK);
+        chart.invalidate();
+    }
+
+    private PieDataSet getDataSet(ArrayList<PieEntry> entries){
         PieDataSet dataSet = new PieDataSet(entries, "Results");
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
-
-        // add a lot of colors
-
         ArrayList<Integer> colors = new ArrayList<Integer>();
 
         for (int c : ColorTemplate.VORDIPLOM_COLORS)
@@ -137,14 +147,6 @@ public class PiechartFragment extends Fragment {
         dataSet.setValueLinePart1Length(0.2f);
         dataSet.setValueLinePart2Length(0.4f);
         dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-
-        PieData data = new PieData(dataSet);
-        data.setValueFormatter(new PercentFormatter());
-        data.setValueTextSize(11f);
-        data.setValueTextColor(Color.BLACK);
-        chart.setData(data);
-        chart.highlightValues(null);
-        chart.setEntryLabelColor(Color.BLACK);
-        chart.invalidate();
+        return dataSet;
     }
 }
