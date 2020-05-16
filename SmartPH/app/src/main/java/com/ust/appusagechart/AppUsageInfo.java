@@ -52,18 +52,13 @@ public class AppUsageInfo {
             }
         }
 
-        Collections.sort(this.appList, new Comparator<AppInfo>() {
-            @Override
-            public int compare(AppInfo o1, AppInfo o2) {
-                return Long.compare(o1.getUsedTimebyDay(), o2.getUsedTimebyDay());
-            }
-        });
+        Collections.sort(this.appList, (o1, o2) -> Long.compare(o1.getUsedTimebyDay(), o2.getUsedTimebyDay()));
     }
 
     private void setUsageStatsList(Context context) {
-        UsageStatsManager m = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+        UsageStatsManager manager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
         this.infoList = new ArrayList<>();
-        if (m == null) {
+        if (manager == null) {
             System.out.println("stat manager is null!");
             return;
         }
@@ -72,20 +67,20 @@ public class AppUsageInfo {
         long begin = getBeginTime();
         switch (style) {
             case DAY:
-                this.result = m.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, begin, now);
-                infoList = getStatsList(context, result, m, begin, now);
+                this.result = manager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, begin, now);
+                infoList = getStatsList(context, result, manager, begin, now);
                 break;
             case WEEK:
-                this.result = m.queryUsageStats(UsageStatsManager.INTERVAL_WEEKLY, begin, now);
+                this.result = manager.queryUsageStats(UsageStatsManager.INTERVAL_WEEKLY, begin, now);
                 break;
             case MONTH:
-                this.result = m.queryUsageStats(UsageStatsManager.INTERVAL_MONTHLY, begin, now);
+                this.result = manager.queryUsageStats(UsageStatsManager.INTERVAL_MONTHLY, begin, now);
                 break;
             case YEAR:
-                this.result = m.queryUsageStats(UsageStatsManager.INTERVAL_YEARLY, begin, now);
+                this.result = manager.queryUsageStats(UsageStatsManager.INTERVAL_YEARLY, begin, now);
                 break;
             default:
-                this.result = m.queryUsageStats(UsageStatsManager.INTERVAL_BEST, begin, now);
+                this.result = manager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, begin, now);
                 break;
         }
         if (style != DAY) {
@@ -104,25 +99,25 @@ public class AppUsageInfo {
         return information;
     }
 
-    private ArrayList<AppInfo> getStatsList(Context context, List<UsageStats> result, UsageStatsManager m, long begintime, long now) {
-        HashMap<String, AppInfo> mapData = new HashMap<>();
+    private ArrayList<AppInfo> getStatsList(Context context, List<UsageStats> result, UsageStatsManager manager, long begintime, long now) {
+        HashMap<String, AppInfo> map = new HashMap<>();
         for (UsageStats stats : result) {
             if (stats.getLastTimeUsed() > begintime && stats.getTotalTimeInForeground() > 0) {
                 String name = stats.getPackageName();
-                if (mapData.get(name) != null) {
+                if (map.get(name) != null) {
                     continue;
                 }
-                mapData.put(name, getInfo(stats, context));
+                map.put(name, getInfo(stats, context));
             }
         }
         long bootTime = AppInfo.bootTime();
-        UsageEvents events = m.queryEvents(bootTime, now);
+        UsageEvents events = manager.queryEvents(bootTime, now);
 
         UsageEvents.Event event = new UsageEvents.Event();
         while (events.hasNextEvent()) {
             events.getNextEvent(event);
             String name = event.getPackageName();
-            AppInfo info = mapData.get(name);
+            AppInfo info = map.get(name);
             if (info == null) {
                 continue;
             }
@@ -149,7 +144,7 @@ public class AppUsageInfo {
             info.calRunTime();
         }
 
-        return new ArrayList<>(mapData.values());
+        return new ArrayList<>(map.values());
     }
 
 

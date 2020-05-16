@@ -89,7 +89,7 @@ public class PiechartFragment extends Fragment {
         sp.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), 0, sp.length(), 0);
         usedTime.setText(sp);
 
-        ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
+        ArrayList<PieEntry> entries = new ArrayList<>();
 
         for (int i = 0; i < Math.min(ShowList.size(),6); i++) {
             float t = (float)ShowList.get(i).getUsedTimebyDay() / 1000;

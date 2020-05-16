@@ -172,26 +172,28 @@ public class BarchartFragment extends Fragment {
 
         ArrayList<BarEntry> barEntries = new ArrayList<BarEntry>();
         for (int i = 0; i < Math.min(showList.size(),6); i++) {
-            float value = (float)(1.0 * showList.get(i).getUsedTimebyDay() / 1000 / 60);
-            barEntries.add(new BarEntry(i, value));
+            AppInfo e=showList.get(i);
+            float t= (float) (1.0 * e.getUsedTimebyDay() / 1000 / 60);
+            barEntries.add(new BarEntry(i, t));
         }
         if(showList.size()>=6){
             long otherTime = 0;
             for(int i=6;i<showList.size();i++) {
-                otherTime += showList.get(i).getUsedTimebyDay();
+                AppInfo e=showList.get(i);
+                otherTime += e.getUsedTimebyDay();
             }
-            barEntries.add(new BarEntry(6,(float)(1.0 * otherTime / 1000 / 60)));
-            barEntries.add(new BarEntry(6,(float)(1.0 * otherTime / 1000 / 60)));
+            float t= (float) (1.0 * otherTime / 1000 / 60);
+            barEntries.add(new BarEntry(6,t));
+            barEntries.add(new BarEntry(6,t));
         }
-        BarDataSet barDataSet;
         if (chart.getData() != null &&
                 chart.getData().getDataSetCount() > 0) {
-            barDataSet = (BarDataSet) chart.getData().getDataSetByIndex(0);
+            BarDataSet barDataSet = (BarDataSet) chart.getData().getDataSetByIndex(0);
             barDataSet.setValues(barEntries);
             chart.getData().notifyDataChanged();
             chart.notifyDataSetChanged();
         } else {
-            barDataSet = new BarDataSet(barEntries, "Different APPs");
+            BarDataSet barDataSet = new BarDataSet(barEntries, "Different APPs");
             barDataSet.setGradientColors(generateColor(ColorTemplate.JOYFUL_COLORS));
             ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
             dataSets.add(barDataSet);

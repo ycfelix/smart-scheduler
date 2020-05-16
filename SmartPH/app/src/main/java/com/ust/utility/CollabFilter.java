@@ -43,27 +43,22 @@ public class CollabFilter {
         String url = "http://13.70.2.33/api/distance_matrix/2";
         RequestQueue queue = Volley.newRequestQueue(context);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray result= response.getJSONArray("result");
-                            if(result.length()==0){
-                                return;
-                            }
-                            String uid=result.getString((int)Math.floor((Math.random()*result.length())));
-                            onReceiveListener.onReceive(uid);
-                        } catch (JSONException e) {
-                            Toast.makeText(context, "Make sure you have uploaded schedule history!", Toast.LENGTH_SHORT).show();
-                            e.printStackTrace();
+                response -> {
+                    try {
+                        JSONArray result= response.getJSONArray("result");
+                        if(result.length()==0){
+                            return;
                         }
+                        String uid=result.getString((int)Math.floor((Math.random()*result.length())));
+                        onReceiveListener.onReceive(uid);
+                    } catch (JSONException e) {
+                        Toast.makeText(context, "Make sure you have uploaded schedule history!", Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
                     }
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        System.out.println(error.toString());
-                    }
+                error -> {
+                    Toast.makeText(context, "Error! Make sure you have upload schedule history!", Toast.LENGTH_SHORT).show();
+                    System.out.println(error.toString());
                 }
         );
         queue.add(request);

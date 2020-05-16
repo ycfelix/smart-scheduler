@@ -13,16 +13,16 @@ import android.text.TextUtils;
 
 public class AppInfo {
     private UsageStats usageStats;
-    private String packageName;
-    private String label;
     private long UsedTimebyDay;
     private Context context;
-    private int times;
+    private int t;
     private Bitmap appIcon;
     private Drawable drawableIcon;
     private long lastUsedTime;
     private long timeStampMoveToForeground = -1;
     private long timeStampMoveToBackGround = -1;
+    private String pkgname;
+    private String label;
 
     public AppInfo(UsageStats usageStats, Context context) {
         this.usageStats = usageStats;
@@ -53,12 +53,12 @@ public class AppInfo {
 
     private void generateInfo() throws Exception {
         PackageManager packageManager = context.getPackageManager();
-        this.packageName = usageStats.getPackageName();
-        if (!TextUtils.isEmpty(this.packageName)) {
-            ApplicationInfo info = packageManager.getApplicationInfo(this.packageName, 0);
+        this.pkgname = usageStats.getPackageName();
+        if (!TextUtils.isEmpty(this.pkgname)) {
+            ApplicationInfo info = packageManager.getApplicationInfo(this.pkgname, 0);
             this.label = (String) packageManager.getApplicationLabel(info);
             this.UsedTimebyDay = usageStats.getTotalTimeInForeground();
-            this.times = (Integer) usageStats.getClass().getDeclaredField("mLaunchCount").get(usageStats);
+            this.t = (Integer) usageStats.getClass().getDeclaredField("mLaunchCount").get(usageStats);
             if (this.UsedTimebyDay > 0) {
                 this.drawableIcon=info.loadIcon(packageManager);
                 this.appIcon=drawableToBitmap(this.drawableIcon);
@@ -76,11 +76,11 @@ public class AppInfo {
     }
 
     public int getTimes() {
-        return times;
+        return t;
     }
 
     public void setTimes(int times) {
-        this.times = times;
+        this.t = times;
     }
 
     public void setUsagePerDay(long usedTimebyDay) {
@@ -100,7 +100,7 @@ public class AppInfo {
     }
 
     public String getPackageName() {
-        return packageName;
+        return pkgname;
     }
 
     public void setForeground(long timeStampMoveToForeground) {
@@ -108,7 +108,7 @@ public class AppInfo {
     }
 
     public void timesAdd(){
-        times++;
+        t++;
     }
 
     public void setBackground(long timeStampMoveToBackGround) {
