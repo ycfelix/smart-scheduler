@@ -9,107 +9,96 @@ import itertools, pyodbc, json, random, pandas as pd
 '''
 test data
 '''
-test_ttb_chklist = '{ \
-    "type": "query", \
-    "result": [ \
-        { \
-            "class_title": "good_class", \
-            "user_id": "2", \
-            "day_of_week": 1, \
-            "icon": 45745, \
-            "title": "bygsdgs!" \
-        }, \
-        { \
-            "class_title": "good_class", \
-            "user_id": "4", \
-            "day_of_week": 6, \
-            "icon": 1234, \
-            "title": "drfyr!" \
-        }, \
-        { \
-            "class_title": "sad_class", \
-            "user_id": "3", \
-            "day_of_week": 3, \
-            "icon": 1234, \
-            "title": "sdfgdcvbt!" \
-        }, \
-        { \
-            "class_title": "happy_class", \
-            "user_id": "1", \
-            "day_of_week": 3, \
-            "icon": 299, \
-            "title": "fgert34!" \
-        } \
-    ] \
-}'
+# test_ttb_chklist = '{ \
+#     "type": "query", \
+#     "result": [ \
+#         { \
+#             "class_title": "good_class", \
+#             "user_id": "2", \
+#             "day_of_week": 1, \
+#             "icon": 45745, \
+#             "title": "bygsdgs!" \
+#         }, \
+#         { \
+#             "class_title": "good_class", \
+#             "user_id": "4", \
+#             "day_of_week": 6, \
+#             "icon": 1234, \
+#             "title": "drfyr!" \
+#         }, \
+#         { \
+#             "class_title": "sad_class", \
+#             "user_id": "3", \
+#             "day_of_week": 3, \
+#             "icon": 1234, \
+#             "title": "sdfgdcvbt!" \
+#         }, \
+#         { \
+#             "class_title": "happy_class", \
+#             "user_id": "1", \
+#             "day_of_week": 3, \
+#             "icon": 299, \
+#             "title": "fgert34!" \
+#         } \
+#     ] \
+# }'
 
-test_cldr = '{ \
-    "type": "query", \
-    "result": [ \
-        { \
-            "EventId": "1", \
-            "user_id": "2", \
-            "Time": "10:20 PM", \
-            "Date": "2020-04-09", \
-            "EventMonth": "April", \
-            "EventYear": "2020", \
-            "Notify": "off", \
-            "Type": "Exercise", \
-            "Event": "bygsdgs!" \
-        }, \
-        { \
-            "EventId": "2", \
-            "user_id": "4", \
-            "Time": "10:20 PM", \
-            "Date": "2020-04-09", \
-            "EventMonth": "April", \
-            "EventYear": "2020", \
-            "Notify": "off", \
-            "Type": "Study", \
-            "Event": "drfyr!" \
-        }, \
-        { \
-            "EventId": "3", \
-            "user_id": "3", \
-            "Time": "10:20 PM", \
-            "Date": "2020-04-09", \
-            "EventMonth": "April", \
-            "EventYear": "2020", \
-            "Notify": "off", \
-            "Type": "Study", \
-            "Event": "fgert34!" \
-        }, \
-        { \
-           "EventId": "4", \
-            "user_id": "1", \
-            "Time": "10:20 PM", \
-            "Date": "2020-04-09", \
-            "EventMonth": "April", \
-            "EventYear": "2020", \
-            "Notify": "off", \
-            "Type": "Study", \
-            "Event": "fgert34!" \
-        } \
-    ] \
-}'
+# test_cldr = '{ \
+#     "type": "query", \
+#     "result": [ \
+#         { \
+#             "EventId": "1", \
+#             "user_id": "2", \
+#             "Time": "10:20 PM", \
+#             "Date": "2020-04-09", \
+#             "EventMonth": "April", \
+#             "EventYear": "2020", \
+#             "Notify": "off", \
+#             "Type": "Exercise", \
+#             "Event": "bygsdgs!" \
+#         }, \
+#         { \
+#             "EventId": "2", \
+#             "user_id": "4", \
+#             "Time": "10:20 PM", \
+#             "Date": "2020-04-09", \
+#             "EventMonth": "April", \
+#             "EventYear": "2020", \
+#             "Notify": "off", \
+#             "Type": "Study", \
+#             "Event": "drfyr!" \
+#         }, \
+#         { \
+#             "EventId": "3", \
+#             "user_id": "3", \
+#             "Time": "10:20 PM", \
+#             "Date": "2020-04-09", \
+#             "EventMonth": "April", \
+#             "EventYear": "2020", \
+#             "Notify": "off", \
+#             "Type": "Study", \
+#             "Event": "fgert34!" \
+#         }, \
+#         { \
+#            "EventId": "4", \
+#             "user_id": "1", \
+#             "Time": "10:20 PM", \
+#             "Date": "2020-04-09", \
+#             "EventMonth": "April", \
+#             "EventYear": "2020", \
+#             "Notify": "off", \
+#             "Type": "Study", \
+#             "Event": "fgert34!" \
+#         } \
+#     ] \
+# }'
 
 '''
 server connection helpers
 '''
 
 def getJSON():
-    # print ("base_url = " + request.base_url)
-    # print ("request.get_data() = " + str(request.get_data()))
-    # print ("request.headers = " + str(request.headers))
-    # print ("request.get_json() = " + str(request.get_json()))
-    # print ("type of request.get_json() = " + type(request.get_json()).__name__)
-
-    # print ("request.values.get('db_name') = " + str(request.values.get('db_name')))
-    # print ("request.values.get('sql_cmd') = " + str(request.values.get('sql_cmd')))
-    # print ("request.values.get('user_id') = " + str(request.values.get('user_id')))
-    # print ("request.values.get('num_user') = " + str(request.values.get('num_user')))
     if (type(request.get_json()).__name__ == 'NoneType'):
-        # print ('haha')
         result = {}
         result['db_name'] = request.values.get('db_name')
         result['sql_cmd'] = request.values.get('sql_cmd')
@@ -117,10 +106,8 @@ def getJSON():
         result['num_user'] = request.values.get('num_user')
         return result
     elif (type(request.get_json()).__name__ == 'str'):
-        # print ('hehe')
         return json.loads(request.get_json())
     else:
-        # print ('hoho')
         return request.get_json()
 
 def getCnxn(db_name, port=1433):

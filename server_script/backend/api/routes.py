@@ -7,17 +7,12 @@ import itertools, pyodbc
 
 api = Blueprint('api', __name__)
 bad_request_code = 400
-# send string request suggestion
-# receive -> call function -> give back to them
 api = Blueprint('api', __name__)
 
 @api.route('/api/sql_db', methods=['POST'])
 def sql_post():
 	json = getJSON()
 	return_dict = {}
-	# print('type of json = ' + str(type(json)))
-	# print("request = " + str(request.method))
-	# print('request.db_name = ' + str(request.values.get('db_name')))
 	if not "db_name" in json:
 	    return jsonify({'error_msg': 'Database name field does not exist (db_name)'}), bad_request_code
 	elif not "sql_cmd" in json:
@@ -107,9 +102,6 @@ def getDistMetric(typ):
 		return jsonify(return_dict), bad_request_code
 
 	else:
-		# print (json)
-		# print (json.get('num_user'))
-		# print (json.get('user_id'))
 		if json.get('user_id') == None or json.get('user_id') == '':
 			return_dict['type'] = 'missing parameter(s):'
 			return_dict['result'] = 'user_id'
