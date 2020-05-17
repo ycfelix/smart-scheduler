@@ -108,7 +108,7 @@ public class BarchartFragment extends Fragment {
         rightAxis.setLabelCount(8, false);
         rightAxis.setValueFormatter(custom);
         rightAxis.setSpaceTop(15f);
-        rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+        rightAxis.setAxisMinimum(0f);
     }
 
 
@@ -126,17 +126,17 @@ public class BarchartFragment extends Fragment {
         setLeftAxis();
         setRightAxis();
         chart.animateY(1500);
-        Legend l = chart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
-        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-        l.setDrawInside(false);
-        l.setForm(Legend.LegendForm.SQUARE);
-        l.setFormSize(9f);
-        l.setTextSize(11f);
-        l.setXEntrySpace(4f);
+        Legend chartLegend = chart.getLegend();
+        chartLegend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        chartLegend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
+        chartLegend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        chartLegend.setDrawInside(false);
+        chartLegend.setForm(Legend.LegendForm.SQUARE);
+        chartLegend.setFormSize(9f);
+        chartLegend.setTextSize(11f);
+        chartLegend.setXEntrySpace(4f);
 
-        setDataBarChart();
+        setBarData();
         chart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
@@ -168,33 +168,40 @@ public class BarchartFragment extends Fragment {
 
         return  root;
     }
-    private void setDataBarChart() {
 
-        ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
+    private long getOtherTime(){
+        long otherTime = 0;
+        for(int i=6;i<showList.size();i++) {
+            AppInfo e=showList.get(i);
+            otherTime += e.getUsedTimebyDay();
+        }
+        return  otherTime;
+    }
+
+    private void setBarData() {
+
+        ArrayList<BarEntry> barEntries = new ArrayList<BarEntry>();
         for (int i = 0; i < Math.min(showList.size(),6); i++) {
-            float value = (float)(1.0 * showList.get(i).getUsedTimebyDay() / 1000 / 60);
-            yVals1.add(new BarEntry(i, value));
+            AppInfo e=showList.get(i);
+            float t= (float) (1.0 * e.getUsedTimebyDay() / 1000 / 60);
+            barEntries.add(new BarEntry(i, t));
         }
         if(showList.size()>=6){
-            long otherTime = 0;
-            for(int i=6;i<showList.size();i++) {
-                otherTime += showList.get(i).getUsedTimebyDay();
-            }
-            yVals1.add(new BarEntry(6,(float)(1.0 * otherTime / 1000 / 60)));
-            yVals1.add(new BarEntry(6,(float)(1.0 * otherTime / 1000 / 60)));
+            float t= (float) (1.0 * getOtherTime() / 1000 / 60);
+            barEntries.add(new BarEntry(6,t));
+            barEntries.add(new BarEntry(6,t));
         }
-        BarDataSet set1;
         if (chart.getData() != null &&
                 chart.getData().getDataSetCount() > 0) {
-            set1 = (BarDataSet) chart.getData().getDataSetByIndex(0);
-            set1.setValues(yVals1);
+            BarDataSet barDataSet = (BarDataSet) chart.getData().getDataSetByIndex(0);
+            barDataSet.setValues(barEntries);
             chart.getData().notifyDataChanged();
             chart.notifyDataSetChanged();
         } else {
-            set1 = new BarDataSet(yVals1, "Different APPs");
-            set1.setGradientColors(generateColor(ColorTemplate.JOYFUL_COLORS));
+            BarDataSet barDataSet = new BarDataSet(barEntries, "Different APPs");
+            barDataSet.setGradientColors(generateColor(ColorTemplate.JOYFUL_COLORS));
             ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
-            dataSets.add(set1);
+            dataSets.add(barDataSet);
             BarData data = new BarData(dataSets);
             data.setValueTextSize(10f);
             data.setBarWidth(0.9f);
