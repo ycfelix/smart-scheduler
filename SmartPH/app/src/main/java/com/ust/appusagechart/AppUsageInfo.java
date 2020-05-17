@@ -4,9 +4,12 @@ import android.app.usage.UsageEvents;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,8 +21,8 @@ public class AppUsageInfo {
     final public static int MONTH = 2;
     final public static int YEAR = 3;
 
-    private ArrayList<AppInfo> ShowList;
-    private ArrayList<AppInfo> AppInfoList;
+    private ArrayList<AppInfo> appList;
+    private ArrayList<AppInfo> infoList;
     private List<UsageStats> result;
     private long totalTime;
     private int style;
@@ -30,195 +33,207 @@ public class AppUsageInfo {
             setUsageStatsList(context);
             setShowList();
 
-        } catch (NoSuchFieldException e) {
+        } catch (Exception e) {
             System.out.println("name not found");
         }
     }
 
     private void setShowList() {
-        this.ShowList = new ArrayList<>();
+        this.appList = new ArrayList<>();
 
         totalTime = 0;
 
-        for (int i = 0; i < AppInfoList.size(); i++) {
-            if (AppInfoList.get(i).getUsedTimebyDay() > 0) {
-                if(AppInfoList.get(i).getLabel()==null||AppInfoList.get(i).getLabel().isEmpty()) continue;
+        for (int i = 0; i < infoList.size(); i++) {
+            if (infoList.get(i).getUsedTimebyDay() > 0) {
+                if (TextUtils.isEmpty(infoList.get(i).getLabel())) continue;
 
-                this.ShowList.add(AppInfoList.get(i));
-                totalTime += AppInfoList.get(i).getUsedTimebyDay();
+                this.appList.add(infoList.get(i));
+                totalTime += infoList.get(i).getUsedTimebyDay();
             }
         }
-        for (int i = 0; i < this.ShowList.size() - 1; i++) {
-            for (int j = 0; j < this.ShowList.size() - i - 1; j++) {
-                if (this.ShowList.get(j).getUsedTimebyDay() < this.ShowList.get(j + 1).getUsedTimebyDay()) {
-                    AppInfo temp = this.ShowList.get(j);
-                    this.ShowList.set(j, this.ShowList.get(j + 1));
-                    this.ShowList.set(j + 1, temp);
-                }
+
+        Collections.sort(this.appList, (o1, o2) -> Long.compare(o1.getUsedTimebyDay(), o2.getUsedTimebyDay()));
+    }
+
+    private void setUsageStatsList(Context context) {
+        UsageStatsManager manager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+        this.infoList = new ArrayList<>();
+        if (manager == null) {
+            System.out.println("stat manager is null!");
+            return;
+        }
+        Calendar calendar = Calendar.getInstance();
+        long now = calendar.getTimeInMillis();
+        long begin = getBeginTime();
+        switch (style) {
+            case DAY:
+                this.result = manager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, begin, now);
+                infoList = getStatsList(context, result, manager, begin, now);
+                break;
+            case WEEK:
+                this.result = manager.queryUsageStats(UsageStatsManager.INTERVAL_WEEKLY, begin, now);
+                break;
+            case MONTH:
+                this.result = manager.queryUsageStats(UsageStatsManager.INTERVAL_MONTHLY, begin, now);
+                break;
+            case YEAR:
+                this.result = manager.queryUsageStats(UsageStatsManager.INTERVAL_YEARLY, begin, now);
+                break;
+            default:
+                this.result = manager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, begin, now);
+                break;
+        }
+        if (style != DAY) {
+            List<UsageStats> Mergeresult = merge(this.result);
+            for (UsageStats usageStats : Mergeresult) {
+                this.infoList.add(new AppInfo(usageStats, context));
             }
+            calLaunchTime(context, infoList);
         }
     }
 
-    private void setUsageStatsList(Context context) throws NoSuchFieldException {
-        UsageStatsManager m = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
-        this.AppInfoList = new ArrayList<>();
-        if (m != null) {
-            Calendar calendar = Calendar.getInstance();
-            long now = calendar.getTimeInMillis();
-            long begintime = getBeginTime();
-            switch (style){
-                case DAY:
-                    this.result = m.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, begintime, now);
-                    AppInfoList = getAccurateDailyStatsList(context, result, m, begintime, now);
-                    break;
-                case WEEK:
-                    this.result = m.queryUsageStats(UsageStatsManager.INTERVAL_WEEKLY, begintime, now);
-                    break;
-                case MONTH:
-                    this.result = m.queryUsageStats(UsageStatsManager.INTERVAL_MONTHLY, begintime, now);
-                    break;
-                case YEAR:
-                    this.result = m.queryUsageStats(UsageStatsManager.INTERVAL_YEARLY, begintime, now);
-                    break;
-                default:
-                    this.result = m.queryUsageStats(UsageStatsManager.INTERVAL_BEST, begintime, now);
-                    break;
-            }
-            if(style!=DAY){
-                List<UsageStats> Mergeresult = MergeList(this.result);
-                for (UsageStats usageStats : Mergeresult) {
-                    this.AppInfoList.add(new AppInfo(usageStats, context));
-                }
-                calculateLaunchTimesAfterBootOn(context, AppInfoList);
-            }
-        }
+    private AppInfo getInfo(UsageStats stats, Context context) {
+        AppInfo information = new AppInfo(stats, context);
+        information.setTimes(0);
+        information.setUsagePerDay(0);
+        return information;
     }
 
-    private ArrayList<AppInfo> getAccurateDailyStatsList(Context context, List<UsageStats> result, UsageStatsManager m, long begintime, long now) {
-        HashMap<String, AppInfo> mapData = new HashMap<>();
+    private ArrayList<AppInfo> getStatsList(Context context, List<UsageStats> result, UsageStatsManager manager, long begintime, long now) {
+        HashMap<String, AppInfo> map = new HashMap<>();
         for (UsageStats stats : result) {
             if (stats.getLastTimeUsed() > begintime && stats.getTotalTimeInForeground() > 0) {
-                if (mapData.get(stats.getPackageName()) == null) {
-                    AppInfo information = new AppInfo(stats, context);
-                    information.setTimes(0);
-                    information.setUsedTimebyDay(0);
-                    mapData.put(stats.getPackageName(), information);
+                String name = stats.getPackageName();
+                if (map.get(name) != null) {
+                    continue;
                 }
+                map.put(name, getInfo(stats, context));
             }
         }
         long bootTime = AppInfo.bootTime();
-        UsageEvents events = m.queryEvents(bootTime, now);
+        UsageEvents events = manager.queryEvents(bootTime, now);
 
-        UsageEvents.Event e = new UsageEvents.Event();
+        UsageEvents.Event event = new UsageEvents.Event();
         while (events.hasNextEvent()) {
-            events.getNextEvent(e);
-            String packageName = e.getPackageName();
-
-            AppInfo information = mapData.get(packageName);
-            if (information == null) {
+            events.getNextEvent(event);
+            String name = event.getPackageName();
+            AppInfo info = map.get(name);
+            if (info == null) {
                 continue;
             }
-            if (e.getEventType() == UsageEvents.Event.MOVE_TO_FOREGROUND) {
-                information.timesPlusPlus();
-                if (e.getTimeStamp() < begintime){
-                    continue;
+            switch (event.getEventType()) {
+                case UsageEvents.Event.MOVE_TO_FOREGROUND: {
+                    info.timesAdd();
+                    if (event.getTimeStamp() >= begintime) {
+                        info.setForeground(event.getTimeStamp());
+                    }
+                    break;
                 }
-                information.setTimeStampMoveToForeground(e.getTimeStamp());
-            } else if (e.getEventType() == UsageEvents.Event.MOVE_TO_BACKGROUND) {
-                if (e.getTimeStamp() < begintime){
-                    continue;
+                case UsageEvents.Event.MOVE_TO_BACKGROUND: {
+                    if (event.getTimeStamp() >= begintime) {
+                        info.setBackground(event.getTimeStamp());
+                    }
+                    if (info.getForeground() < 0) {
+                        info.setForeground(begintime);
+                    }
+                    break;
                 }
-                information.setTimeStampMoveToBackGround(e.getTimeStamp());
-                if (information.getTimeStampMoveToForeground() < 0) {
-                    information.setTimeStampMoveToForeground(begintime);
-                }
+                default:
+                    break;
             }
-            information.calculateRunningTime();
+            info.calRunTime();
         }
 
-        return new ArrayList<>(mapData.values());
+        return new ArrayList<>(map.values());
     }
 
 
-    private void calculateLaunchTimesAfterBootOn(Context context, List<AppInfo> AppInfoList) {
+    private void calLaunchTime(Context context, List<AppInfo> infos) {
 
         UsageStatsManager m = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
-        if (m == null || AppInfoList == null || AppInfoList.size() < 1) {
+        if (m == null || infos == null || infos.size() < 1) {
             return;
         }
         HashMap<String, AppInfo> mapData = new HashMap<>();
-
         UsageEvents events = m.queryEvents(bootTime(), System.currentTimeMillis());
-        for (AppInfo information : AppInfoList) {
-            mapData.put(information.getPackageName(), information);
-            information.setTimes(0);
-        }
-
+        infos.forEach(e -> {
+            mapData.put(e.getPackageName(), e);
+            e.setTimes(0);
+        });
         UsageEvents.Event e = new UsageEvents.Event();
         while (events.hasNextEvent()) {
             events.getNextEvent(e);
-            String packageName = e.getPackageName();
-            AppInfo information = mapData.get(packageName);
-            if (information == null) {
+            String name = e.getPackageName();
+            AppInfo info = mapData.get(name);
+            if (info == null) {
                 continue;
             }
-
-            if (e.getEventType() == UsageEvents.Event.MOVE_TO_FOREGROUND) {
-                information.timesPlusPlus();
+            switch (e.getEventType()) {
+                case UsageEvents.Event.MOVE_TO_FOREGROUND:
+                    info.timesAdd();
+                    break;
+                default:
+                    break;
             }
         }
     }
 
     private long getBeginTime() {
         Calendar calendar = Calendar.getInstance();
-        long begintime;
-        if (style == WEEK) {
-            calendar.add(Calendar.DATE, -7);
-            begintime = calendar.getTimeInMillis();
-        } else if (style == MONTH) {
-            calendar.add(Calendar.DATE, -30);
-            begintime = calendar.getTimeInMillis();
-        } else if (style == YEAR) {
-            calendar.add(Calendar.YEAR, -1);
-            begintime = calendar.getTimeInMillis();
-        } else {
-            int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            int minute = calendar.get(Calendar.MINUTE);
-            int second = calendar.get(Calendar.SECOND);
+        switch (style) {
+            case WEEK: {
+                calendar.add(Calendar.DATE, -7);
+                break;
+            }
+            case MONTH: {
+                calendar.add(Calendar.DATE, -30);
+                break;
+            }
+            case YEAR: {
+                calendar.add(Calendar.YEAR, -1);
+                break;
+            }
+            default: {
+                int hr = calendar.get(Calendar.HOUR_OF_DAY);
+                int min = calendar.get(Calendar.MINUTE);
+                int sec = calendar.get(Calendar.SECOND);
 
-            calendar.add(Calendar.SECOND, -1 * second);
-            calendar.add(Calendar.MINUTE, -1 * minute);
-            calendar.add(Calendar.HOUR, -1 * hour);
-            begintime = calendar.getTimeInMillis();
-
-        }
-        return begintime;
-    }
-
-    private List<UsageStats> MergeList(List<UsageStats> result) {
-        List<UsageStats> Mergeresult = new ArrayList<>();
-        long begintime;
-        begintime = getBeginTime();
-        for (int i = 0; i < result.size(); i++) {
-            if (result.get(i).getLastTimeUsed() > begintime) {
-                int num = FoundUsageStats(Mergeresult, result.get(i));
-                if (num >= 0) {
-                    UsageStats u = Mergeresult.get(num);
-                    u.add(result.get(i));
-                    Mergeresult.set(num, u);
-                } else Mergeresult.add(result.get(i));
+                calendar.add(Calendar.SECOND, -1 * sec);
+                calendar.add(Calendar.MINUTE, -1 * min);
+                calendar.add(Calendar.HOUR, -1 * hr);
+                break;
             }
         }
-        return Mergeresult;
+        return calendar.getTimeInMillis();
     }
 
-    private int FoundUsageStats(List<UsageStats> Mergeresult, UsageStats usageStats) {
-        for (int i = 0; i < Mergeresult.size(); i++) {
-            if (Mergeresult.get(i).getPackageName().equals(usageStats.getPackageName())) {
-                return i;
+    private List<UsageStats> merge(List<UsageStats> result) {
+        List<UsageStats> merged = new ArrayList<>();
+        long begin = getBeginTime();
+        result.stream()
+                .filter(e -> e.getLastTimeUsed() > begin)
+                .forEach(e -> {
+                    int num = indexOfStats(merged, e);
+                    if (num >= 0) {
+                        UsageStats u = merged.get(num);
+                        u.add(e);
+                        merged.set(num, u);
+                    } else {
+                        merged.add(e);
+                    }
+                });
+        return merged;
+    }
+
+    private int indexOfStats(List<UsageStats> merged, UsageStats usageStats) {
+        int result=-1;
+        for (int i = 0; i < merged.size(); i++) {
+            if (merged.get(i).getPackageName().equals(usageStats.getPackageName())) {
+                result = i;
+                return result;
             }
         }
-        return -1;
+        return result;
     }
 
 
@@ -227,6 +242,6 @@ public class AppUsageInfo {
     }
 
     public ArrayList<AppInfo> getShowList() {
-        return ShowList;
+        return appList;
     }
 }

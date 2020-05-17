@@ -1,7 +1,6 @@
 package com.ust.map;
 
 import com.google.android.gms.maps.model.LatLng;
-
 import java.util.ArrayList;
 
 public class SuggestedPath {

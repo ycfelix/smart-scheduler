@@ -7,9 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.ust.smartph.R;
-
 import java.util.ArrayList;
 
 public class SuggestedPathAdapter extends ArrayAdapter<SuggestedPath> {
@@ -21,19 +19,15 @@ public class SuggestedPathAdapter extends ArrayAdapter<SuggestedPath> {
         super(context, 0 , list);
         mContext = context;
         suggestedPathList = list;
-
-        System.out.println("in SuggestedPathAdapter");
-        System.out.println("alternativeSuggestedPathList size: "+list.size());
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View listItem = convertView;
-        if(listItem == null)
-            listItem = LayoutInflater.from(mContext).inflate(R.layout.list_item,parent,false);
-
+        if(listItem == null) {
+            listItem = LayoutInflater.from(mContext).inflate(R.layout.list_item, parent, false);
+        }
         SuggestedPath currentSuggestedPath = suggestedPathList.get(position);
-
 
         ImageView imageView = (ImageView)listItem.findViewById(R.id.mode);
         imageView.setImageResource(currentSuggestedPath.getModeImageDrawable());

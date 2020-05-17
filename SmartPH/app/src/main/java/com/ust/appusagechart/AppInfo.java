@@ -9,27 +9,28 @@ import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.os.SystemClock;
+import android.text.TextUtils;
 
 public class AppInfo {
     private UsageStats usageStats;
-    private String packageName;
-    private String label;
     private long UsedTimebyDay;
     private Context context;
-    private int times;
+    private int t;
     private Bitmap appIcon;
     private Drawable drawableIcon;
     private long lastUsedTime;
-
-
+    private long timeStampMoveToForeground = -1;
+    private long timeStampMoveToBackGround = -1;
+    private String pkgname;
+    private String label;
 
     public AppInfo(UsageStats usageStats, Context context) {
         this.usageStats = usageStats;
         this.context = context;
 
         try {
-            GenerateInfo();
-        } catch (PackageManager.NameNotFoundException | IllegalAccessException | NoSuchFieldException e) {
+            generateInfo();
+        } catch (Exception e) {
             System.out.println("package not found");
         }
     }
@@ -50,16 +51,16 @@ public class AppInfo {
 
 
 
-    private void GenerateInfo() throws PackageManager.NameNotFoundException, NoSuchFieldException, IllegalAccessException {
+    private void generateInfo() throws Exception {
         PackageManager packageManager = context.getPackageManager();
-        this.packageName = usageStats.getPackageName();
-        if (this.packageName != null && !this.packageName.equals("")) {
-            ApplicationInfo applicationInfo = packageManager.getApplicationInfo(this.packageName, 0);
-            this.label = (String) packageManager.getApplicationLabel(applicationInfo);
+        this.pkgname = usageStats.getPackageName();
+        if (!TextUtils.isEmpty(this.pkgname)) {
+            ApplicationInfo info = packageManager.getApplicationInfo(this.pkgname, 0);
+            this.label = (String) packageManager.getApplicationLabel(info);
             this.UsedTimebyDay = usageStats.getTotalTimeInForeground();
-            this.times = (Integer) usageStats.getClass().getDeclaredField("mLaunchCount").get(usageStats);
+            this.t = (Integer) usageStats.getClass().getDeclaredField("mLaunchCount").get(usageStats);
             if (this.UsedTimebyDay > 0) {
-                this.drawableIcon=applicationInfo.loadIcon(packageManager);
+                this.drawableIcon=info.loadIcon(packageManager);
                 this.appIcon=drawableToBitmap(this.drawableIcon);
             }
             this.lastUsedTime=usageStats.getLastTimeUsed();
@@ -75,14 +76,14 @@ public class AppInfo {
     }
 
     public int getTimes() {
-        return times;
+        return t;
     }
 
     public void setTimes(int times) {
-        this.times = times;
+        this.t = times;
     }
 
-    public void setUsedTimebyDay(long usedTimebyDay) {
+    public void setUsagePerDay(long usedTimebyDay) {
         this.UsedTimebyDay = usedTimebyDay;
     }
 
@@ -99,40 +100,35 @@ public class AppInfo {
     }
 
     public String getPackageName() {
-        return packageName;
+        return pkgname;
     }
 
-    private long timeStampMoveToForeground = -1;
-
-    private long timeStampMoveToBackGround = -1;
-
-
-    public void setTimeStampMoveToForeground(long timeStampMoveToForeground) {
+    public void setForeground(long timeStampMoveToForeground) {
         this.timeStampMoveToForeground = timeStampMoveToForeground;
     }
 
-    public void timesPlusPlus(){
-        times++;
+    public void timesAdd(){
+        t++;
     }
 
-    public void setTimeStampMoveToBackGround(long timeStampMoveToBackGround) {
+    public void setBackground(long timeStampMoveToBackGround) {
         this.timeStampMoveToBackGround = timeStampMoveToBackGround;
     }
 
-    public long getTimeStampMoveToForeground() {
+    public long getForeground() {
         return timeStampMoveToForeground;
     }
 
-    public void calculateRunningTime() {
-
-        if (timeStampMoveToForeground < 0 || timeStampMoveToBackGround < 0) {
+    public void calRunTime() {
+        long t1=timeStampMoveToForeground;
+        long t2=timeStampMoveToBackGround;
+        if (t1 < 0 || t2 < 0) {
             return;
         }
 
-        if (timeStampMoveToBackGround > timeStampMoveToForeground) {
-            UsedTimebyDay += (timeStampMoveToBackGround - timeStampMoveToForeground);
-            timeStampMoveToForeground = -1;
-            timeStampMoveToBackGround = -1;
+        if (t2 > t1) {
+            UsedTimebyDay += (t2 - t1);
+            timeStampMoveToForeground = timeStampMoveToBackGround = -1;
         }
 
     }
